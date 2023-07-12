@@ -25,7 +25,7 @@ export default ({ command, mode }) => {
     server: {
       host: 'localhost', // 主机名
       port: 3000, // 端口
-      open: true, // 启动项目时是自动打开浏览器
+      open: false, // 启动项目时是自动打开浏览器
       strictPort: false, // 如果port指定端口被占用，是否仍然使用此端口（而不自动使用其它可用端口）
       https: false,// 是否使用https访问
       //服务端代理设置
