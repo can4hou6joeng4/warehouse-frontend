@@ -1,6 +1,6 @@
 /**
  * 请求提示接口
- * 作者：王坤 2022-03
+ * author: bobochang
  */
 
 import { ElMessage, ElMessageBox } from 'element-plus'

@@ -1,8 +1,8 @@
 <template>
-  <!-- 添加商品对话框 -->
-  <el-dialog v-model="visible" title="添加商品" width="50%" @close="close" destroy-on-close>
+  <!-- 添加材料对话框 -->
+  <el-dialog v-model="visible" title="添加材料" width="50%" @close="close" destroy-on-close>
     <el-form ref="commodityAddRef" :model="commodityAdd" :rules="rules" label-position="right" label-width="100px">
-      <el-form-item label="商品图片：" prop="imgs">
+      <el-form-item label="材料图片：" prop="imgs">
         <el-upload
           class="avatar-uploader"
           :action="WAREHOUSE_CONTEXT_PATH + '/product/img-upload'"
@@ -142,7 +142,7 @@ const beforeAvatarUpload = (rawFile) => {
   return true;
 }
 
-// 添加商品对象
+// 添加材料对象
 const commodityAdd = reactive({
   imgs: '',
   productName: '',
@@ -166,7 +166,7 @@ const commodityAdd = reactive({
 // 表单验证规则
 const rules = reactive({
   productName: [
-    { required: true, message: '请输入商品名称', trigger: 'blur' }
+    { required: true, message: '请输入材料名称', trigger: 'blur' }
   ],
   storeId: [
     { required: true, message: '请选择仓库', trigger: 'blur' }
@@ -175,7 +175,7 @@ const rules = reactive({
     { required: true, message: '请选择品牌', trigger: 'blur' }
   ],
   productNum: [
-    { required: true, message: '请输入商品编号', trigger: 'blur' }
+    { required: true, message: '请输入材料编号', trigger: 'blur' }
   ],
   supplyId: [
     { required: true, message: '请选择供应商', trigger: 'blur' }
@@ -239,7 +239,7 @@ const open = (storeList, brandList, categoryTree, supplyList, placeList, unitLis
 const commodityAddRef = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加商品提交
+// 添加材料提交
 const addCommodity = () => {
   commodityAddRef.value.validate(valid => {
     if(valid){

@@ -2,10 +2,10 @@
   <!-- 添加调货单对话框 -->
   <el-dialog v-model="visible" title="添加调货单" width="500px" @close="close" destroy-on-close>
     <el-form ref="transferAddForm" :model="transferAdd" :rules="rules" label-position="top">
-      <el-form-item label="商品名称：" prop="productName">
+      <el-form-item label="材料名称：" prop="productName">
         <el-input v-model="transferAdd.productName" disabled />
       </el-form-item>
-      <el-form-item label="商品编号：" prop="targetProductNum">
+      <el-form-item label="材料编号：" prop="targetProductNum">
         <el-input v-model="transferAdd.targetProductNum" />
       </el-form-item>
       <el-form-item label="库存：" prop="productInvent">
@@ -42,11 +42,11 @@ const transferAdd = reactive({
   targetStoreId: ''
 });
 
-// 验证商品编号的唯一性
+// 验证材料编号的唯一性
 const validateProductNum = async(rule, productNum, callback) => {
-  if (productNum === '') return callback(new Error('请输入商品编号！'));
+  if (productNum === '') return callback(new Error('请输入材料编号！'));
   const res = await get(`/transshipment/product-num-check?productNum=${productNum}`);
-  if(!res.data) return callback(new Error('商品编号已存在！'));
+  if(!res.data) return callback(new Error('材料编号已存在！'));
   return true;
 }
 

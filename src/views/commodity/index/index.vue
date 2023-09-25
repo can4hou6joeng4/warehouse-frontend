@@ -1,5 +1,5 @@
 <template>
-  <!-- 商品列表 -->
+  <!-- 材料列表 -->
   <div>
     <el-form class="searchForm">
       <el-form-item>
@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item style="margin-left: 10px;">
-        <el-input v-model="params.productName" placeholder="商品名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.productName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item style="margin-left: 10px;">
         <el-autocomplete
@@ -55,7 +55,7 @@
         <el-icon>
           <svg t="1646977404025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2197" width="200" height="200"><path d="M925.696 384q19.456 0 37.376 7.68t30.72 20.48 20.48 30.72 7.68 37.376q0 20.48-7.68 37.888t-20.48 30.208-30.72 20.48-37.376 7.68l-287.744 0 0 287.744q0 20.48-7.68 37.888t-20.48 30.208-30.72 20.48-37.376 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-37.888l0-287.744-287.744 0q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-37.888q0-19.456 7.68-37.376t20.48-30.72 30.208-20.48 37.888-7.68l287.744 0 0-287.744q0-19.456 7.68-37.376t20.48-30.72 30.208-20.48 37.888-7.68q39.936 0 68.096 28.16t28.16 68.096l0 287.744 287.744 0z" p-id="2198"></path></svg>
         </el-icon>
-        &nbsp;添加商品
+        &nbsp;添加材料
       </el-button>
       <!-- 导出数据 -->
       <el-button type="warning" @click="export2Table">
@@ -79,12 +79,12 @@
   <!-- 表格 -->
   <el-table ref="multipleTableRef" :data="commodityPageList" @selection-change="handleSelectionChange" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column type="selection" width="55" />
-    <el-table-column label="商品图片">
+    <el-table-column label="材料图片">
       <template #default="props">
           <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.imgs" fit="fill" />
       </template>
     </el-table-column>
-    <el-table-column prop="productName" label="商品名称" sortable />
+    <el-table-column prop="productName" label="材料名称" sortable />
     <el-table-column prop="brandName" label="品牌" sortable />
     <el-table-column prop="typeName" label="类型" sortable />
     <el-table-column prop="supplyName" label="供应商" sortable />
@@ -125,10 +125,10 @@
     @current-change="changeCurrent"
   />
 
-  <!-- 添加商品对话框 -->
+  <!-- 添加材料对话框 -->
   <commodity-add ref="commodityAddRef" @ok="getCommodityPageList"></commodity-add>
   
-  <!-- 修改商品对话框 -->
+  <!-- 修改材料对话框 -->
   <commodity-update ref="commodityUpdateRef" @ok="getCommodityPageList"></commodity-update>
 
   <!-- 添加采购单对话框 -->
@@ -261,8 +261,8 @@ const export2Table = () => {
       return pre;
     }, []);
     const columns = [
-      {"title": "商品ID", "key": "productId"},
-      {"title": "商品名称", "key": "productName"},
+      {"title": "材料ID", "key": "productId"},
+      {"title": "材料名称", "key": "productName"},
       {"title": "品牌", "key": "brandName"},
       {"title": "类型", "key": "typeName"},
       {"title": "供应商", "key": "supplyName"},
@@ -275,7 +275,7 @@ const export2Table = () => {
       {"title": "生产日期", "key": "productDate"},
       {"title": "保质期", "key": "suppDate"},
     ];
-    export2excel(columns, productList, "商品信息表");
+    export2excel(columns, productList, "材料信息表");
   });
 }
 
@@ -285,7 +285,7 @@ const transferCommodity = () => {
   router.push({ path: "/transshipment/transfer", query: {"storeId": params.storeId } });
 }
 
-// 跳向添加商品
+// 跳向添加材料
 import CommodityAdd from "./commodity-add.vue";
 const commodityAddRef = ref();
 const openCommodityAdd = () => {
@@ -293,7 +293,7 @@ const openCommodityAdd = () => {
 };
 
 
-// 跳向修改商品
+// 跳向修改材料
 import CommodityUpdate from "./commodity-update.vue";
 const commodityUpdateRef = ref();
 const openCommodityUpdate = (commodity) => {
@@ -326,9 +326,9 @@ const toOutstoreList = (storeId) => {
   router.push({ path: "/outstore/index", query: {"storeId": storeId } });
 }
 
-// 删除单个商品
+// 删除单个材料
 const deleteCommodity = (productId) => {
-  del(`/product/product-delete/${productId}`, null, { title: "提示", message: "您确定删除该商品吗？" }).then(result => {
+  del(`/product/product-delete/${productId}`, null, { title: "提示", message: "您确定删除该材料吗？" }).then(result => {
     tip.success(result.message);
     // 重新查询
     getCommodityPageList();
@@ -344,7 +344,7 @@ const deleteCommodityList = () => {
       return prev;
     }, []);
 
-    del(`/product/product-list-delete`, productIds, { title: "提示", message: "您确定删除选中商品吗？" }).then(result => {
+    del(`/product/product-list-delete`, productIds, { title: "提示", message: "您确定删除选中材料吗？" }).then(result => {
       tip.success(result.message);
       // 重新查询
       getCommodityPageList();

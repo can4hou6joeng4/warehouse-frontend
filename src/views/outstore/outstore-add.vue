@@ -2,7 +2,7 @@
   <!-- 添加出库单对话框 -->
   <el-dialog v-model="visible" title="添加出库单" width="400px" @close="close" destroy-on-close>
     <el-form ref="outstoreAddForm" :model="outstoreAdd" :rules="rules" label-position="top" label-width="120px">
-      <el-form-item label="商品名称：" prop="productName">
+      <el-form-item label="材料名称：" prop="productName">
         <el-input v-model="outstoreAdd.productName" disabled />
       </el-form-item>
       <el-form-item label="仓库名称：" prop="storeName">

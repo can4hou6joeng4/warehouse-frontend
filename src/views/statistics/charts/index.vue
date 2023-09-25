@@ -108,7 +108,7 @@ const option1 = reactive({
 
 // 监视器
 watch(option1, (newOption, oldOption) => refreshChart(chartObj1, newOption));
-// 获取仓库的商品库存
+// 获取仓库的材料库存
 const getStoreInvent = () => {
   get('/statistics/store-invent').then(res => {
     const source = [{product: ''}];

@@ -79,7 +79,7 @@ const open = () => {
 const storeAddRef = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加商品提交
+// 添加材料提交
 const addStore = () => {
   storeAddRef.value.validate(valid => {
     if(valid){

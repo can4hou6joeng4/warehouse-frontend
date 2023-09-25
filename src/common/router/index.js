@@ -1,6 +1,6 @@
 /**
  * 路由
- * 作者：王坤 2022-03
+ * author: bobochang
  */
 
 import { createRouter, createWebHistory } from 'vue-router'

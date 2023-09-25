@@ -1,6 +1,6 @@
 /**
  * 封装请求组件
- * 作者：王坤 2022-03
+ * author: bobochang
  */
 
 import axios from "axios";

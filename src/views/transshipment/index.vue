@@ -13,10 +13,10 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="params.targetProductName" placeholder="目标商品名称" style="width: 130px;"  clearable></el-input>
+        <el-input v-model="params.targetProductName" placeholder="目标材料名称" style="width: 130px;"  clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="params.sourceProductName" placeholder="源商品名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.sourceProductName" placeholder="源材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="params.createName" placeholder="调货人" style="width: 120px;"  clearable></el-input>
@@ -36,9 +36,9 @@
   <el-table :data="transshipmentPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column prop="transId" label="调货编号" sortable />
     <el-table-column prop="targetStoreName" label="目标仓库名" sortable />
-    <el-table-column prop="targetProductName" label="目标商品名" sortable />
+    <el-table-column prop="targetProductName" label="目标材料名" sortable />
     <el-table-column prop="sourceStoreName" label="源仓库名" sortable />
-    <el-table-column prop="sourceProductName" label="源商品名" sortable />
+    <el-table-column prop="sourceProductName" label="源材料名" sortable />
     <el-table-column prop="transNum" label="调货量" sortable />
     <el-table-column label="调货状态" sortable >
       <template #default="props">

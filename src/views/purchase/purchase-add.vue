@@ -2,7 +2,7 @@
   <!-- 添加采购单对话框 -->
   <el-dialog v-model="visible" title="添加采购单" width="600px" @close="close" destroy-on-close>
     <el-form ref="purchaseAddForm" :model="purchaseAdd" :rules="rules" label-position="right" label-width="120px">
-      <el-form-item label="商品：" prop="productName">
+      <el-form-item label="材料：" prop="productName">
         <span>{{ purchaseAdd.productName }}</span>
       </el-form-item>
       <el-form-item label="仓库：" prop="storeName">

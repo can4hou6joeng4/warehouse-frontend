@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="params.productName" placeholder="商品名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.productName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-autocomplete
@@ -42,10 +42,10 @@
 
   <!-- 表格 -->
   <el-table :data="productPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
-    <el-table-column prop="productId" label="商品ID" sortable />
+    <el-table-column prop="productId" label="材料ID" sortable />
     <el-table-column prop="storeName" label="仓库名称" sortable />
-    <el-table-column prop="productName" label="商品名称" sortable />
-    <el-table-column prop="productNum" label="商品编号" sortable />
+    <el-table-column prop="productName" label="材料名称" sortable />
+    <el-table-column prop="productNum" label="材料编号" sortable />
     <el-table-column prop="brandName" label="品牌" sortable />
     <el-table-column prop="typeName" label="类型" sortable />
     <el-table-column prop="supplyName" label="供应商" sortable />
@@ -103,7 +103,7 @@ const productPageList = ref();
 const getProductPageList = () => {
   get("/transshipment/product-page-list", params).then(result => {
     productPageList.value = result.data.resultList;
-    // 查询所有商品，库存为0的不显示
+    // 查询所有材料，库存为0的不显示
     productPageList.value = productPageList.value.reduce((pre, cur) => {
       if(cur.productInvent && cur.productInvent>0) pre.push(cur);
       return pre;
@@ -156,7 +156,7 @@ const transferCommodity = commodity => {
   const targetStoreId = route.query.storeId;
   // 源仓库
   const sourceStoreId = commodity.storeId;
-  // 源商品id
+  // 源材料id
   const sourceProductId = commodity.productId;
   if(sourceStoreId==targetStoreId){
     tip.error("源仓库不能和目标仓库相同！");

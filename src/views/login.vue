@@ -10,7 +10,7 @@
           font-weight: bold;
           letter-spacing: 3px;
         "
-      >恒合仓库管理系统
+      >仓库管理系统
       </div>
       <el-form
         ref="loginForm"

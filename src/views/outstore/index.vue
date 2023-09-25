@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="params.productName" placeholder="商品名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.productName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item label="开始时间:">
         <el-input type="date" v-model="params.startTime" style="width: 120px;"  clearable></el-input>
@@ -46,7 +46,7 @@
   <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column prop="outsId" label="出库单ID" sortable />
     <el-table-column prop="storeName" label="仓库名称" sortable />
-    <el-table-column prop="productName" label="商品名称" sortable />
+    <el-table-column prop="productName" label="材料名称" sortable />
     <el-table-column prop="tallyCode" label="理货员" sortable />
     <el-table-column prop="outNum" label="出库数量" sortable />
     <el-table-column label="出库状态" sortable>
@@ -137,7 +137,7 @@ const export2Table = () => {
     const columns = [
       {"title": "出库单ID", "key": "outsId"},
       {"title": "仓库名称", "key": "storeName"},
-      {"title": "商品名称", "key": "productName"},
+      {"title": "材料名称", "key": "productName"},
       {"title": "理货员", "key": "tallyCode"},
       {"title": "出库数量", "key": "outNum"},
       {"title": "出库价格", "key": "outPrice"},

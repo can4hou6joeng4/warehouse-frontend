@@ -1,8 +1,8 @@
 <template>
-  <!-- 修改商品对话框 -->
-  <el-dialog v-model="visible" title="修改商品" width="50%" @close="close" destroy-on-close>
+  <!-- 修改材料对话框 -->
+  <el-dialog v-model="visible" title="修改材料" width="50%" @close="close" destroy-on-close>
     <el-form ref="commodityUpdateRef" :model="commodityUpdate" :rules="rules" label-position="right" label-width="100px">
-      <el-form-item label="商品图片：" prop="imgs">
+      <el-form-item label="材料图片：" prop="imgs">
         <el-upload
           class="avatar-uploader"
           :action="WAREHOUSE_CONTEXT_PATH + '/product/img-upload'"
@@ -142,7 +142,7 @@ const beforeAvatarUpload = (rawFile) => {
   return true
 }
 
-// 修改商品对象
+// 修改材料对象
 const commodityUpdate = reactive({
   imgs: '',
   productId: '',
@@ -167,7 +167,7 @@ const commodityUpdate = reactive({
 // 表单验证规则
 const rules = reactive({
   productName: [
-    { required: true, message: '请输入商品名称', trigger: 'blur' }
+    { required: true, message: '请输入材料名称', trigger: 'blur' }
   ],
   storeId: [
     { required: true, message: '请选择仓库', trigger: 'blur' }
@@ -176,7 +176,7 @@ const rules = reactive({
     { required: true, message: '请选择品牌', trigger: 'blur' }
   ],
   productNum: [
-    { required: true, message: '请输入商品编号', trigger: 'blur' }
+    { required: true, message: '请输入材料编号', trigger: 'blur' }
   ],
   supplyId: [
     { required: true, message: '请选择供应商', trigger: 'blur' }
@@ -243,7 +243,7 @@ const open = (commodity, storeList, brandList, categoryTree, supplyList, placeLi
 const commodityUpdateRef = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加商品提交
+// 添加材料提交
 const updateCommodity = () => {
   commodityUpdateRef.value.validate(valid => {
     if(valid){

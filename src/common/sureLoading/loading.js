@@ -1,6 +1,6 @@
 /**
  * 加载提示
- * 作者：王坤 2022-03
+ * author: bobochang
  */
 
 import { createApp } from 'vue';

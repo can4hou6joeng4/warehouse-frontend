@@ -1,6 +1,6 @@
 /**
  * token本存储
- * 作者：王坤 2022-03
+ * author: bobochang
  */
 
 import { LOCAL_TOKEN } from "./constants.js"

@@ -14,7 +14,7 @@
         <el-input type="date" v-model="params.endTime" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="params.productName" placeholder="商品名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.productName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="params.buyUser" placeholder="采购人" style="width: 120px;"  clearable></el-input>
@@ -49,7 +49,7 @@
   <el-table :data="purchasePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column type="index" width="50" />
     <el-table-column prop="storeName" label="仓库名" sortable />
-    <el-table-column prop="productName" label="商品名" sortable />
+    <el-table-column prop="productName" label="材料名" sortable />
     <el-table-column prop="buyNum" label="预计采购数量" sortable />
     <el-table-column prop="factBuyNum" label="实际采购数量" sortable />
     <el-table-column prop="buyUser" label="采购人" sortable />
@@ -146,7 +146,7 @@ const export2Table = () => {
     }, []);
     const columns = [
       {"title": "仓库名", "key": "storeName"},
-      {"title": "商品名", "key": "productName"},
+      {"title": "材料名", "key": "productName"},
       {"title": "预计采购数量", "key": "buyNum"},
       {"title": "实际采购数量", "key": "factBuyNum"},
       {"title": "采购人", "key": "buyUser"},

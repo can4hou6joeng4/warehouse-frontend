@@ -1,6 +1,6 @@
 <template>
-  <!-- 修改商品分类对话框 -->
-  <el-dialog v-model="visible" title="修改商品分类" width="40%" @close="close" destroy-on-close>
+  <!-- 修改材料分类对话框 -->
+  <el-dialog v-model="visible" title="修改材料分类" width="40%" @close="close" destroy-on-close>
     <el-form ref="categoryUpdateForm" :model="categoryUpdate" :rules="rules" label-position="right" label-width="100px">
       <el-form-item label="分类编码：" prop="typeCode">
         <el-input v-model="categoryUpdate.typeCode" disabled />
@@ -28,7 +28,7 @@ import { put, tip } from "@/common"
 // 该页面的可见性
 const visible = ref(false);
 
-// 修改商品分类对象
+// 修改材料分类对象
 const categoryUpdate = reactive({
   typeId: '',
   typeCode: '',
@@ -60,7 +60,7 @@ const open = (productCategory) => {
 const categoryUpdateForm = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加商品提交
+// 添加材料提交
 const updateCategory = () => {
   categoryUpdateForm.value.validate(valid => {
     if(valid){

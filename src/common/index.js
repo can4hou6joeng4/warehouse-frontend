@@ -1,6 +1,6 @@
 /**
  * common统一对外接口
- * 作者：王坤 2022-03
+ * author: bobochang
  */
 
 export { VERSION, BASE_URL, API_BASE_URL, WAREHOUSE_CONTEXT_PATH } from './constants'

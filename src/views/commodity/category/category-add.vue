@@ -1,6 +1,6 @@
 <template>
-  <!-- 添加商品分类对话框 -->
-  <el-dialog v-model="visible" title="添加商品分类" width="40%" @close="close" destroy-on-close>
+  <!-- 添加材料分类对话框 -->
+  <el-dialog v-model="visible" title="添加材料分类" width="40%" @close="close" destroy-on-close>
     <el-form ref="categoryAddForm" :model="categoryAdd" :rules="rules" label-position="right" label-width="100px">
       <el-form-item label="分类编码：" prop="typeCode">
         <el-input v-model="categoryAdd.typeCode" />
@@ -28,7 +28,7 @@ import { get, post, tip } from "@/common"
 // 该页面的可见性
 const visible = ref(false);
 
-// 添加商品分类对象
+// 添加材料分类对象
 const categoryAdd = reactive({
   parentId: '',
   typeCode: '',
@@ -79,7 +79,7 @@ const open = (productCategory) => {
 const categoryAddForm = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加商品提交
+// 添加材料提交
 const addCategory = () => {
   categoryAddForm.value.validate(valid => {
     if(valid){

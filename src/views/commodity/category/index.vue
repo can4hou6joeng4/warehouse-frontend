@@ -1,5 +1,5 @@
 <template>
-  <!-- 商品分类 -->
+  <!-- 材料分类 -->
   <div style="padding-bottom: 20px;">
     <el-button type="primary" @click="openCategoryAdd">添加分类</el-button>
     <el-button type="primary" @click="openCategoryUpdate">修改分类</el-button>
@@ -86,11 +86,11 @@ const openCategoryUpdate = () => {
   if(currNode.value){
     categoryUpdateRef.value.open(currNode.value);
   }else{
-    tip.error("请选择一个商品分类！");
+    tip.error("请选择一个材料分类！");
   }
 };
 
-// 删除商品分类
+// 删除材料分类
 const deleteCategory = () => {
   del(`/productCategory/type-delete/${currNode.value.typeId}`, null, { title: "提示", message: "您确定删除该分类及其子分类吗？" }).then(result => {
     tip.success(result.message);
