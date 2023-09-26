@@ -2,11 +2,11 @@
   <!-- <h2>合同列表</h2>
   <el-divider></el-divider> -->
   <div>
-    <el-form class="searchForm">
+    <el-form inline class="searchForm">
       <el-form-item label="合同名:">
         <el-input v-model="params.contractName" placeholder="合同名" style="width: 120px;" clearable></el-input>
       </el-form-item>
-      <el-form-item label="合同状态:" style="margin-left: 30px;">
+      <el-form-item label="合同状态:" style="margin-left: 20px;">
         <el-select v-model="params.contractState" placeholder="合同状态" style="width: 120px;" clearable>
           <el-option label="待结算" value="1"></el-option>
           <el-option label="结算中" value="2"></el-option>
@@ -68,6 +68,11 @@
   <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
             style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column type="selection" width="55"/>
+    <el-table-column label="材料图片">
+      <template #default="props">
+        <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.files" fit="fill" />
+      </template>
+    </el-table-column>
     <el-table-column prop="contractId" label="合同ID" sortable/>
     <el-table-column prop="contractName" label="合同名" sortable/>
     <el-table-column prop="contractDesc" label="合同描述" sortable/>
@@ -80,7 +85,25 @@
     </el-table-column>
     <el-table-column prop="associatedArea" label="关联工区" sortable/>
     <el-table-column prop="createTime" label="创建时间" sortable/>
+    <el-table-column label="操作" fixed="right" width="240">
+      <template #default="props">
+        <el-link type="primary" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
+        <el-link type="primary" @click="downloadFiles(props.row)">下载</el-link>
+      </template>
+    </el-table-column>
   </el-table>
+  <!-- 分页 -->
+  <el-pagination
+      background
+      :total="params.totalNum"
+      :page-sizes="[5, 10, 15, 20, 25, 30]"
+      v-model:page-size="params.pageSize"
+      v-model:currentPage="params.pageNum"
+      layout="total, sizes, prev, pager, next, jumper"
+      style="margin-top: 20px;"
+      @size-change="changeSize"
+      @current-change="changeCurrent"
+  />
 
   <!-- 添加合同对话框 -->
   <contract-add ref="contractAddRef" @ok="getContractList"></contract-add>
@@ -93,22 +116,29 @@
 </template>
 <script setup>
 import {reactive, ref} from "vue";
-import {export2excel, get} from "@/common";
+import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post} from "@/common";
 
 const params = reactive({
   contractName: '',
   contractDesc: '',
   contractState: '',
   associatedArea: '',
+  pageSize: 5,
+  pageNum: 1,
+  totalNum: 0
 })
+
+// 图片回显路径
+const imageUrl = ref('');
 
 // 表格数据
 const contractList = ref();
 
 // 获取查询结果
 const getContractList = () => {
-  get("/contract/contract-list").then(result => {
-    contractList.value = result.data.data;
+  get("/contract/contract-list",params).then(result => {
+    contractList.value = result.data.resultList;
+    params.totalNum = result.data.totalNum;
   });
 }
 getContractList();
@@ -133,7 +163,64 @@ const handleSelectionChange = (val) => {
 import ContractAdd from "./contract-add.vue";
 
 const contractAddRef = ref();
+// 界面添加合同
 const openContractAdd = () => {
   contractAddRef.value.open();
 };
+
+import ContractUpdate from "./contract-update.vue";
+
+const contractUpdateRef = ref();
+//
+const openContractUpdate = (contract) =>{
+  contractUpdateRef.value.open(contract);
+}
+
+// 修改每页显示条数
+const changeSize = (size) => {
+  params.pageSize = size;
+  // 重新查询
+  getStorePageList();
+}
+// 修改当前页码
+const changeCurrent = (num) => {
+  params.pageNum = num;
+  // 重新查询
+  getStorePageList();
+}
+
+// 导出数据
+const export2Table = () => {
+  get("/contract/exportTable", params).then(result => {
+    // 要导出的数据
+    const storeList = result.data;
+    const columns = [
+      {"title": "合同ID", "key": "contractId"},
+      {"title": "合同名称", "key": "contractName"},
+      {"title": "合同描述", "key": "contractDesc"},
+      {"title": "合同状态", "key": "contractState"},
+      {"title": "关联工区", "key": "associatedArea"},
+      {"title": "创建时间", "key": "createTime"},
+    ];
+    export2excel(columns, storeList, "合同信息表");
+  });
+}
+
+import axios from 'axios';
+
+// 下载合同照片
+const downloadFiles = (contract) => {
+  console.log(contract.files.substring(12,19));
+  // 创建一个链接元素
+  const link = document.createElement('a');
+  link.href = "http://localhost:9999/warehouse/contract/download-image/"+contract.files.substring(12,19);
+  link.target = '_blank';
+
+  // 设置链接的下载属性
+  link.download = 'example.jpg'; // 替换为要保存的文件名
+
+  // 触发点击链接的操作，浏览器会自动下载
+  link.click();
+}
 </script>
+

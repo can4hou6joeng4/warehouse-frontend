@@ -18,6 +18,18 @@
       <el-form-item label="关联工区：" prop="associatedArea">
         <el-input v-model="contractAdd.associatedArea" autocomplete="off"/>
       </el-form-item>
+      <el-form-item label="合同照片：" prop="imgs">
+        <el-upload
+            class="avatar-uploader"
+            :action="WAREHOUSE_CONTEXT_PATH + '/contract/img-upload'"
+            :show-file-list="false"
+            :on-change="handleAvatarChange"
+            :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+        </el-upload>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -30,9 +42,14 @@
 
 <script setup>
 import {ref, reactive} from 'vue'
-import {post, tip} from "@/common";
+import {post, tip, WAREHOUSE_CONTEXT_PATH} from "@/common";
+import { Plus } from '@element-plus/icons-vue'
 
 const visible = ref(false); // 该页面的可见性
+
+// 图片回显路径
+const imageUrl = ref('');
+
 // 添加用户对象
 const contractAdd = reactive({
   contractName: '',
@@ -83,8 +100,44 @@ const addUser = () => {
   });
 }
 
+// 添加文件时的回显
+const handleAvatarChange = (uploadFile) => {
+  const reader = new FileReader();
+  // 从上传组件中获取数据
+  const image = uploadFile.raw;
+  reader.readAsDataURL(image);
+  // 读取文件的回调函数
+  reader.onload = () => {
+    // 将转化的url赋值给文件
+    imageUrl.value = reader.result;
+    contractAdd.files = image.name;
+  };
+}
+
+// 上传之前做简单验证
+const beforeAvatarUpload = (rawFile) => {
+  if (rawFile.type !== 'image/jpg'
+      && rawFile.type !== 'image/jpeg'
+      && rawFile.type !== 'image/png'
+      && rawFile.type !== 'image/gif'
+      && rawFile.type !== 'image/svg'
+      && rawFile.type !== 'image/webp'
+  ) {
+    tip.error('只能上传图片格式!');
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 5) {
+    tip.error('上传文件不能大于5MB!');
+    return false
+  }
+  return true;
+}
+
 defineExpose({open});
 </script>
 <style scoped>
-
+.avatar-uploader, .avatar-uploader .avatar{
+  width: 100px;
+  height: 100px;
+  display: block;
+}
 </style>
