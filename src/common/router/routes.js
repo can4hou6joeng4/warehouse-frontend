@@ -126,7 +126,13 @@ const routes = [
                 name: 'contractList',
                 component: () => import('@/views/contract/index.vue'),
                 meta: {nav: ['合同管理', '合同列表']}
-            }
+            },
+            {
+                path: '/attendance/index',
+                name: 'attendanceList',
+                component: () => import('@/views/attendance/index.vue'),
+                meta: {nav: ['考勤管理', '考勤列表']}
+            },
         ]
     },
     {
