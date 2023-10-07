@@ -113,7 +113,8 @@ const attendanceList = ref();
 
 // 获取查询结果
 const getAttendanceList = () => {
-  post("/emos-wx-api/checkin/checkin-page-list", params).then(result => {
+  get("/checkin/checkin-page-list", params).then(result => {
+    console.log(result)
     attendanceList.value = result.data.resultList;
     params.totalNum = result.data.totalNum;
   });

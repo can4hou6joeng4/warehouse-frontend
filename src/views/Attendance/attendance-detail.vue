@@ -12,7 +12,9 @@
         <el-input v-model="attendanceDetil.attendanceDays" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="今月缺勤日期：" prop="absenceMonthDays">
-        <el-input v-model="attendanceDetil.absenceMonthDays" autocomplete="off" disabled/>
+        <el-input v-model="attendanceDetil.absenceMonthDays" autocomplete="off" type="textarea"
+                  disabled
+                  :rows="3" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -26,10 +28,12 @@
 
 <script setup>
 import {reactive, ref} from 'vue'
+import {get} from "@/common";
 
 const visible = ref(false); // 该页面的可见性
 // 查看考勤对象
 const attendanceDetil = reactive({
+  userId:0,
   userName: '',
   attendanceDays: '',
   absenceDays: 0,
@@ -43,6 +47,20 @@ const open = (attendance) => {
     console.log(attendance[prop])
     attendanceDetil[prop] = attendance[prop];
   }
+  let data = {"userId":attendance.userId}
+  get("/checkin/check-date", data).then(result => {
+    console.log(result)
+    let dateList = ""
+    for (let p in result.data){
+      if(result.data[p].status=="缺勤"){
+        console.log(result.data[p].date)
+        dateList+=result.data[p].date+"，"
+      }
+    }
+    console.log(dateList.slice(0,-1))
+    attendanceDetil["absenceMonthDays"] = dateList.slice(0,-1)
+  });
+
   visible.value = true;
 };
 
