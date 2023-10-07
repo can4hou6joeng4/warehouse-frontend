@@ -9,7 +9,7 @@
         <el-input v-model="attendanceDetil.attendanceDays" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="缺勤天数：" prop="absenceDays">
-        <el-input v-model="attendanceDetil.attendanceDays" autocomplete="off" disabled/>
+        <el-input v-model="attendanceDetil.absenceDays" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="今月缺勤日期：" prop="absenceMonthDays">
         <el-input v-model="attendanceDetil.absenceMonthDays" autocomplete="off" type="textarea"
@@ -43,6 +43,7 @@ const attendanceDetil = reactive({
 
 // 该对话框打开并初始化
 const open = (attendance) => {
+  attendanceDetil.absenceDays = 0
   for (let prop in attendance) {
     console.log(attendance[prop])
     attendanceDetil[prop] = attendance[prop];
@@ -55,6 +56,7 @@ const open = (attendance) => {
       if(result.data[p].status=="缺勤"){
         console.log(result.data[p].date)
         dateList+=result.data[p].date+"，"
+        attendanceDetil.absenceDays+=1
       }
     }
     console.log(dateList.slice(0,-1))
