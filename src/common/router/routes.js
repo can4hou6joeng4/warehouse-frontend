@@ -133,6 +133,11 @@ const routes = [
                 component: () => import('@/views/attendance/index.vue'),
                 meta: {nav: ['考勤管理', '考勤列表']}
             },
+            {
+                path: '/activati/index',
+                name: 'activatiList',
+                component: () => import('@/views/Activati/index.vue'),
+            },
         ]
     },
     {
