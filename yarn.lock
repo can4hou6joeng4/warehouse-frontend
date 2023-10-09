@@ -256,20 +256,20 @@ bluebird@^3.7.2:
   resolved "https://registry.npm.taobao.org/bluebird/download/bluebird-3.7.2.tgz?cache=0&sync_timestamp=1602657218976&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fbluebird%2Fdownload%2Fbluebird-3.7.2.tgz"
   integrity sha1-nyKcFb4nJFT/qXOs4NvueaGww28=
 
-bpmn-js-properties-panel@^0.37.2:
-  version "0.37.6"
-  resolved "https://registry.npmmirror.com/bpmn-js-properties-panel/-/bpmn-js-properties-panel-0.37.6.tgz#b09598915c956911e46c771e4a6078332a1a9fe4"
-  integrity sha512-1rP9r6ItL1gKqXezXnpr9eVsQtdufH6TNqxUs11Q68CtxeBAs0l1wEHw2f01i9ceHHxItmrZUTndqnASi89EYA==
+bpmn-js-properties-panel@^0.38.5:
+  version "0.37.2"
+  resolved "https://registry.npmmirror.com/bpmn-js-properties-panel/-/bpmn-js-properties-panel-0.37.2.tgz#3b06052ecd33cef6a40a76e0ae3132b84bdd7b89"
+  integrity sha512-M5pZMfT/g1jkGEhfoA/w1UNx3gPu13GYoNJ+vsszR3fLy0n64XAOmYnWnUDvLVsvjakukkIGPwWF5tYQif/cdA==
   dependencies:
     "@bpmn-io/extract-process-variables" "^0.3.0"
     ids "^1.0.0"
     inherits "^2.0.1"
-    lodash "^4.17.20"
-    min-dom "^3.1.3"
+    lodash "^4.17.15"
+    min-dom "^3.1.1"
     scroll-tabs "^1.0.1"
     selection-update "^0.1.2"
 
-bpmn-js@^7.3.1:
+bpmn-js@^7.5.0:
   version "7.5.0"
   resolved "https://registry.npmmirror.com/bpmn-js/-/bpmn-js-7.5.0.tgz#0e4675acdbdff676db859f8cb7ec395d20e7bbd8"
   integrity sha512-0ANaE6Bikg1GmkcvO7RK0MQPX+EKYKBc+q7OWk39/16NcCdNZ/4UiRcCr9n0u1VUCIDsSU/jJ79TIZFnV5CNjw==
@@ -285,14 +285,14 @@ bpmn-js@^7.3.1:
     object-refs "^0.3.0"
     tiny-svg "^2.2.2"
 
-bpmn-moddle@^6.0.0:
-  version "6.0.7"
-  resolved "https://registry.npmmirror.com/bpmn-moddle/-/bpmn-moddle-6.0.7.tgz#416dfbd0d6e8923711c919d015a7345f7abac20b"
-  integrity sha512-MD649c7/I7+AKl3OGLs8ed8guzKuIRIJhOvLeVBSyCHtd41iB8ZRi+NL2UeC8pNgpqcjMsZG3ye++x3fh6MQ+g==
+bpmn-moddle@^1.0.2:
+  version "1.3.0"
+  resolved "https://registry.npmmirror.com/bpmn-moddle/-/bpmn-moddle-1.3.0.tgz#de02a78105760a8c6e6b0629e286c1ccf2984a86"
+  integrity sha512-BRcOEbb5dLDGiX35cNKpeLzp9xCzgLwyHaXMlO0poDO60mSkxK51KbV2qksItDgBJA+o+gSJ60XPctizzgkokA==
   dependencies:
-    min-dash "^3.0.0"
-    moddle "^5.0.1"
-    moddle-xml "^8.0.8"
+    lodash "^3.0.0"
+    moddle "^1.2.1"
+    moddle-xml "^3.0.0"
 
 bpmn-moddle@^7.0.4:
   version "7.1.3"
@@ -376,16 +376,6 @@ diagram-js-direct-editing@^1.6.1:
   dependencies:
     min-dash "^3.5.2"
     min-dom "^3.1.3"
-
-diagram-js-minimap@2.0.4:
-  version "2.0.4"
-  resolved "https://registry.npmmirror.com/diagram-js-minimap/-/diagram-js-minimap-2.0.4.tgz#834570de5203eb524f70fac7370744b091cdc844"
-  integrity sha512-BgpCCkGRzCxRBBg4se/gNSsaUQjHTilDsFPaH+LvKv4BT1EwTFvL0xqUYvXQ4SPwI+YpCIc0akzIxOk3gLygag==
-  dependencies:
-    css.escape "^1.5.1"
-    min-dash "^3.5.2"
-    min-dom "^3.1.1"
-    tiny-svg "^2.2.2"
 
 diagram-js@^6.8.2:
   version "6.8.2"
@@ -574,7 +564,12 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.npm.taobao.org/lodash.camelcase/download/lodash.camelcase-4.3.0.tgz"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
-lodash@^4.17.20, lodash@^4.17.21:
+lodash@^3.0.0:
+  version "3.10.1"
+  resolved "https://registry.npmmirror.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+  integrity sha512-9mDDwqVIma6OZX79ZlDACZl8sBm0TEnkf99zV3iMA4GzkIT/9hiqP5mY0HoT1iNLCrKc/R1HByV+yJfRWVJryQ==
+
+lodash@^4.17.15, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -636,14 +631,15 @@ mitt@^1.1.3:
   resolved "https://registry.npmmirror.com/mitt/-/mitt-1.2.0.tgz#cb24e6569c806e31bd4e3995787fe38a04fdf90d"
   integrity sha512-r6lj77KlwqLhIUku9UWYes7KJtsczvolZkzp8hbaDPPaE24OmWl5s539Mytlj22siEQKosZ26qCBgda2PKwoJw==
 
-moddle-xml@^8.0.8:
-  version "8.0.8"
-  resolved "https://registry.npmmirror.com/moddle-xml/-/moddle-xml-8.0.8.tgz#f14193394be8e1c5f6d1c0f892dee57523d41416"
-  integrity sha512-JzW8wUCH7Qze7eh0T8A1exi7QJg6hRgq+uw8goHNP5Q7pWTGrLj83S+NgA/94M2I0JmqnK9hw3sCbyiKVOjc4Q==
+moddle-xml@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/moddle-xml/-/moddle-xml-3.0.0.tgz#cbf84a9b9a8e9ed5ebcf9dd0152797fdf3f08e30"
+  integrity sha512-3VIawS11RPwAwQ+fXEqS9WysQaW8KFOHuBLmWWWFkBkHN5ML2BwKpQGVVW2OmL9fyvI2xdmcRKC9MDFLSxuuhw==
   dependencies:
-    min-dash "^3.0.0"
-    moddle "^5.0.1"
-    saxen "^8.1.2"
+    lodash "^3.0.0"
+    moddle "^1.1.0"
+    saxen "^5.3.2"
+    tiny-stack "^0.1.0"
 
 moddle-xml@^9.0.6:
   version "9.0.6"
@@ -654,7 +650,14 @@ moddle-xml@^9.0.6:
     moddle "^5.0.2"
     saxen "^8.1.2"
 
-moddle@^5.0.1, moddle@^5.0.2:
+moddle@^1.1.0, moddle@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmmirror.com/moddle/-/moddle-1.2.1.tgz#59f75e2adc7634ba1bf966d433c43616672f1ce9"
+  integrity sha512-YQtFv9MaZSto0LwVe/j0zSZuspvBY1XQtiRAgp9C9u5p9N3eJiSerqD7TprGs3ZoYIhpZpHvLazSm4PqqesJKA==
+  dependencies:
+    lodash "^3.0.0"
+
+moddle@^5.0.2:
   version "5.0.4"
   resolved "https://registry.npmmirror.com/moddle/-/moddle-5.0.4.tgz#1108c9ff210df552ef4589513e620d171e4468e6"
   integrity sha512-Kjb+hjuzO+YlojNGxEUXvdhLYTHTtAABDlDcJTtTcn5MbJF9Zkv4I1Fyvp3Ypmfgg1EfHDZ3PsCQTuML9JD6wg==
@@ -789,6 +792,11 @@ rollup@^2.38.5:
   optionalDependencies:
     fsevents "~2.3.1"
 
+saxen@^5.3.2:
+  version "5.7.0"
+  resolved "https://registry.npmmirror.com/saxen/-/saxen-5.7.0.tgz#865ac3bfebeb0b06057e45324fb1d3999df56034"
+  integrity sha512-57s/4dVUmHbaMm+eHOzYIoy+o6UwmrzsKAj0toWpI+h+bzJ2xPfJZ9OGPu5onHIpF64mJLPTBD2wk8jfTBL+Xw==
+
 saxen@^8.1.2:
   version "8.1.2"
   resolved "https://registry.npmmirror.com/saxen/-/saxen-8.1.2.tgz#e677b32afe93667c9d939d3f3de02e09df108e54"
@@ -841,6 +849,11 @@ string-hash@^1.1.1:
   version "1.1.3"
   resolved "https://registry.npm.taobao.org/string-hash/download/string-hash-1.1.3.tgz"
   integrity sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=
+
+tiny-stack@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmmirror.com/tiny-stack/-/tiny-stack-0.1.0.tgz#1a848173fc0bfc54e77bb2e9504d2d3c8ad79621"
+  integrity sha512-EMLhINH4AB8KG6eNOThEkalfWc/evExSZgXU3Qa/jXEYjZU3XNx7Ff2uasw2GD9Flfl/+oWhrRQhNgOlL7xtfw==
 
 tiny-svg@^2.2.1, tiny-svg@^2.2.2:
   version "2.2.4"
