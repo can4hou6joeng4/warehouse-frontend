@@ -138,6 +138,11 @@ const routes = [
                 name: 'activitiList',
                 component: () => import('@/views/Activiti/index.vue'),
             },
+            {
+                path: '/task/index',
+                name: 'taskList',
+                component: () => import('@/views/task/index.vue'),
+            },
         ]
     },
     {

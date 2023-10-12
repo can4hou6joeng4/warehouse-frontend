@@ -129,11 +129,10 @@ function deploy() {
   console.log()
   //获取bpmn产生的xml文件
   bpmnModeler.saveXML().then(res => {
-    console.log(res.xml)
     //此处为存入数据库的接口，此处需要你们后端根据自己项目去提供接口，有关activity流
     const formData = new FormData()
     formData.append("file",res.xml)
-    formData.append("fileName","demo")
+    formData.append("fileName","test")
     post('/activati/xml-upload', formData).then(result => {
       console.log(result)
     });

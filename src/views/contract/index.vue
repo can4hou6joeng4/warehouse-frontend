@@ -8,6 +8,7 @@
       </el-form-item>
       <el-form-item label="合同状态:" style="margin-left: 20px;">
         <el-select v-model="params.contractState" placeholder="合同状态" style="width: 120px;" clearable>
+          <el-option label="未审核" value="0"></el-option>
           <el-option label="待结算" value="1"></el-option>
           <el-option label="结算中" value="2"></el-option>
           <el-option label="已结算" value="3"></el-option>
@@ -88,7 +89,9 @@
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
         <el-link type="primary" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
-        <el-link type="primary" @click="downloadFiles(props.row)">下载</el-link>
+        <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载</el-link>
+        <el-link type="primary" @click="startInstance(props.row.contractId,1)" v-if="props.row.contractState === '0'" style="margin-right: 8px">需要采购</el-link>
+        <el-link type="primary" @click="startInstance(props.row.contractId,0)" v-if="props.row.contractState === '0'">无需采购</el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -116,7 +119,7 @@
 </template>
 <script setup>
 import {reactive, ref} from "vue";
-import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post} from "@/common";
+import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post, tip} from "@/common";
 
 const params = reactive({
   contractName: '',
@@ -221,6 +224,29 @@ const downloadFiles = (contract) => {
 
   // 触发点击链接的操作，浏览器会自动下载
   link.click();
+}
+
+const startInstance = (contractId,state) => {
+  console.log(contractId)
+  console.log(state)
+  let data = {
+    contractId:contractId,
+    state: state
+  }
+  console.log(data)
+  post("/activiti/start-instance", data).then(result => {
+    console.log(result)
+
+    if(result.message === "启动流程成功"){
+      tip.success(result.message)
+    }else {
+      tip.warning(result.message)
+    }
+    getContractList()
+  })
+  // if(state === 1){
+
+  // }
 }
 </script>
 
