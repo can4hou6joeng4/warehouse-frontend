@@ -9,6 +9,7 @@
     <el-table-column label="当前流程所有任务">
       <template #default="props">
         <el-link type="primary" @click.prevent="openTaskDetail(props.row)" style="margin-right: 8px">查看详情</el-link>
+        <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px" v-if="props.row.assignee === 'supper_manage'">完成任务</el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -21,6 +22,7 @@ import {onMounted, ref} from "vue";
 import { ElMessageBox } from 'element-plus';
 import { useRouter } from "vue-router";
 import TaskDetail from "@/views/task/task-detail.vue";
+import {Delete, Edit} from "@element-plus/icons-vue";
 const router = useRouter(); // 获取路由器
 
 const flowPageList = ref();
@@ -72,6 +74,15 @@ const taskDetailRef = ref();
 const openTaskDetail = (task) =>{
   taskDetailRef.value.open(task);
 }
+
+const completeTask = (task) =>{
+  get("/activiti//complete-task", {}).then(result => {
+    console.log(result)
+    // tip.success(result.)
+    init()
+  })
+}
+
 </script>
 
 <style scoped>

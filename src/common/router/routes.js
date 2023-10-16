@@ -142,6 +142,7 @@ const routes = [
                 path: '/task/index',
                 name: 'taskList',
                 component: () => import('@/views/task/index.vue'),
+                meta: {nav: ['任务中心', '任务列表']}
             },
         ]
     },
