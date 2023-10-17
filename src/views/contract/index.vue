@@ -183,13 +183,13 @@ const openContractUpdate = (contract) =>{
 const changeSize = (size) => {
   params.pageSize = size;
   // 重新查询
-  getStorePageList();
+  getContractList();
 }
 // 修改当前页码
 const changeCurrent = (num) => {
   params.pageNum = num;
   // 重新查询
-  getStorePageList();
+  getContractList();
 }
 
 // 导出数据

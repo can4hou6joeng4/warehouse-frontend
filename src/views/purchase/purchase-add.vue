@@ -11,9 +11,6 @@
       <el-form-item label="供货商：" prop="supplyName">
         <span>{{ purchaseAdd.supplyName }}</span>
       </el-form-item>
-      <el-form-item label="产地：" prop="placeName">
-        <span>{{ purchaseAdd.placeName }}</span>
-      </el-form-item>
       <el-form-item label="预计采购量：" prop="buyNum">
         <el-input v-model="purchaseAdd.buyNum" />
       </el-form-item>

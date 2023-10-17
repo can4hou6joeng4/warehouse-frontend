@@ -108,7 +108,7 @@
 <!--        <el-link type="primary" v-if="props.row.upDownState==1" @click="changState(props.row.productId, 0)">下架</el-link>-->
         <el-link type="primary" @click.prevent="openPurchaseAdd(props.row)">采购</el-link>
         <el-link type="primary" v-if="props.row.upDownState==1" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
-        <el-link type="primary">盘点</el-link>
+<!--        <el-link type="primary">盘点</el-link>-->
       </template>
     </el-table-column>
   </el-table>
@@ -263,17 +263,17 @@ const export2Table = () => {
     const columns = [
       {"title": "材料ID", "key": "productId"},
       {"title": "材料名称", "key": "productName"},
-      {"title": "品牌", "key": "brandName"},
-      {"title": "类型", "key": "typeName"},
+      // {"title": "品牌", "key": "brandName"},
+      // {"title": "类型", "key": "typeName"},
       {"title": "供应商", "key": "supplyName"},
-      {"title": "产地", "key": "placeName"},
+      // {"title": "产地", "key": "placeName"},
       {"title": "仓库", "key": "storeName"},
       {"title": "库存", "key": "productInvent"},
       {"title": "上/架", "key": "upDownState"},
       {"title": "售价", "key": "salePrice"},
       {"title": "单位", "key": "unitName"},
-      {"title": "生产日期", "key": "productDate"},
-      {"title": "保质期", "key": "suppDate"},
+      {"title": "采购产日期", "key": "productDate"},
+      // {"title": "保质期", "key": "suppDate"},
     ];
     export2excel(columns, productList, "材料信息表");
   });
