@@ -55,14 +55,14 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">
-        <el-option @click="deleteContractList">
-          <span style="float: left;">
-            <el-icon><delete/></el-icon>
-          </span>
-          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>
-        </el-option>
-      </el-select>
+<!--      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">-->
+<!--        <el-option @click="deleteContractList">-->
+<!--          <span style="float: left;">-->
+<!--            <el-icon><delete/></el-icon>-->
+<!--          </span>-->
+<!--          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>-->
+<!--        </el-option>-->
+<!--      </el-select>-->
     </div>
   </div>
   <!-- 表格 -->

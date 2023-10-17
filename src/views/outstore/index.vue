@@ -87,7 +87,7 @@ const route = useRoute(); // 获取路由信息
 
 // 分页模糊查询数据
 const params = reactive({
-  storeId: 1,
+  storeId: '',
   productName: '',
   startTime: '',
   endTime: '',

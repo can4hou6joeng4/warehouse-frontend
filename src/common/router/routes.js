@@ -107,12 +107,12 @@ const routes = [
                 meta: {nav: ['调货管理', '调货列表']}
             },
             // 统计报表
-            {
-                path: '/statistics/index',
-                name: 'statisticsReport',
-                component: () => import('@/views/statistics/charts/index.vue'),
-                meta: {nav: ['统计管理', '统计报表']}
-            },
+            // {
+            //     path: '/statistics/index',
+            //     name: 'statisticsReport',
+            //     component: () => import('@/views/statistics/charts/index.vue'),
+            //     meta: {nav: ['统计管理', '统计报表']}
+            // },
             // 仓库列表
             {
                 path: '/store/index',

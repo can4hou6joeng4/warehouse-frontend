@@ -226,13 +226,11 @@ const handleNodeClick = (type) => {
 }
 
 // 该对话框打开，进行数据初始化
-const open = (storeList, brandList, categoryTree, supplyList, placeList, unitList) => {
+const open = (storeList, categoryTree, supplyList, unitList) => {
   visible.value = true;
   stores.value = storeList.value;
-  brands.value = brandList.value;
   categorys.value = categoryTree.value;
   supplys.value = supplyList.value;
-  places.value = placeList.value;
   units.value = unitList.value;
 };
 

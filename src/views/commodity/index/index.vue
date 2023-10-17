@@ -107,7 +107,7 @@
 <!--        <el-link type="primary" v-if="props.row.upDownState==0" @click="changState(props.row.productId, 1)">上架</el-link>-->
 <!--        <el-link type="primary" v-if="props.row.upDownState==1" @click="changState(props.row.productId, 0)">下架</el-link>-->
         <el-link type="primary" @click.prevent="openPurchaseAdd(props.row)">采购</el-link>
-        <el-link type="primary" v-if="props.row.upDownState==1" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
+        <el-link type="primary" v-if="props.row.upDownState==0" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
 <!--        <el-link type="primary">盘点</el-link>-->
       </template>
     </el-table-column>
@@ -149,12 +149,12 @@ const router = useRouter(); // 获取路由器
 
 // 分页模糊查询数据
 const params = reactive({
-  storeId: 1,
+  storeId: '',
   productName: '',
   // brandName: '',
   typeName: '',
   supplyName: '',
-  placeName: '',
+  // placeName: '',
   upDownState: '',
   isOverDate: '',
   pageSize: 5,
@@ -185,14 +185,14 @@ const getStoreList = () => {
 getStoreList();
 
 // 所有品牌
-const brandList = ref();
+// const brandList = ref();
 // 获取所有品牌
-const getBrandList = () => {
-  get("/product/brand-list").then(result => {
-    brandList.value = result.data;
-  });
-}
-getBrandList();
+// const getBrandList = () => {
+//   get("/product/brand-list").then(result => {
+//     brandList.value = result.data;
+//   });
+// }
+// getBrandList();
 
 // 所有分类-分层结构
 const categoryTree = ref();
@@ -214,15 +214,15 @@ const getSupplyList = () => {
 }
 getSupplyList();
 
-// 所有产地
-const placeList = ref();
-// 获取所有产地
-const getPlaceList = () => {
-  get("/product/place-list").then(result => {
-    placeList.value = result.data;
-  });
-}
-getPlaceList();
+// // 所有产地
+// const placeList = ref();
+// // 获取所有产地
+// const getPlaceList = () => {
+//   get("/product/place-list").then(result => {
+//     placeList.value = result.data;
+//   });
+// }
+// getPlaceList();
 
 // 所有单位
 const unitList = ref();
@@ -289,7 +289,7 @@ const transferCommodity = () => {
 import CommodityAdd from "./commodity-add.vue";
 const commodityAddRef = ref();
 const openCommodityAdd = () => {
-  commodityAddRef.value.open(storeList, brandList, categoryTree, supplyList, placeList, unitList);
+  commodityAddRef.value.open(storeList, categoryTree, supplyList, unitList);
 };
 
 
@@ -297,7 +297,7 @@ const openCommodityAdd = () => {
 import CommodityUpdate from "./commodity-update.vue";
 const commodityUpdateRef = ref();
 const openCommodityUpdate = (commodity) => {
-  commodityUpdateRef.value.open(commodity, storeList, brandList, categoryTree, supplyList, placeList, unitList);
+  commodityUpdateRef.value.open(commodity, storeList, categoryTree, supplyList, unitList);
 };
 
 // 跳向修改采购单

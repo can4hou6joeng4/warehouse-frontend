@@ -8,13 +8,13 @@
       <el-form-item label="合同描述：" prop="contractDesc">
         <el-input v-model="contractUpdate.contractDesc" autocomplete="off"/>
       </el-form-item>
-      <el-form-item label="合同状态：" prop="contractState">
-        <el-select v-model="contractUpdate.contractState" autocomplete="off">
-          <el-option label="待结算" value="1"></el-option>
-          <el-option label="结算中" value="2"></el-option>
-          <el-option label="已结算" value="3"></el-option>
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="合同状态：" prop="contractState">-->
+<!--        <el-select v-model="contractUpdate.contractState" autocomplete="off">-->
+<!--          <el-option label="待结算" value="1"></el-option>-->
+<!--          <el-option label="结算中" value="2"></el-option>-->
+<!--          <el-option label="已结算" value="3"></el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="关联工区：" prop="associatedArea">
         <el-input v-model="contractUpdate.associatedArea" autocomplete="off"/>
       </el-form-item>
