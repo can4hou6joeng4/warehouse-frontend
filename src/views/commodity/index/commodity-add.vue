@@ -2,18 +2,18 @@
   <!-- 添加材料对话框 -->
   <el-dialog v-model="visible" title="添加材料" width="50%" @close="close" destroy-on-close>
     <el-form ref="commodityAddRef" :model="commodityAdd" :rules="rules" label-position="right" label-width="100px">
-      <el-form-item label="材料图片：" prop="imgs">
-        <el-upload
-          class="avatar-uploader"
-          :action="WAREHOUSE_CONTEXT_PATH + '/product/img-upload'"
-          :show-file-list="false"
-          :on-change="handleAvatarChange"
-          :before-upload="beforeAvatarUpload"
-        >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-        </el-upload>
-      </el-form-item>
+<!--      <el-form-item label="材料图片：" prop="imgs">-->
+<!--        <el-upload-->
+<!--          class="avatar-uploader"-->
+<!--          :action="WAREHOUSE_CONTEXT_PATH + '/product/img-upload'"-->
+<!--          :show-file-list="false"-->
+<!--          :on-change="handleAvatarChange"-->
+<!--          :before-upload="beforeAvatarUpload"-->
+<!--        >-->
+<!--          <img v-if="imageUrl" :src="imageUrl" class="avatar" />-->
+<!--          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>-->
+<!--        </el-upload>-->
+<!--      </el-form-item>-->
       <el-row>
           <el-form-item label="名称：" prop="productName">
             <el-input v-model="commodityAdd.productName" />
@@ -23,24 +23,24 @@
           </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item label="种类：" prop="typeId">
-          <el-popover trigger="click" placement="bottom-start" width="12%" >
-            <template #reference>
-              <el-input v-model="commodityAdd.typeName" placeholder="选择类型" readonly />
-            </template>
-            <el-tree :node-key="typeId" :data="categorys" :props="defaultProps" @node-click="handleNodeClick" />
-          </el-popover>
-        </el-form-item>
+<!--        <el-form-item label="种类：" prop="typeId">-->
+<!--          <el-popover trigger="click" placement="bottom-start" width="12%" >-->
+<!--            <template #reference>-->
+<!--              <el-input v-model="commodityAdd.typeName" placeholder="选择类型" readonly />-->
+<!--            </template>-->
+<!--            <el-tree :node-key="typeId" :data="categorys" :props="defaultProps" @node-click="handleNodeClick" />-->
+<!--          </el-popover>-->
+<!--        </el-form-item>-->
         <el-form-item label="库存：" prop="productInvent">
           <el-input-number v-model="commodityAdd.productInvent" min="0" />
         </el-form-item>
       </el-row>
       <el-row>
-          <el-form-item label="品牌：" prop="brandId">
-            <el-select placeholder="请选择品牌" v-model="commodityAdd.brandId" clearable>
-              <el-option v-for="brand of brands" :label="brand.brandName" :value="brand.brandId" :key="brand.brandId"></el-option>
-            </el-select>
-          </el-form-item>
+<!--          <el-form-item label="品牌：" prop="brandId">-->
+<!--            <el-select placeholder="请选择品牌" v-model="commodityAdd.brandId" clearable>-->
+<!--              <el-option v-for="brand of brands" :label="brand.brandName" :value="brand.brandId" :key="brand.brandId"></el-option>-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
           <el-form-item label="仓库：" prop="storeId">
             <el-select placeholder="请选择仓库" v-model="commodityAdd.storeId" clearable>
               <el-option v-for="store of stores" :label="store.storeName" :value="store.storeId" :key="store.storeId"></el-option>
@@ -53,11 +53,11 @@
             <el-option v-for="supply of supplys" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="产地：" prop="placeId">
-          <el-select placeholder="请选择产地" v-model="commodityAdd.placeId" clearable>
-            <el-option v-for="place of places" :label="place.placeName" :value="place.placeId" :key="place.placeId"></el-option>
-          </el-select>
-        </el-form-item>
+<!--        <el-form-item label="产地：" prop="placeId">-->
+<!--          <el-select placeholder="请选择产地" v-model="commodityAdd.placeId" clearable>-->
+<!--            <el-option v-for="place of places" :label="place.placeName" :value="place.placeId" :key="place.placeId"></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
       </el-row>
       <el-row>
         <el-form-item label="单位：" prop="unitId">
@@ -74,21 +74,21 @@
           <el-input v-model="commodityAdd.salePrice" style="width: 90%;" />元
         </el-form-item>
       </el-row>
+<!--      <el-row>-->
+<!--        <el-form-item label="会员价：" prop="memPrice">-->
+<!--          <el-input v-model="commodityAdd.memPrice" style="width: 90%;" />元-->
+<!--        </el-form-item>-->
+<!--      </el-row>-->
+<!--      <el-form-item label="详细介绍：" prop="introduce" style="width: 88%;">-->
+<!--        <el-input type="textarea" rows="2" v-model="commodityAdd.introduce" />-->
+<!--      </el-form-item>-->
       <el-row>
-        <el-form-item label="会员价：" prop="memPrice">
-          <el-input v-model="commodityAdd.memPrice" style="width: 90%;" />元
-        </el-form-item>
-      </el-row>
-      <el-form-item label="详细介绍：" prop="introduce" style="width: 88%;">
-        <el-input type="textarea" rows="2" v-model="commodityAdd.introduce" />
-      </el-form-item>
-      <el-row>
-        <el-form-item label="生产日期：" prop="productDate">
+        <el-form-item label="采购日期：" prop="productDate">
           <el-input type="date" v-model="commodityAdd.productDate" />
         </el-form-item>
-        <el-form-item label="保质期：" prop="suppDate">
-          <el-input type="date" v-model="commodityAdd.suppDate" />
-        </el-form-item>
+<!--        <el-form-item label="保质期：" prop="suppDate">-->
+<!--          <el-input type="date" v-model="commodityAdd.suppDate" />-->
+<!--        </el-form-item>-->
       </el-row>
     </el-form>
     <template #footer>

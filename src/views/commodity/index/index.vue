@@ -10,37 +10,37 @@
       <el-form-item style="margin-left: 10px;">
         <el-input v-model="params.productName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
-      <el-form-item style="margin-left: 10px;">
-        <el-autocomplete
-          v-model="params.brandName"
-          :fetch-suggestions="brandSearch"
-          value-key="brandName"
-          clearable
-          placeholder="品牌"
-          style="width: 120px;"
-        />
-      </el-form-item>
-      <el-form-item style="margin-left: 10px;">
-        <el-input v-model="params.typeName" placeholder="类型" style="width: 120px;"  clearable></el-input>
-      </el-form-item>
+<!--      <el-form-item style="margin-left: 10px;">-->
+<!--        <el-autocomplete-->
+<!--          v-model="params.brandName"-->
+<!--          :fetch-suggestions="brandSearch"-->
+<!--          value-key="brandName"-->
+<!--          clearable-->
+<!--          placeholder="品牌"-->
+<!--          style="width: 120px;"-->
+<!--        />-->
+<!--      </el-form-item>-->
+<!--      <el-form-item style="margin-left: 10px;">-->
+<!--        <el-input v-model="params.typeName" placeholder="类型" style="width: 120px;"  clearable></el-input>-->
+<!--      </el-form-item>-->
       <el-form-item style="margin-left: 10px;">
         <el-input v-model="params.supplyName" placeholder="供应商" style="width: 120px;"  clearable></el-input>
       </el-form-item>
-      <el-form-item style="margin-left: 10px;">
-        <el-input v-model="params.placeName" placeholder="产地" style="width: 120px;"  clearable></el-input>
-      </el-form-item>
-      <el-form-item style="margin-left: 10px;">
-        <el-select v-model="params.upDownState" placeholder="上/下架" style="width: 120px;" clearable>
-          <el-option label="未上架" :value="0"></el-option>
-          <el-option label="已上架" :value="1"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item style="margin-left: 10px;">
-        <el-select v-model="params.isOverDate" placeholder="已/未过期" style="width: 120px;" clearable>
-          <el-option label="未过期" :value="0"></el-option>
-          <el-option label="已过期" :value="1"></el-option>
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item style="margin-left: 10px;">-->
+<!--        <el-input v-model="params.placeName" placeholder="产地" style="width: 120px;"  clearable></el-input>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item style="margin-left: 10px;">-->
+<!--        <el-select v-model="params.upDownState" placeholder="上/下架" style="width: 120px;" clearable>-->
+<!--          <el-option label="未上架" :value="0"></el-option>-->
+<!--          <el-option label="已上架" :value="1"></el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item style="margin-left: 10px;">-->
+<!--        <el-select v-model="params.isOverDate" placeholder="已/未过期" style="width: 120px;" clearable>-->
+<!--          <el-option label="未过期" :value="0"></el-option>-->
+<!--          <el-option label="已过期" :value="1"></el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item style="margin-left: 10px;">
         <el-button type="primary" @click="getCommodityPageList">
           <el-icon>
@@ -79,33 +79,33 @@
   <!-- 表格 -->
   <el-table ref="multipleTableRef" :data="commodityPageList" @selection-change="handleSelectionChange" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column type="selection" width="55" />
-    <el-table-column label="材料图片">
-      <template #default="props">
-          <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.imgs" fit="fill" />
-      </template>
-    </el-table-column>
+<!--    <el-table-column label="材料图片">-->
+<!--      <template #default="props">-->
+<!--          <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.imgs" fit="fill" />-->
+<!--      </template>-->
+<!--    </el-table-column>-->
     <el-table-column prop="productName" label="材料名称" sortable />
-    <el-table-column prop="brandName" label="品牌" sortable />
-    <el-table-column prop="typeName" label="类型" sortable />
+<!--    <el-table-column prop="brandName" label="品牌" sortable />-->
+<!--    <el-table-column prop="typeName" label="类型" sortable />-->
     <el-table-column prop="supplyName" label="供应商" sortable />
-    <el-table-column prop="placeName" label="产地" sortable />
+<!--    <el-table-column prop="placeName" label="产地" sortable />-->
     <el-table-column prop="storeName" label="仓库" sortable />
     <el-table-column prop="productInvent" label="库存" sortable />
-    <el-table-column label="上/下架" sortable>
-      <template #default="props">
-          <span>{{props.row.upDownState==0?"未上架":"已上架"}}</span>
-      </template>
-    </el-table-column>
+<!--    <el-table-column label="上/下架" sortable>-->
+<!--      <template #default="props">-->
+<!--          <span>{{props.row.upDownState==0?"未上架":"已上架"}}</span>-->
+<!--      </template>-->
+<!--    </el-table-column>-->
     <el-table-column prop="salePrice" label="售价" sortable />
     <el-table-column prop="unitName" label="单位" sortable />
-    <el-table-column prop="productDate" label="生产日期" sortable />
-    <el-table-column prop="suppDate" label="保质期" sortable />
+    <el-table-column prop="productDate" label="采购日期" sortable />
+<!--    <el-table-column prop="suppDate" label="保质期" sortable />-->
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
         <el-link type="primary" v-if="props.row.upDownState==0" @click.prevent="openCommodityUpdate(props.row)">修改</el-link>
         <el-link type="primary" v-if="props.row.upDownState==0" @click.prevent="deleteCommodity(props.row.productId)">删除</el-link>
-        <el-link type="primary" v-if="props.row.upDownState==0" @click="changState(props.row.productId, 1)">上架</el-link>
-        <el-link type="primary" v-if="props.row.upDownState==1" @click="changState(props.row.productId, 0)">下架</el-link>
+<!--        <el-link type="primary" v-if="props.row.upDownState==0" @click="changState(props.row.productId, 1)">上架</el-link>-->
+<!--        <el-link type="primary" v-if="props.row.upDownState==1" @click="changState(props.row.productId, 0)">下架</el-link>-->
         <el-link type="primary" @click.prevent="openPurchaseAdd(props.row)">采购</el-link>
         <el-link type="primary" v-if="props.row.upDownState==1" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
         <el-link type="primary">盘点</el-link>
@@ -151,7 +151,7 @@ const router = useRouter(); // 获取路由器
 const params = reactive({
   storeId: 1,
   productName: '',
-  brandName: '',
+  // brandName: '',
   typeName: '',
   supplyName: '',
   placeName: '',

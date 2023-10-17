@@ -144,6 +144,12 @@ const routes = [
                 component: () => import('@/views/task/index.vue'),
                 meta: {nav: ['任务中心', '任务列表']}
             },
+            {
+                path: '/supply/index',
+                name: 'supplyList',
+                component: () => import('@/views/supply/index.vue'),
+                meta: {nav: ['供应商管理', '供应商列表']}
+            },
         ]
     },
     {
