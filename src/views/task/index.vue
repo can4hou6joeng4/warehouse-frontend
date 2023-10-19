@@ -76,7 +76,7 @@ const openTaskDetail = (task) =>{
 }
 
 const completeTask = (task) =>{
-  get("/activiti//complete-task", {}).then(result => {
+  get("/activiti/complete-task", {}).then(result => {
     console.log(result)
     // tip.success(result.)
     init()

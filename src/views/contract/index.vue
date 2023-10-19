@@ -114,9 +114,7 @@
   <!-- 修改合同对话框 -->
   <contract-update ref="contractUpdateRef" @ok="getContractList"></contract-update>
 
-  <!-- 分配角色对话框 -->
-  <assign-role ref="assignRoleRef"></assign-role>
-</template>
+ </template>
 <script setup>
 import {reactive, ref} from "vue";
 import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post, tip} from "@/common";
