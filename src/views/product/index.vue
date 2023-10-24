@@ -53,14 +53,14 @@
 <!--          <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.imgs" fit="fill" />-->
 <!--      </template>-->
 <!--    </el-table-column>-->
-    <el-table-column prop="materialName" label="材料名称及规格" sortable />
+    <el-table-column prop="productName" label="产品名称及规格" sortable />
 <!--    <el-table-column prop="brandName" label="品牌" sortable />-->
 <!--    <el-table-column prop="typeName" label="类型" sortable />-->
 <!--    <el-table-column prop="supplyName" label="供应商" sortable />-->
     <el-table-column prop="storeName" label="仓库名称" sortable />
-    <el-table-column prop="materialNum" label="材料在库数量" sortable />
+    <el-table-column prop="materialNum" label="产品在库数量" sortable />
     <el-table-column prop="unitName" label="单位" sortable />
-    <el-table-column prop="introduce" label="材料介绍" sortable />
+    <el-table-column prop="salePrice" label="销售单价" sortable />
     <el-table-column prop="createTime" label="创建日期" sortable />
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
@@ -92,10 +92,7 @@
   
   <!-- 修改材料对话框 -->
   <commodity-update ref="commodityUpdateRef" @ok="getCommodityPageList"></commodity-update>
-
-  <!-- 添加采购单对话框 -->
-  <purchase-add ref="purchaseAddRef" @ok="toPurchaseList"></purchase-add>
-
+  
   <!-- 添加出库单对话框 -->
   <outstore-add ref="outstoreAddRef" @ok="toOutstoreList"></outstore-add>
 
@@ -127,7 +124,7 @@ const commodityPageList = ref();
 
 // 获取分页模糊查询结果
 const getCommodityPageList = () => {
-  get("/material/material-page-list", params).then(result => {
+  get("/product/product-page-list", params).then(result => {
     console.log(result)
     commodityPageList.value = result.data.resultList;
     params.totalNum = result.data.totalNum;
@@ -207,7 +204,7 @@ const transferCommodity = () => {
 }
 
 // 跳向添加材料
-import CommodityAdd from "./commodity-add.vue";
+import CommodityAdd from "./product-add.vue";
 const commodityAddRef = ref();
 const openCommodityAdd = () => {
   commodityAddRef.value.open(storeList, unitList);
@@ -215,21 +212,20 @@ const openCommodityAdd = () => {
 
 
 // 跳向修改材料
-import CommodityUpdate from "./commodity-update.vue";
+import CommodityUpdate from "./product-update.vue";
 const commodityUpdateRef = ref();
 const openCommodityUpdate = (commodity) => {
   commodityUpdateRef.value.open(commodity, storeList, unitList);
 };
 
 // 跳向修改采购单
-import PurchaseAdd from "../../purchase/purchase-add.vue";
 const purchaseAddRef = ref();
 const openPurchaseAdd = (commodity) => {
   purchaseAddRef.value.open(commodity);
 };
 
 // 跳向添加出库单
-import OutstoreAdd from "../../outstore/outstore-add.vue";
+import OutstoreAdd from "../outstore/outstore-add.vue";
 const outstoreAddRef = ref();
 const openOutstoreAdd = (commodity) => {
   outstoreAddRef.value.open(commodity);

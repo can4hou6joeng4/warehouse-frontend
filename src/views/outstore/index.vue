@@ -46,9 +46,14 @@
   <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column prop="outsId" label="出库单ID" sortable />
     <el-table-column prop="storeName" label="仓库名称" sortable />
-    <el-table-column prop="productName" label="材料名称" sortable />
-    <el-table-column prop="tallyCode" label="理货员" sortable />
+    <el-table-column prop="productName" label="产品名称" sortable />
+    <el-table-column prop="workRegion" label="工区名称" sortable />
+    <el-table-column prop="custom" label="客户" sortable />
+    <el-table-column prop="contractName" label="所属合同" sortable />
+    <el-table-column prop="carNumber" label="车牌号" sortable />
     <el-table-column prop="outNum" label="出库数量" sortable />
+    <el-table-column prop="salePrice" label="单价" sortable />
+    <el-table-column prop="salePriceSum" label="金额" sortable />
     <el-table-column label="出库状态" sortable>
       <template #default="props">
           <span :class="{red:props.row.isOut==0, green: props.row.isOut==1}">{{props.row.isOut==0?"未出库":"已出库"}}</span>
@@ -109,6 +114,10 @@ const getOutstorePageList = () => {
   // 后台获取查询结果
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
+    outstorePageList.value.forEach(function (item, index){
+      console.log(item)
+      item.salePriceSum = item.salePrice * item.outNum
+    })
     params.totalNum = result.data.totalNum;
   });
 }

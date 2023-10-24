@@ -8,8 +8,8 @@
       <el-form-item label="仓库：" prop="storeName">
         <el-input v-model="purchaseUpdate.storeName" disabled />
       </el-form-item>
-      <el-form-item label="材料名称：" prop="productName">
-        <el-input v-model="purchaseUpdate.productName" disabled />
+      <el-form-item label="材料名称：" prop="materialName">
+        <el-input v-model="purchaseUpdate.materialName" disabled />
       </el-form-item>
       <el-form-item label="预计采购数量：" prop="buyNum">
         <el-input v-model="purchaseUpdate.buyNum" controls-position="right" />

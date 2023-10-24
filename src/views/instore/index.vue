@@ -37,20 +37,27 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" size="large" border stripe>
-    <el-table-column prop="insId" label="入库单ID" sortable />
-    <el-table-column prop="storeName" label="仓库名称" sortable />
-    <el-table-column prop="productName" label="材料名称" sortable />
-    <el-table-column prop="inNum" label="入库数量" sortable />
-    <el-table-column prop="inPrice" label="入库价格" sortable />
-    <el-table-column label="入库状态" sortable>
+  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;">
+    <el-table-column prop="insId" label="入库单ID" fixed="left" width="100"/>
+    <el-table-column prop="storeName" label="仓库名称" width="95"/>
+    <el-table-column prop="materialName" label="材料名称"  width="130" />
+    <el-table-column prop="inNum" label="公司数量"  width="95" />
+    <el-table-column prop="relativeNum" label="对方数量"  width="80" />
+    <el-table-column prop="price" label="单价"  width="95" />
+    <el-table-column prop="priceSum" label="金额"  width="95" />
+    <el-table-column prop="freight" label="运费单价"  width="95" />
+    <el-table-column prop="freightSum" label="运费金额"  width="95" />
+    <el-table-column prop="supplyName" label="供应商"  width="130" />
+    <el-table-column prop="carNumber" label="车牌号"  width="95" />
+    <el-table-column prop="contractId" label="所属合同" width="95"/>
+    <el-table-column prop="remarks" label="备注" width="150" />  
+
+    <el-table-column label="入库状态" >
       <template #default="props">
           <span :class="{red:props.row.isIn==0, green: props.row.isIn==1}">{{props.row.isIn==0?"未入库":"已入库"}}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="userCode" label="创建人" sortable />
-    <el-table-column prop="createTime" label="创建时间" sortable />
-    <el-table-column label="操作">
+    <el-table-column label="操作" fixed="right">
       <template #default="props">
         <el-button v-if="props.row.isIn==0" type="primary" title="确定入库" @click="confirmInstore(props.row)" :key="props.row.insId">确定入库</el-button>
       </template>
@@ -102,7 +109,14 @@ const getInstorePageList = () => {
   // 后台获取查询结果
   get("/instore/instore-page-list", params).then(result => {
     instorePageList.value = result.data.resultList;
+    instorePageList.value.forEach(function (item, index){
+      console.log(item)
+      item.priceSum = item.price * item.inNum
+      item.freightSum = item.freight * item.inNum
+    })
+    
     params.totalNum = result.data.totalNum;
+    
   });
 }
 getInstorePageList();
@@ -143,10 +157,11 @@ const export2Table = () => {
 
 // 确定入库
 const confirmInstore = (instore) => {
-  put('/instore/instore-confirm', instore).then(res => {
-    tip.success(res.message);
-    getInstorePageList();
-  });
+  console.log(instore)
+  // put('/instore/instore-confirm', instore).then(res => {
+  //   tip.success(res.message);
+  //   getInstorePageList();
+  // });
 }
 
 // 修改每页显示条数

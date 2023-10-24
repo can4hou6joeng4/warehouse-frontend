@@ -106,13 +106,13 @@ const routes = [
                 component: () => import('@/views/transshipment/transfer-list.vue'),
                 meta: {nav: ['调货管理', '调货列表']}
             },
-            // 统计报表
-            // {
-            //     path: '/statistics/index',
-            //     name: 'statisticsReport',
-            //     component: () => import('@/views/statistics/charts/index.vue'),
-            //     meta: {nav: ['统计管理', '统计报表']}
-            // },
+            // 产品列表
+            {
+                path: '/product/index',
+                name: 'productList',
+                component: () => import('@/views/product/index.vue'),
+                meta: {nav: ['产品管理', '产品列表']}
+            },
             // 仓库列表
             {
                 path: '/store/index',
