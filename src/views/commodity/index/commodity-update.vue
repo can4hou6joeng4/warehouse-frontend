@@ -157,7 +157,7 @@ const open = (commodity, storeList, unitList) => {
   for(let prop in commodity){
     commodityUpdate[prop] = commodity[prop];
   }
-  
+  console.log(commodityUpdate)
   stores.value = storeList.value;
   units.value = unitList.value;
 };

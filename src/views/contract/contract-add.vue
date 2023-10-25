@@ -1,23 +1,23 @@
 <template>
   <!-- 添加合同对话框 -->
-  <el-dialog v-model="visible" title="添加合同" width="25%" @close="close" destroy-on-close>
+  <el-dialog v-model="visible" title="添加合同" width="500px" @close="close" destroy-on-close>
     <el-form ref="contractAddForm" :model="contractAdd" :rules="rules" label-position="top">
       <el-form-item label="合同名：" prop="contractName">
         <el-input v-model="contractAdd.contractName" autocomplete="off"/>
       </el-form-item>
-      <el-form-item label="合同描述：" prop="contractDesc">
-        <el-input v-model="contractAdd.contractDesc" autocomplete="off"/>
-      </el-form-item>
-      <el-form-item label="合同状态：" prop="contractState">
-        <el-select v-model="contractAdd.contractState" autocomplete="off">
-          <el-option label="未审核" value="0"></el-option>
-          <el-option label="待结算" value="1"></el-option>
-          <el-option label="结算中" value="2"></el-option>
-          <el-option label="已结算" value="3"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="关联工区：" prop="associatedArea">
         <el-input v-model="contractAdd.associatedArea" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="合同工期">
+        <el-date-picker
+            v-model="contractAdd.date"
+            type="datetimerange"
+            unlink-panels
+            range-separator="To"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            size="large"
+        />
       </el-form-item>
       <el-form-item label="合同照片：" prop="imgs">
         <el-upload
@@ -31,6 +31,40 @@
           <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
       </el-form-item>
+      <el-form-item label="生产数量：">
+        <el-input v-model="contractAdd.productNum" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="生产产品：">
+        <el-select v-model="contractAdd.productId" style="width: 120px;" clearable @change="handleSelectChange">
+          <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="材料比例：" v-if="showRatio">
+        <el-tag
+            v-for="tag in ratioDetails"
+            :key="tag.name"
+            class="mx-1"
+        >
+          {{ tag.materialName }} : {{ tag.ratio }}
+        </el-tag>
+      </el-form-item>
+      <el-form-item label="原材料：" v-if="showRatio">
+        <el-select v-model="contractAdd.materialId" style="width: 120px;" clearable @change="handleSelectMaterial">
+          <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="仓库数量：" v-if="showRatio">
+        <el-input v-model="materialNum" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="需要数量：" v-if="showRatio">
+        <el-input v-model="needNum" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="是否需要采购：" v-if="showRatio">
+        <el-select v-model="contractAdd.ifPurchase" autocomplete="off">
+          <el-option label="无需采购" value="0"></el-option>
+          <el-option label="需要采购" value="1"></el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -43,7 +77,7 @@
 
 <script setup>
 import {ref, reactive} from 'vue'
-import {post, tip, WAREHOUSE_CONTEXT_PATH} from "@/common";
+import {post, tip, WAREHOUSE_CONTEXT_PATH, get} from "@/common";
 import { Plus } from '@element-plus/icons-vue'
 
 const visible = ref(false); // 该页面的可见性
@@ -56,7 +90,11 @@ const contractAdd = reactive({
   contractName: '',
   contractDesc: '',
   contractState: '',
-  associatedArea: ''
+  associatedArea: '',
+  productId:'',
+  materialId: '',
+  productNum: '',
+  ifPurchase:''
 });
 
 // 关闭
@@ -92,6 +130,9 @@ const emit = defineEmits(["ok"]);
 const addUser = () => {
   contractAddForm.value.validate(valid => {
     if (valid) {
+      contractAdd.startTime = formatDate(contractAdd.date[0])
+      contractAdd.endTime = formatDate(contractAdd.date[1])
+      delete contractAdd.date
       post('/contract/addContract', contractAdd).then(result => {
         emit('ok');
         tip.success(result.message);
@@ -100,6 +141,28 @@ const addUser = () => {
     }
   });
 }
+
+// 日期格式化函数
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+
+// 获得所有产品
+const productList = ref();
+const getProductList= () => {
+  get("/product-material/product-list").then(result => {
+    productList.value = result.data;
+  });
+}
+getProductList();
 
 // 添加文件时的回显
 const handleAvatarChange = (uploadFile) => {
@@ -131,6 +194,30 @@ const beforeAvatarUpload = (rawFile) => {
     return false
   }
   return true;
+}
+
+// 配料比列表
+const ratioDetails= ref({materialId:'',materialName:''});
+
+// 材料比例可见性
+const showRatio = ref(false)
+
+// 选择合同所需的产品并查询到相应的配料比
+const handleSelectChange = () => {
+  let productId = contractAdd.productId
+  get(`/product-material/ratio/${productId}`).then(result => {
+    ratioDetails.value = result.data;
+    showRatio.value = true
+  });
+}
+
+// 改变材料时，算出生产所需要的材料用量以及仓库剩余的材料数量
+const needNum = ref(0);
+const materialNum = ref();
+const handleSelectMaterial = () => {
+  materialNum.value = ratioDetails.value.find(item => item.materialId === contractAdd.materialId).materialNum
+  needNum.value = ratioDetails.value.find(item => item.materialId === contractAdd.materialId).ratio * contractAdd.productNum
+  console.log(contractAdd.productNum)
 }
 
 defineExpose({open});

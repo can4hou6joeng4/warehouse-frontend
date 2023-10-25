@@ -150,6 +150,12 @@ const routes = [
                 component: () => import('@/views/supply/index.vue'),
                 meta: {nav: ['供应商管理', '供应商列表']}
             },
+            {
+                path: '/ratio/index',
+                name: 'ratioList',
+                component: () => import('@/views/ratio/index.vue'),
+                meta: {nav: ['产品材料比例管理', '产品材料比例列表']}
+            },
         ]
     },
     {

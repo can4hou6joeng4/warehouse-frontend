@@ -54,9 +54,6 @@
 <!--      </template>-->
 <!--    </el-table-column>-->
     <el-table-column prop="materialName" label="材料名称及规格" sortable />
-<!--    <el-table-column prop="brandName" label="品牌" sortable />-->
-<!--    <el-table-column prop="typeName" label="类型" sortable />-->
-<!--    <el-table-column prop="supplyName" label="供应商" sortable />-->
     <el-table-column prop="storeName" label="仓库名称" sortable />
     <el-table-column prop="materialNum" label="材料在库数量" sortable />
     <el-table-column prop="unitName" label="单位" sortable />
@@ -66,11 +63,8 @@
       <template #default="props">
         <el-link type="primary" @click.prevent="openCommodityUpdate(props.row)">修改</el-link>
         <el-link type="primary" @click.prevent="deleteCommodity(props.row.materialId)">删除</el-link>
-<!--        <el-link type="primary" v-if="props.row.upDownState==0" @click="changState(props.row.productId, 1)">上架</el-link>-->
-<!--        <el-link type="primary" v-if="props.row.upDownState==1" @click="changState(props.row.productId, 0)">下架</el-link>-->
         <el-link type="primary" @click.prevent="openPurchaseAdd(props.row)">采购</el-link>
         <el-link type="primary" v-if="props.row.upDownState==0" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
-<!--        <el-link type="primary">盘点</el-link>-->
       </template>
     </el-table-column>
   </el-table>

@@ -1,41 +1,36 @@
 <template>
-  <!-- 修改材料对话框 -->
-  <el-dialog v-model="visible" title="修改材料" width="500px" @close="close" destroy-on-close>
-    <el-form ref="commodityUpdateRef" :model="commodityUpdate" :rules="rules" label-position="right" label-width="100px">
+  <!-- 修改产品对话框 -->
+  <el-dialog v-model="visible" title="修改产品" width="500px" @close="close" destroy-on-close>
+    <el-form ref="productUpdateRef" :model="productUpdate" :rules="rules" label-position="right" label-width="100px">
       <el-row>
-        <el-form-item label="名称及规格：" prop="materialName">
-          <el-input v-model="commodityUpdate.materialName" />
-        </el-form-item>
-      </el-row>
-      <el-row>
-        <el-form-item label="在库数量：" prop="materialNum">
-          <el-input v-model="commodityUpdate.materialNum" />
+        <el-form-item label="名称及规格：" prop="productName">
+          <el-input v-model="productUpdate.productName" />
         </el-form-item>
       </el-row>
       <el-row>
         <el-form-item label="仓库：" prop="storeId">
-          <el-select placeholder="请选择仓库" v-model="commodityUpdate.storeId" clearable>
+          <el-select placeholder="请选择仓库" v-model="productUpdate.storeId" clearable>
             <el-option v-for="store of stores" :label="store.storeName" :value="store.storeId" :key="store.storeId"></el-option>
           </el-select>
         </el-form-item>
       </el-row>
       <el-row>
         <el-form-item label="单位：" prop="unitId">
-          <el-select placeholder="请选择单位" v-model="commodityUpdate.unitId" clearable>
+          <el-select placeholder="请选择单位" v-model="productUpdate.unitId" clearable>
             <el-option v-for="unit of units" :label="unit.unitName" :value="unit.unitId" :key="unit.unitId"></el-option>
           </el-select>
         </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item label="材料介绍：" prop="introduce">
-          <el-input v-model="commodityUpdate.introduce" type="textarea" :rows="4" style="width: 217px"/>
+        <el-form-item label="销售单价：" prop="salePrice">
+          <el-input v-model="productUpdate.salePrice"/>
         </el-form-item>
       </el-row>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="updateCommodity">确定</el-button>
+        <el-button type="primary" @click="updateProduct">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -44,7 +39,6 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { put, tip, WAREHOUSE_CONTEXT_PATH } from "@/common"
-import { Plus } from '@element-plus/icons-vue'
 
 // 该页面的可见性
 const visible = ref(false);
@@ -61,59 +55,32 @@ const handleAvatarChange = (uploadFile) => {
   reader.onload = () => {
       // 将转化的url赋值给文件
       imageUrl.value = reader.result;
-      commodityUpdate.imgs = image.name;
+      productUpdate.imgs = image.name;
   };
 }
 
-// 上传之前做简单验证
-const beforeAvatarUpload = (rawFile) => {
-  if (rawFile.type !== 'image/jpg'
-    && rawFile.type !== 'image/jpeg'
-    && rawFile.type !== 'image/png'
-    && rawFile.type !== 'image/gif'
-    && rawFile.type !== 'image/svg'
-    && rawFile.type !== 'image/webp'
-    ) {
-    tip.error('只能上传图片格式!');
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 5) {
-    tip.error('上传文件不能大于5MB!');
-    return false
-  }
-  return true
-}
-
-// 修改材料对象
-const commodityUpdate = reactive({
-  materialName: '',
+// 修改产品对象
+const productUpdate = reactive({
+  productName: '',
   storeId: '',
-  materialNum: '',
+  productNum: '',
   unitId: '',
-  introduce: '',
+  salePrice: '',
 });
 
 // 表单验证规则
 const rules = reactive({
   productName: [
-    { required: true, message: '请输入材料名称', trigger: 'blur' }
+    { required: true, message: '请输入产品名称', trigger: 'blur' }
   ],
   storeId: [
     { required: true, message: '请选择仓库', trigger: 'blur' }
   ],
-  brandId: [
-    { required: true, message: '请选择品牌', trigger: 'blur' }
-  ],
-  productNum: [
-    { required: true, message: '请输入材料编号', trigger: 'blur' }
-  ],
-  supplyId: [
-    { required: true, message: '请选择供应商', trigger: 'blur' }
-  ],
-  placeId: [
-    { required: true, message: '请选择产地', trigger: 'blur' }
-  ],
   unitId: [
     { required: true, message: '请选择单位', trigger: 'blur' }
+  ],
+  salePrice: [
+    { required: true, message: '请输入产品单价', trigger: 'blur' }
   ],
 })
 
@@ -124,52 +91,31 @@ const close = () => {
 
 // 所有仓库
 const stores = ref();
-// 所有品牌
-const brands = ref();
-// 所有分类
-const categorys = ref();
-// 所有供应商
-const supplys = ref();
-// 所有产地
-const places = ref();
 // 所有单位
 const units = ref();
 
-// 树形结构数据对应实体类属性
-const defaultProps = {
-  children: 'childGoodsCategory',
-  label: 'typeName',
-}
-
-// 点击二级分类，显示到输入框
-const handleNodeClick = (type) => {
-  if(type && type.parentId!=0){
-    // 选择二级分类
-    commodityUpdate.typeId = type.typeId;
-    commodityUpdate.typeName = type.typeName;
-  }
-}
-
 // 该对话框打开，进行数据初始化
-const open = (commodity, storeList, unitList) => {
+const open = (product, storeList, unitList) => {
   visible.value = true;
 
-  for(let prop in commodity){
-    commodityUpdate[prop] = commodity[prop];
+  for(let prop in product){
+    productUpdate[prop] = product[prop];
   }
+  
+  console.log(productUpdate)
   
   stores.value = storeList.value;
   units.value = unitList.value;
 };
 
-const commodityUpdateRef = ref();
+const productUpdateRef = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加材料提交
-const updateCommodity = () => {
-  commodityUpdateRef.value.validate(valid => {
+// 更新产品
+const updateProduct = () => {
+  productUpdateRef.value.validate(valid => {
     if(valid){
-      put('/material/material-update', commodityUpdate).then(result => {
+      put('/product/product-update', productUpdate).then(result => {
         emit('ok');
         tip.success(result.message);
         visible.value = false; // 关闭对话框

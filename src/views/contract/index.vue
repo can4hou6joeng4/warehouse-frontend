@@ -41,9 +41,7 @@
         </el-icon>
         &nbsp;添加合同
       </el-button>
-      <!-- 导出数据：https://www.cnblogs.com/wangdashi/p/9269129.html -->
-      <!-- https://zhuanlan.zhihu.com/p/77791428 -->
-      <!-- https://www.cnblogs.com/muyangw/p/10306152.html -->
+      
       <el-button type="warning" @click="export2Table">
         <el-icon>
           <svg t="1647313957290" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -55,14 +53,6 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-<!--      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">-->
-<!--        <el-option @click="deleteContractList">-->
-<!--          <span style="float: left;">-->
-<!--            <el-icon><delete/></el-icon>-->
-<!--          </span>-->
-<!--          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>-->
-<!--        </el-option>-->
-<!--      </el-select>-->
     </div>
   </div>
   <!-- 表格 -->
@@ -76,7 +66,6 @@
     </el-table-column>
     <el-table-column prop="contractId" label="合同ID" sortable/>
     <el-table-column prop="contractName" label="合同名" sortable/>
-    <el-table-column prop="contractDesc" label="合同描述" sortable/>
     <el-table-column label="合同状态" sortable>
       <template #default="props">
         <span :class="{red:props.row.contractState=='1'}">{{
@@ -84,14 +73,20 @@
           }}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="associatedArea" label="关联工区" sortable/>
+    <el-table-column label="是否需要采购" sortable>
+      <template #default="props">
+        <span :class="{red:props.row.ifPurchase=='1'}">{{
+            props.row.ifPurchase == "1" ? "需要采购" : "无需采购"
+          }}</span>
+      </template>
+    </el-table-column>
     <el-table-column prop="createTime" label="创建时间" sortable/>
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
         <el-link type="primary" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
-        <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载</el-link>
-        <el-link type="primary" @click="startInstance(props.row.contractId,1)" v-if="props.row.contractState === '0'" style="margin-right: 8px">需要采购</el-link>
-        <el-link type="primary" @click="startInstance(props.row.contractId,0)" v-if="props.row.contractState === '0'">无需采购</el-link>
+        <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
+        <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
+        <el-link type="primary" @click="startInstance(props.row.contractId,1)" v-if="props.row.contractState === '0'" style="margin-right: 8px">审核完成</el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -114,11 +109,14 @@
   <!-- 修改合同对话框 -->
   <contract-update ref="contractUpdateRef" @ok="getContractList"></contract-update>
 
+  <!-- 查看合同详细信息 -->
+  <contract-detail ref="contractDetailRef"></contract-detail>
  </template>
 <script setup>
 import {reactive, ref} from "vue";
 import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post, tip} from "@/common";
 
+// 分页参数
 const params = reactive({
   contractName: '',
   contractDesc: '',
@@ -138,6 +136,7 @@ const contractList = ref();
 // 获取查询结果
 const getContractList = () => {
   get("/contract/contract-list",params).then(result => {
+    console.log(result.data)
     contractList.value = result.data.resultList;
     params.totalNum = result.data.totalNum;
   });
@@ -160,21 +159,27 @@ const handleSelectionChange = (val) => {
   multipleSelection.value = val;
 }
 
-// 添加用户
+// 添加合同
 import ContractAdd from "./contract-add.vue";
-
 const contractAddRef = ref();
-// 界面添加合同
 const openContractAdd = () => {
   contractAddRef.value.open();
 };
 
+// 修改合同
 import ContractUpdate from "./contract-update.vue";
-
 const contractUpdateRef = ref();
-//
 const openContractUpdate = (contract) =>{
   contractUpdateRef.value.open(contract);
+}
+
+// 查看合同详情
+import ContractDetail from "@/views/contract/contract-detail.vue";
+const contractDetailRef = ref();
+const openContractDetail = (contract) =>{
+  let contractRow = contractList.value.find(item => item.contractId === contract.contractId)
+  console.log(contractRow)
+  contractDetailRef.value.open(contractRow, );
 }
 
 // 修改每页显示条数
@@ -206,8 +211,6 @@ const export2Table = () => {
     export2excel(columns, storeList, "合同信息表");
   });
 }
-
-import axios from 'axios';
 
 // 下载合同照片
 const downloadFiles = (contract) => {
@@ -242,9 +245,6 @@ const startInstance = (contractId,state) => {
     }
     getContractList()
   })
-  // if(state === 1){
-
-  // }
 }
 </script>
 

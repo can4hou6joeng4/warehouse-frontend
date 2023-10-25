@@ -1,0 +1,99 @@
+<template>
+  <!-- 修改用户对话框 -->
+  <el-dialog v-model="visible" title="合同详情" width="25%">
+    <el-form :model="contractDetail" label-position="top">
+      <el-form-item label="生产产品：" prop="productName">
+        <el-input v-model="contractDetail.productName" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="生产数量：" prop="productNum">
+        <el-input v-model="contractDetail.productNum" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="工期开始时间：" prop="startTime">
+        <el-input v-model="contractDetail.startTime" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="工期结束时间：" prop="endTime">
+        <el-input v-model="contractDetail.endTime" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="材料比例：">
+        <el-tag
+            v-for="tag in ratioDetails"
+            :key="tag.name"
+            class="mx-1"
+        >
+          {{ tag.materialName }} : {{ tag.ratio }}
+        </el-tag>
+      </el-form-item>
+      <el-form-item label="原材料：">
+        <el-select v-model="contractDetail.materialId" style="width: 120px;" clearable @change="handleSelectMaterial">
+          <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="仓库数量：">
+        <el-input v-model="materialNum" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="需要数量：">
+        <el-input v-model="needNum" autocomplete="off"/>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="close">取消</el-button>
+        <el-button type="primary" @click="updateContract">确定</el-button>
+      </span>
+    </template>
+  </el-dialog>
+</template>
+
+<script setup>
+import { ref, reactive } from 'vue'
+import {get, put, tip, WAREHOUSE_CONTEXT_PATH} from "@/common";
+
+// 该页面的可见性
+const visible = ref(false); 
+// 合同详情
+const contractDetail = reactive({});
+
+
+// 图片回显路径
+const imageUrl = ref('');
+
+// 表格列表
+const ratioDetails= ref({materialId:'',materialName:''});
+
+// 该对话框打开并初始化
+const open = (contractRow) => {
+  console.log(contractRow)
+  for(let prop in contractRow){
+    contractDetail[prop] = contractRow[prop];
+  }
+  visible.value = true;
+
+  // 查询该合同需要生产的产品的配料比
+  get(`/product-material/ratio/${contractRow.productId}`).then(result => {
+    ratioDetails.value = result.data;
+  });
+};
+
+// 关闭
+const close = () =>{
+  visible.value = false
+}
+
+// 生产所需要的量
+const needNum = ref(0);
+// 仓库还剩余的量
+const materialNum = ref();
+// 选择不同材料的时候计算出生产所需的用量和仓库所剩的用量
+const handleSelectMaterial = () => {
+  materialNum.value = ratioDetails.value.find(item => item.materialId === contractDetail.materialId).materialNum
+  needNum.value = ratioDetails.value.find(item => item.materialId === contractDetail.materialId).ratio * contractDetail.productNum
+}
+defineExpose({ open });
+</script>
+<style scoped>
+.avatar-uploader, .avatar-uploader .avatar{
+  width: 100px;
+  height: 100px;
+  display: block;
+}
+</style>
