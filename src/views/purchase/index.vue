@@ -55,6 +55,7 @@
     <el-table-column prop="buyUser" label="采购人" sortable />
     <el-table-column prop="buyTime" label="采购时间" width="110" />
     <el-table-column prop="phone" label="采购人电话" width="130" />
+    <el-table-column prop="supplyName" label="供应商" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="130"/>
     <el-table-column label="入库状态" sortable>
       <template #default="props">

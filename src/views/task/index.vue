@@ -1,4 +1,9 @@
 <template>
+  <el-link type="primary" @click.prevent="toPurchase()" style="margin-right: 8px">
+    完成任务</el-link>
+  <el-link type="primary" @click.prevent="toPurchaseDetail()" style="margin-right: 8px">
+    采购审核</el-link>
+  
   <!-- 表格 -->
   <el-table :data="flowPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column type="index" width="50" />
@@ -15,6 +20,8 @@
     </el-table-column>
   </el-table>
   <task-detail ref="taskDetailRef"></task-detail>
+  
+  <purchase-detail ref="purchaseDetailRef"></purchase-detail>
 </template>
 
 <script setup>
@@ -33,23 +40,23 @@ const taskStatus = ref(false);
 onMounted(() => {
   console.log("加载完成")
 
-  get("/activiti/have-task", {}).then(result => {
-    console.log(result)
-    if(result.message === "有还未审核的合同"){
-      ElMessageBox.confirm('是否前往处理?', '还有未审核的合同', {
-        confirmButtonText: '前往处理',
-        cancelButtonText: 'Cancel',
-      })
-          .then(() => {
-            router.push({ path: "/contract/index" });
-          })
-          .catch(() => {
-          });
-    }
-    if(result.data.length !== 0){
-      tip.warning("您有任务待处理")
-    }
-  });
+  // get("/activiti/have-task", {}).then(result => {
+  //   console.log(result)
+  //   if(result.message === "有还未审核的合同"){
+  //     ElMessageBox.confirm('是否前往处理?', '还有未审核的合同', {
+  //       confirmButtonText: '前往处理',
+  //       cancelButtonText: 'Cancel',
+  //     })
+  //         .then(() => {
+  //           router.push({ path: "/contract/index" });
+  //         })
+  //         .catch(() => {
+  //         });
+  //   }
+  //   if(result.data.length !== 0){
+  //     tip.warning("您有任务待处理")
+  //   }
+  // });
 
   init()
 })
@@ -85,6 +92,19 @@ const completeTask = (task) =>{
   })
 }
 
+// 跳转去采购
+const toPurchase = () =>{
+router.push({path: "/commodity/index", query: {"contractId": "109"}})
+}
+
+
+import PurchaseDetail from "@/views/purchase/purchase-detail.vue";
+// 跳转去采购详情，用于审核采购
+const purchaseDetailRef = ref()
+const toPurchaseDetail = (task) =>{
+  // router.push({path: "/commodity/index", query: {"contractId": "109"}})
+  purchaseDetailRef.value.open("109")
+}
 </script>
 
 <style scoped>

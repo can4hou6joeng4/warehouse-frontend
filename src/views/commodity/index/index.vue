@@ -8,7 +8,7 @@
         </el-select>
       </el-form-item>
       <el-form-item style="margin-left: 10px;">
-        <el-input v-model="params.productName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.materialName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item style="margin-left: 10px;">
         <el-button type="primary" @click="getCommodityPageList">
@@ -57,7 +57,6 @@
     <el-table-column prop="storeName" label="仓库名称" sortable />
     <el-table-column prop="materialNum" label="材料在库数量" sortable />
     <el-table-column prop="unitName" label="单位" sortable />
-    <el-table-column prop="introduce" label="材料介绍" sortable />
     <el-table-column prop="createTime" label="创建日期" sortable />
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
@@ -98,7 +97,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH } from "@/common";
-import { useRouter } from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
 const router = useRouter(); // 获取路由器
@@ -107,9 +106,7 @@ const router = useRouter(); // 获取路由器
 const params = reactive({
   materialName: '',
   storeId: '',
-  materialNum: '',
   unitId: '',
-  introduce: '',
   pageSize: 5,
   pageNum: 1,
   totalNum: 0,
@@ -119,13 +116,26 @@ const params = reactive({
 // 表格数据
 const commodityPageList = ref();
 
+const isPurchase = ref(false);
+
+// 获取路由信息
+const route = useRoute(); 
 // 获取分页模糊查询结果
 const getCommodityPageList = () => {
-  get("/material/material-page-list", params).then(result => {
-    console.log(result)
-    commodityPageList.value = result.data.resultList;
-    params.totalNum = result.data.totalNum;
-  });
+  if(route.query.contractId){
+    params.contractId = parseInt(route.query.contractId);
+    get("/material/material-page-list-contractId", params).then(result => {
+      console.log(result)
+      commodityPageList.value = result.data.resultList;
+      params.totalNum = result.data.totalNum;
+    });
+  }else{
+    get("/material/material-page-list", params).then(result => {
+      console.log(result)
+      commodityPageList.value = result.data.resultList;
+      params.totalNum = result.data.totalNum;
+    });
+  }
 }
 getCommodityPageList();
 
@@ -219,7 +229,12 @@ const openCommodityUpdate = (commodity) => {
 import PurchaseAdd from "../../purchase/purchase-add.vue";
 const purchaseAddRef = ref();
 const openPurchaseAdd = (commodity) => {
-  purchaseAddRef.value.open(commodity);
+  let cId
+  if(route.query.contractId){
+    cId = parseInt(route.query.contractId)
+  }
+  purchaseAddRef.value.open(commodity, cId);
+
 };
 
 // 跳向添加出库单
@@ -269,29 +284,9 @@ const deleteCommodityList = () => {
   }
 }
 
-// 上/下架
-const changState = (productId, upDownState) => {
-  put(`/product/state-change`, {productId, upDownState}).then(result => {
-    tip.success(result.message);
-    // 重新查询
-    getCommodityPageList();
-  });
-}
 
-// 品牌模糊查询框的联想输入
-const brandSearch = (queryString, callback) => {
-  const results = queryString
-    ? brandList.value.filter(createFilter(queryString))
-    : brandList.value
-  // 回调方法，返回联想的数据
-  callback(results);
-}
 
-const createFilter = (queryString) => {
-  return (brand) => {
-    return brand.brandName.indexOf(queryString) != -1;
-  }
-}
+
 
 // 修改每页显示条数
 const changeSize = (size) => {

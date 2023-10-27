@@ -2,14 +2,22 @@
   <!-- 添加采购单对话框 -->
   <el-dialog v-model="visible" title="添加采购单" width="600px" @close="close" destroy-on-close>
     <el-form ref="purchaseAddForm" :model="purchaseAdd" :rules="rules" label-position="right" label-width="120px">
-      <el-form-item label="材料：" prop="productName">
-        <span>{{ purchaseAdd.productName }}</span>
+      <el-form-item label="材料：" prop="materialName">
+        <span>{{ purchaseAdd.materialName }}</span>
       </el-form-item>
       <el-form-item label="仓库：" prop="storeName">
         <span>{{ purchaseAdd.storeName }}</span>
       </el-form-item>
-      <el-form-item label="供货商：" prop="supplyName">
-        <span>{{ purchaseAdd.supplyName }}</span>
+      <el-form-item label="供应商：">
+        <el-select v-model="purchaseAdd.supplyId" style="width: 120px;" clearable @change="handleSelectSupplyChange">
+          <el-option v-for="supply of supplyList" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="供应商联系人：" prop="storeName">
+        <span>{{ supplyConcat }}</span>
+      </el-form-item>
+      <el-form-item label="供应商联系方式：" prop="storeName">
+        <span>{{ supplyPhone }}</span>
       </el-form-item>
       <el-form-item label="预计采购量：" prop="buyNum">
         <el-input v-model="purchaseAdd.buyNum" />
@@ -32,21 +40,19 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { post, tip } from "@/common"
+import { post, tip, get } from "@/common"
 
 // 该页面的可见性
 const visible = ref(false);
 
 // 添加采购单对象
 const purchaseAdd = reactive({
-  productId: '',
-  productName: '',
+  materialId: '',
+  materialName: '',
   storeId: '',
   storeName: '',
   supplyId: '',
   supplyName: '',
-  placeId: '',
-  placeName: '',
   buyNum: '',
   buyUser: '',
   phone: ''
@@ -68,9 +74,9 @@ const rules = reactive({
   buyUser: [
     { required: true, message: '请输入采购人', trigger: 'blur' }
   ],
-   phone: [
-    { validator: validatePhone, trigger: 'blur' }
-  ]
+   // phone: [
+   //  { validator: validatePhone, trigger: 'blur' }
+  // ]
 })
 
 // 关闭
@@ -83,11 +89,14 @@ const close = () => {
 }
 
 // 该对话框打开，进行数据初始化
-const open = (commodity) => {
+const open = (commodity, contractId) => {
   visible.value = true;
   for(let prop in commodity){
     purchaseAdd[prop] = commodity[prop];
   }
+  purchaseAdd['contractId']=contractId
+  console.log(purchaseAdd)
+  getSupplyList(purchaseAdd.materialId)
 };
 
 const purchaseAddForm = ref();
@@ -97,8 +106,9 @@ const emit = defineEmits(["ok"]);
 const addPurchase = () => {
   purchaseAddForm.value.validate((valid) => {
     if(valid){
+      console.log(purchaseAdd)
       post('/purchase/purchase-add', purchaseAdd).then(result => {
-        emit('ok', purchaseAdd.storeId);
+        // emit('ok', purchaseAdd.storeId);
         tip.success(result.message);
         visible.value = false; // 关闭对话框
       });
@@ -106,7 +116,25 @@ const addPurchase = () => {
   });
 }
 
+
+// 获得所有供应商信息
+const supplyList = ref();
+const getSupplyList= (materialId) => {
+  get(`/supply/supply-list/${materialId}`).then(result => {
+    supplyList.value = result.data;
+  });
+}
 defineExpose({ open });
+
+const supplyConcat = ref()
+const supplyPhone = ref()
+// 选择不同供应商时显示该供应商的信息
+const handleSelectSupplyChange = () => {
+  supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseAdd.supplyId).concat
+  supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseAdd.supplyId).phone
+  console.log(supplyConcat)
+  console.log(supplyPhone)
+}
 </script>
 
 <style>
