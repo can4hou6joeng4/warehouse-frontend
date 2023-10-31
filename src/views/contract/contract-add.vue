@@ -104,6 +104,8 @@ const close = () => {
   contractAdd.contractState = '';
   contractAdd.associatedArea = '';
   visible.value = false;
+  showRatio.value = false;
+  contractAdd.productId = "";
 }
 
 const rules = reactive({
@@ -133,7 +135,7 @@ const addUser = () => {
       contractAdd.startTime = formatDate(contractAdd.date[0])
       contractAdd.endTime = formatDate(contractAdd.date[1])
       delete contractAdd.date
-      post('/contract/addContract', contractAdd).then(result => {
+      post('/activiti/start-instance', contractAdd).then(result => {
         emit('ok');
         tip.success(result.message);
         visible.value = false; // 关闭对话框

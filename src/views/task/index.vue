@@ -1,8 +1,7 @@
 <template>
-  <el-link type="primary" @click.prevent="toPurchase()" style="margin-right: 8px">
-    完成任务</el-link>
-  <el-link type="primary" @click.prevent="toPurchaseDetail()" style="margin-right: 8px">
-    采购审核</el-link>
+
+<!--  <el-link type="primary" @click.prevent="toPurchaseDetail()" style="margin-right: 8px">-->
+<!--    采购审核</el-link>-->
   
   <!-- 表格 -->
   <el-table :data="flowPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
@@ -16,6 +15,11 @@
         <el-link type="primary" @click.prevent="openTaskDetail(props.row)" style="margin-right: 8px">查看详情</el-link>
         <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px" v-if="props.row.task !== '任务已结束'">
           完成任务</el-link>
+        <el-link type="primary" @click.prevent="openContractDetail(props.row)" style="margin-right: 8px">查看合同</el-link>
+        <el-link type="primary" @click.prevent="toPurchaseDetail(props.row)" style="margin-right: 8px">
+          采购审核</el-link>
+        <el-link type="primary" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
+          前往采购</el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -84,17 +88,28 @@ const openTaskDetail = (task) =>{
   taskDetailRef.value.open(task);
 }
 
+const openContractDetail = (task) =>{
+  console.log(task.contractId)
+  // contractRef.value.open(task.value.contractId)
+  router.push({path: "/contract/index", query: {"contractId": task.contractId}})
+
+}
+
 const completeTask = (task) =>{
-  post("/activiti/complete-task-admin", task).then(result => {
+  post("/activiti/complete-task", task).then(result => {
     console.log(result)
-    // tip.success(result.)
+    if(result.message === "完成任务"){
+      tip.success(result.message)
+    }else {
+      tip.warning(result.message)
+    }
     init()
   })
 }
 
 // 跳转去采购
-const toPurchase = () =>{
-router.push({path: "/commodity/index", query: {"contractId": "109"}})
+const toPurchase = (task) =>{
+  router.push({path: "/commodity/index", query: {"contractId": task.contractId}})
 }
 
 
@@ -103,7 +118,7 @@ import PurchaseDetail from "@/views/purchase/purchase-detail.vue";
 const purchaseDetailRef = ref()
 const toPurchaseDetail = (task) =>{
   // router.push({path: "/commodity/index", query: {"contractId": "109"}})
-  purchaseDetailRef.value.open("109")
+  purchaseDetailRef.value.open(task.contractId)
 }
 </script>
 

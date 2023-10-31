@@ -33,7 +33,7 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button type="primary" @click="transferCommodity">调货</el-button>
+      <el-button type="primary" @click="completePurchaseTask">采购计划创建完成</el-button>
       <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">
         <el-option @click="deleteCommodityList">
           <span style="float: left;">
@@ -96,7 +96,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH } from "@/common";
+import {get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH, post} from "@/common";
 import {useRoute, useRouter} from "vue-router";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -204,10 +204,22 @@ const export2Table = () => {
   });
 }
 
-// 调货
-const transferCommodity = () => {
-  // 通过路由导航到调货列表页面
-  router.push({ path: "/transshipment/transfer", query: {"storeId": params.storeId } });
+// 完成采购任务
+const completePurchaseTask = () => {
+  if(route.query.contractId) {
+    let flow = {}
+    flow.contractId = route.query.contractId
+    post("/activiti/complete-task", flow).then(result => {
+      console.log(result)
+      if(result.message === "完成任务"){
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    })
+  }else{
+    tip.error("暂无合同需要采购")
+  }
 }
 
 // 跳向添加材料

@@ -86,8 +86,9 @@
         <el-link type="primary" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
         <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
-        <el-link type="primary" @click="startInstance(props.row.contractId,1)" v-if="props.row.contractState === '0'" style="margin-right: 8px">审核完成</el-link>
-      </template>
+        <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0'" style="margin-right: 8px">通过</el-link>
+        <el-link type="primary" @click="reject(props.row.contractId,1)" v-if="props.row.contractState === '0'" style="margin-right: 8px">退回</el-link>
+        </template>
     </el-table-column>
   </el-table>
   <!-- 分页 -->
@@ -133,13 +134,26 @@ const imageUrl = ref('');
 // 表格数据
 const contractList = ref();
 
+// 获取路由信息
+const route = useRoute();
 // 获取查询结果
 const getContractList = () => {
-  get("/contract/contract-list",params).then(result => {
-    console.log(result.data)
-    contractList.value = result.data.resultList;
-    params.totalNum = result.data.totalNum;
-  });
+  console.log(route.query.contractId)
+  if(route.query.contractId){
+    params.contractId = parseInt(route.query.contractId)
+    get("/contract/contract-list",params).then(result => {
+      console.log(result.data)
+      contractList.value = result.data.resultList;
+      params.totalNum = result.data.totalNum;
+    });
+  }else{
+    get("/contract/contract-list",params).then(result => {
+      console.log(result.data)
+      contractList.value = result.data.resultList;
+      params.totalNum = result.data.totalNum;
+    });
+  }
+
 }
 getContractList();
 
@@ -175,6 +189,7 @@ const openContractUpdate = (contract) =>{
 
 // 查看合同详情
 import ContractDetail from "@/views/contract/contract-detail.vue";
+import {useRoute} from "vue-router";
 const contractDetailRef = ref();
 const openContractDetail = (contract) =>{
   let contractRow = contractList.value.find(item => item.contractId === contract.contractId)
@@ -227,7 +242,25 @@ const downloadFiles = (contract) => {
   link.click();
 }
 
-const startInstance = (contractId,state) => {
+// 通过合同审核
+const agree = (contract) => {
+  console.log(contract.contractId)
+  
+  let flow = {}
+  flow.contractId = contract.contractId
+  console.log(flow)
+  post("/activiti/complete-task", flow).then(result => {
+    console.log(result)
+    if(result.message === "完成任务"){
+      tip.success(result.message)
+    }else {
+      tip.warning(result.message)
+    }
+    getContractList()
+  })
+}
+
+const reject = (contractId,state) => {
   console.log(contractId)
   console.log(state)
   let data = {
