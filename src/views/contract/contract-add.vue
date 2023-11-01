@@ -1,70 +1,76 @@
 <template>
   <!-- 添加合同对话框 -->
-  <el-dialog v-model="visible" title="添加合同" width="500px" @close="close" destroy-on-close>
+  <el-dialog v-model="visible" title="添加合同" width="800px" @close="close" destroy-on-close>
     <el-form ref="contractAddForm" :model="contractAdd" :rules="rules" label-position="top">
-      <el-form-item label="合同名：" prop="contractName">
-        <el-input v-model="contractAdd.contractName" autocomplete="off"/>
-      </el-form-item>
-      <el-form-item label="关联工区：" prop="associatedArea">
-        <el-input v-model="contractAdd.associatedArea" autocomplete="off"/>
-      </el-form-item>
-      <el-form-item label="合同工期">
-        <el-date-picker
-            v-model="contractAdd.date"
-            type="datetimerange"
-            unlink-panels
-            range-separator="To"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            size="large"
-        />
-      </el-form-item>
-      <el-form-item label="合同照片：" prop="imgs">
-        <el-upload
-            class="avatar-uploader"
-            :action="WAREHOUSE_CONTEXT_PATH + '/contract/img-upload'"
-            :show-file-list="false"
-            :on-change="handleAvatarChange"
-            :before-upload="beforeAvatarUpload"
-        >
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-        </el-upload>
-      </el-form-item>
-      <el-form-item label="生产数量：">
-        <el-input v-model="contractAdd.productNum" autocomplete="off"/>
-      </el-form-item>
-      <el-form-item label="生产产品：">
-        <el-select v-model="contractAdd.productId" style="width: 120px;" clearable @change="handleSelectChange">
-          <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="材料比例：" v-if="showRatio">
-        <el-tag
-            v-for="tag in ratioDetails"
-            :key="tag.name"
-            class="mx-1"
-        >
-          {{ tag.materialName }} : {{ tag.ratio }}
-        </el-tag>
-      </el-form-item>
-      <el-form-item label="原材料：" v-if="showRatio">
-        <el-select v-model="contractAdd.materialId" style="width: 120px;" clearable @change="handleSelectMaterial">
-          <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="仓库数量：" v-if="showRatio">
-        <el-input v-model="materialNum" autocomplete="off"/>
-      </el-form-item>
-      <el-form-item label="需要数量：" v-if="showRatio">
-        <el-input v-model="needNum" autocomplete="off"/>
-      </el-form-item>
-      <el-form-item label="是否需要采购：" v-if="showRatio">
-        <el-select v-model="contractAdd.ifPurchase" autocomplete="off">
-          <el-option label="无需采购" value="0"></el-option>
-          <el-option label="需要采购" value="1"></el-option>
-        </el-select>
-      </el-form-item>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="合同名：" prop="contractName">
+            <el-input v-model="contractAdd.contractName" autocomplete="off"/>
+          </el-form-item>
+          <el-form-item label="关联工区：" prop="workRegion">
+            <el-input v-model="contractAdd.workRegion" autocomplete="off"/>
+          </el-form-item>
+          <el-form-item label="合同工期">
+            <el-date-picker
+                v-model="contractAdd.date"
+                type="datetimerange"
+                unlink-panels
+                range-separator="To"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                size="large"
+            />
+          </el-form-item>
+          <el-form-item label="合同照片：" prop="imgs">
+            <el-upload
+                class="avatar-uploader"
+                :action="WAREHOUSE_CONTEXT_PATH + '/contract/img-upload'"
+                :show-file-list="false"
+                :on-change="handleAvatarChange"
+                :before-upload="beforeAvatarUpload"
+            >
+              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+            </el-upload>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10" style="margin-left: 30px">
+          <el-form-item label="生产数量：" style="width: 80%;">
+            <el-input v-model="contractAdd.productNum" autocomplete="off"/>
+          </el-form-item>
+          <el-form-item label="生产产品：">
+            <el-select v-model="contractAdd.productId" style="width: 80%;" clearable @change="handleSelectChange">
+              <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="材料比例：" v-if="showRatio" style="width: 80%;">
+            <el-tag
+                v-for="tag in ratioDetails"
+                :key="tag.name"
+                class="mx-1"
+            >
+              {{ tag.materialName }} : {{ tag.ratio }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item label="原材料：" v-if="showRatio">
+            <el-select v-model="contractAdd.materialId" style="width: 120px;" clearable @change="handleSelectMaterial">
+              <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="仓库数量：" v-if="showRatio">
+            <el-input v-model="materialNum" autocomplete="off"/>
+          </el-form-item>
+          <el-form-item label="需要数量：" v-if="showRatio">
+            <el-input v-model="needNum" autocomplete="off"/>
+          </el-form-item>
+          <el-form-item label="是否需要采购：" v-if="showRatio">
+            <el-select v-model="contractAdd.ifPurchase" autocomplete="off">
+              <el-option label="无需采购" value="0"></el-option>
+              <el-option label="需要采购" value="1"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -90,7 +96,7 @@ const contractAdd = reactive({
   contractName: '',
   contractDesc: '',
   contractState: '',
-  associatedArea: '',
+  workRegion: '',
   productId:'',
   materialId: '',
   productNum: '',
@@ -102,7 +108,7 @@ const close = () => {
   contractAdd.contractName = '';
   contractAdd.contractDesc = '';
   contractAdd.contractState = '';
-  contractAdd.associatedArea = '';
+  contractAdd.workRegion = '';
   visible.value = false;
   showRatio.value = false;
   contractAdd.productId = "";

@@ -1,10 +1,22 @@
 <template>
   <!-- 添加合同对话框 -->
   <el-dialog v-model="visible" title="添加合同" width="800px" @close="close" destroy-on-close>
+    <el-form>
+      <el-form-item label="退回原因：" prop="reason">
+        <el-input v-model="reason" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="是否需要采购：">
+        <el-select v-model="data.ifPurchase" autocomplete="off">
+          <el-option label="无需采购" value="0"></el-option>
+          <el-option label="需要采购" value="1"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+ 
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="addUser">确定</el-button>
+        <el-button type="primary" @click="define">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -28,12 +40,34 @@ const rules = reactive({
   ],
 })
 
+const data = ref()
 // 该对话框打开
-const open = (data) => {
+const open = (contract) => {
   visible.value = true;
-  console.log(data)
+  data.value = contract
+  console.log(data.value.ifPurchase)
+  switch (data.value.ifPurchase){
+    case "1": data.value.ifPurchase="0";break;
+    case "0": data.value.ifPurchase="1";break;
+  }
 };
 
+const reason = ref()
+
+const define = () => {
+  console.log(reason)
+  data.value.reason = reason.value
+
+  post("/activiti/skip-task", data.value).then(result => {
+    console.log(result)
+    if(result.message === "退回成功"){
+      emit('ok');
+      tip.success(result.message)
+    }else {
+      tip.warning(result.message)
+    }
+  })
+}
 defineExpose({open});
 </script>
 <style scoped>

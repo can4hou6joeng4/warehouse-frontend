@@ -10,6 +10,7 @@
     <el-table-column prop="task" label="当前任务" sortable />
     <el-table-column prop="assignee" label="当前负责人" sortable />
     <el-table-column prop="contractName" label="所属合同名称" sortable />
+    <el-table-column prop="reason" label="驳回原因" sortable />
     <el-table-column label="当前流程所有任务">
       <template #default="props">
         <el-link type="primary" @click.prevent="openTaskDetail(props.row)" style="margin-right: 8px">查看详情</el-link>
@@ -99,6 +100,7 @@ const openContractDetail = (task) =>{
 
 }
 
+// 完成任务
 const completeTask = (task) =>{
   post("/activiti/complete-task", task).then(result => {
     console.log(result)

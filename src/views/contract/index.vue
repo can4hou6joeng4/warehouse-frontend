@@ -92,7 +92,9 @@
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
         <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
         <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0'" style="margin-right: 8px">通过</el-link>
-        <el-link type="primary" @click="reject(props.row.contractId,1)" v-if="props.row.contractState === '0'" style="margin-right: 8px">退回</el-link>
+        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)" v-if="props.row.contractState === '0'" style="margin-right: 8px">退回</el-link>
+        <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px" v-if="props.row.task !== '任务已结束'">
+          再次提交审核</el-link>
         </template>
     </el-table-column>
   </el-table>
@@ -119,7 +121,7 @@
   <contract-detail ref="contractDetailRef"></contract-detail>
   
 <!--  合同驳回原因-->
-  <contract-reason ref="contractReasonRef"></contract-reason>
+  <contract-reason ref="contractReasonRef" @ok="getContractList"></contract-reason>
  </template>
 <script setup>
 import {reactive, ref} from "vue";
@@ -268,25 +270,30 @@ const agree = (contract) => {
   })
 }
 
+// 合同驳回原因
 import ContractReason from './contract-reason.vue'
 const contractReasonRef = ref()
-const reject = (contractId,state) => {
+const reject = (contractId,ifPurchase) => {
   let data = {
     contractId:contractId,
-    state: state
+    ifPurchase: ifPurchase
   }
   contractReasonRef.value.open(data);
-  
-  // post("/activiti/skip-task", data).then(result => {
-  //   console.log(result)
-  //
-  //   if(result.message === "退回成功"){
-  //     tip.success(result.message)
-  //   }else {
-  //     tip.warning(result.message)
-  //   }
-  //   getContractList()
-  // })
+}
+
+// 再次提交审核
+const completeTask = (contract) =>{
+  let flow = {}
+  flow.contractId = contract.contractId
+  post("/activiti/complete-task", flow).then(result => {
+    console.log(result)
+    if(result.message === "完成任务"){
+      tip.success(result.message)
+    }else {
+      tip.warning(result.message)
+    }
+    getContractList()
+  })
 }
 </script>
 
