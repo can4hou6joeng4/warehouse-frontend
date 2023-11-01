@@ -33,6 +33,7 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
+      <el-button type="primary" @click="completeInStoreTask">入库完成</el-button>
     </div>
   </div>
 
@@ -57,8 +58,9 @@
           <span :class="{red:props.row.isIn==0, green: props.row.isIn==1}">{{props.row.isIn==0?"未入库":"已入库"}}</span>
       </template>
     </el-table-column>
-    <el-table-column label="操作" fixed="right">
+    <el-table-column label="操作" fixed="right" width="200">
       <template #default="props">
+        <el-button type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
         <el-button v-if="props.row.isIn==0" type="primary" title="确定入库" @click="confirmInstore(props.row)" :key="props.row.insId">确定入库</el-button>
       </template>
     </el-table-column>
@@ -76,13 +78,15 @@
     @current-change="changeCurrent"
   />
   
+  <instore-update ref="instoreUpdateRef" @ok="getInstorePageList"></instore-update>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { get, put, tip, export2excel } from "@/common";
+import {get, put, tip, export2excel, post} from "@/common";
 import { useRoute } from 'vue-router'
-import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
+import instoreUpdate from './instore-update.vue'
+import ContractUpdate from "@/views/contract/contract-update.vue";
 
 const route = useRoute(); // 获取路由信息
 
@@ -103,8 +107,8 @@ const instorePageList = ref();
 // 获取分页模糊查询结果
 const getInstorePageList = () => {
   // 如果从添加入库单跳过来，会传参storeId
-  if(route.query.storeId){
-    params.storeId = parseInt(route.query.storeId);
+  if(route.query.contractId){
+    params.contractId = parseInt(route.query.contractId);
   }
   // 后台获取查询结果
   get("/instore/instore-page-list", params).then(result => {
@@ -158,10 +162,16 @@ const export2Table = () => {
 // 确定入库
 const confirmInstore = (instore) => {
   console.log(instore)
-  // put('/instore/instore-confirm', instore).then(res => {
-  //   tip.success(res.message);
-  //   getInstorePageList();
-  // });
+  put('/instore/instore-confirm', instore).then(res => {
+    tip.success(res.message);
+    getInstorePageList();
+  });
+}
+
+// 更新入库信息
+const instoreUpdateRef = ref()
+const openUpdateInstore = (instore) => {
+  instoreUpdateRef.value.open(instore)
 }
 
 // 修改每页显示条数
@@ -175,6 +185,24 @@ const changeCurrent = (num) => {
   params.pageNum = num;
   // 重新查询
   getInstorePageList();
+}
+
+// 完成采购任务
+const completeInStoreTask = () => {
+  if(route.query.contractId) {
+    let flow = {}
+    flow.contractId = route.query.contractId
+    post("/activiti/complete-task", flow).then(result => {
+      console.log(result)
+      if(result.message === "完成任务"){
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    })
+  }else{
+    tip.error("暂无合同需要入库")
+  }
 }
 </script>
 

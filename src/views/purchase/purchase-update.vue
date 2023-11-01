@@ -17,6 +17,17 @@
       <el-form-item label="实际采购数量：" prop="factBuyNum">
         <el-input v-model="purchaseUpdate.factBuyNum" controls-position="right" />
       </el-form-item>
+      <el-form-item label="供应商：">
+        <el-select v-model="purchaseUpdate.supplyId" style="width: 120px;" clearable @change="handleSelectSupplyChange">
+          <el-option v-for="supply of supplyList" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="供应商联系人：" prop="storeName">
+        <span>{{ supplyConcat }}</span>
+      </el-form-item>
+      <el-form-item label="供应商联系方式：" prop="storeName">
+        <span>{{ supplyPhone }}</span>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -29,7 +40,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { put, tip } from "@/common"
+import { put, tip, get } from "@/common"
 
 // 该页面的可见性
 const visible = ref(false);
@@ -40,7 +51,9 @@ const purchaseUpdate = reactive({
   storeName: '',
   productName: '',
   buyNum: '',
-  factBuyNum: ''
+  factBuyNum: '',
+  materialId: '',
+  supplyId: ''
 });
 
 // 表单验证规则
@@ -64,6 +77,9 @@ const open = (purchase) => {
     purchaseUpdate[prop] = purchase[prop];
   }
   visible.value = true;
+  getSupplyList(purchaseUpdate.materialId)
+  supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).concat
+  supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).phone
 };
 
 const purchaseUpdateForm = ref();
@@ -82,6 +98,21 @@ const updatePurchase = () => {
   });
 }
 
+// 获得所有供应商信息
+const supplyList = ref();
+const getSupplyList= (materialId) => {
+  get(`/supply/supply-list/${materialId}`).then(result => {
+    supplyList.value = result.data;
+  });
+}
+
+const supplyConcat = ref()
+const supplyPhone = ref()
+// 选择不同供应商时显示该供应商的信息
+const handleSelectSupplyChange = () => {
+  supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).concat
+  supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).phone
+}
 defineExpose({ open });
 </script>
 

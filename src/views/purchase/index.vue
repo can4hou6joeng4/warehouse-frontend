@@ -42,6 +42,8 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
+      <el-button type="primary" @click="completePurchaseTask">采购完成</el-button>
+
     </div>
   </div>
 
@@ -64,8 +66,8 @@
     </el-table-column>
     <el-table-column label="操作" fixed="right" width="130">
       <template #default="props">
-        <el-button v-if="!props.row.factBuyNum || props.row.factBuyNum==0" type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)" />
-        <el-button v-if="!props.row.factBuyNum || props.row.factBuyNum==0" type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
+        <el-button type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)" />
+        <el-button type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
         <el-button v-if="props.row.isIn==0 && props.row.factBuyNum>0" type="primary" @click="instore(props.row)">生成入库单</el-button>
       </template>
     </el-table-column>
@@ -198,6 +200,25 @@ const changeCurrent = (num) => {
   // 重新查询
   getPurchasePageList();
 }
+
+// 完成采购任务
+const completePurchaseTask = () => {
+  if(route.query.contractId) {
+    let flow = {}
+    flow.contractId = route.query.contractId
+    post("/activiti/complete-task", flow).then(result => {
+      console.log(result)
+      if(result.message === "完成任务"){
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    })
+  }else{
+    tip.error("暂无合同需要采购")
+  }
+}
+
 </script>
 
 <style scoped>

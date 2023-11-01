@@ -2,17 +2,35 @@
   <!-- 添加出库单对话框 -->
   <el-dialog v-model="visible" title="添加出库单" width="400px" @close="close" destroy-on-close>
     <el-form ref="outstoreAddForm" :model="outstoreAdd" :rules="rules" label-position="top" label-width="120px">
-      <el-form-item label="材料名称：" prop="productName">
-        <el-input v-model="outstoreAdd.productName" disabled />
+      <el-form-item label="产品：" prop="storeId">
+        <el-select placeholder="请选择产品" v-model="outstoreAdd.productId" clearable>
+          <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="仓库名称：" prop="storeName">
-        <el-input v-model="outstoreAdd.storeName" disabled />
+      <el-form-item label="仓库：" prop="storeId">
+        <el-select placeholder="请选择仓库" v-model="outstoreAdd.storeId" clearable>
+          <el-option v-for="store of storeList" :label="store.storeName" :value="store.storeId" :key="store.storeId"></el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="库存：" prop="productInvent">
-        <el-input v-model="outstoreAdd.productInvent" disabled />
+      <el-form-item label="所属合同：" prop="storeId">
+        <el-select placeholder="请选择合同" v-model="outstoreAdd.contractId" clearable>
+          <el-option v-for="contract of contractList" :label="contract.contractName" :value="contract.contractId" :key="contract.contractId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="客户：" prop="custom">
+        <el-input v-model="outstoreAdd.custom" />
       </el-form-item>
       <el-form-item label="出库数量：" prop="outNum">
         <el-input v-model="outstoreAdd.outNum" />
+      </el-form-item>
+      <el-form-item label="出库数量：" prop="salePrice">
+        <el-input v-model="outstoreAdd.salePrice" />
+      </el-form-item>
+      <el-form-item label="金额：" prop="salePriceSum">
+        <el-input v-model="outstoreAdd.salePriceSum" />
+      </el-form-item>
+      <el-form-item label="车牌号：" prop="carNumber">
+        <el-input v-model="outstoreAdd.carNumber" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -26,7 +44,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { post, tip } from "@/common"
+import { post, tip, get } from "@/common"
 
 // 该页面的可见性
 const visible = ref(false);
@@ -34,20 +52,53 @@ const visible = ref(false);
 // 添加出库单对象
 const outstoreAdd = reactive({
   productId: '',
-  productName: '',
   storeId: '',
   storeName: '',
   productInvent: '',
-  outNum: ''
+  outNum: '',
+  carNumber:'',
+  contractId:'',
+  workRegion:'',
+  salePrice:'',
+  custom: '',
+  salePriceSum:''
 });
+
+// 所有仓库
+const storeList = ref();
+// 获取所有仓库
+const getStoreList = () => {
+  get("/material/store-list").then(result => {
+    storeList.value = result.data;
+  });
+}
+getStoreList();
+
+// 获取所有产品
+const productList = ref();
+const getProductList = () => {
+  get("/product/product-list").then(result => {
+    productList.value = result.data;
+  });
+}
+getProductList();
+
+// 获取所有合同
+const contractList = ref();
+const getContractList= () => {
+  get("/contract/contract-all").then(result => {
+    contractList.value = result.data;
+  });
+}
+getContractList();
 
 // 出库数量不能大于库存
 const validateOutNum = (rule, outNum, callback) => {
   if (outNum === '') return callback(new Error('请输入出库数量！'));
   // 库存
-  const productInvent = parseInt(outstoreAdd.productInvent);
+  // const productInvent = parseInt(outstoreAdd.productInvent);
   if(parseInt(outNum)<=0) return callback(new Error('出库数量必须大于0！'));
-  if(parseInt(outNum)>productInvent) return callback(new Error('出库数量不能大于库存！'));
+  // if(parseInt(outNum)>productInvent) return callback(new Error('出库数量不能大于库存！'));
   return true;
 }
 
@@ -79,6 +130,7 @@ const emit = defineEmits(["ok"]);
 const addOutstore = () => {
   outstoreAddForm.value.validate((valid) => {
     if(valid){
+      console.log(outstoreAdd)
       post('/outstore/outstore-add', outstoreAdd).then(result => {
         emit('ok', outstoreAdd.storeId);
         tip.success(result.message);

@@ -39,6 +39,8 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
+      <el-button @click="openOutstoreAdd()">添加出库</el-button>
+
     </div>
   </div>
 
@@ -79,6 +81,8 @@
     @size-change="changeSize"
     @current-change="changeCurrent"
   />
+  
+  <outstore-add ref="outstoreAddRef" @ok="getOutstorePageList"></outstore-add>
 
 </template>
 
@@ -165,6 +169,13 @@ const confirmOutstore = outstore => {
     getOutstorePageList();
   });
 }
+
+// 跳向添加出库单
+import OutstoreAdd from "./outstore-add.vue";
+const outstoreAddRef = ref();
+const openOutstoreAdd = (commodity) => {
+  outstoreAddRef.value.open(commodity);
+};
 
 
 // 修改每页显示条数

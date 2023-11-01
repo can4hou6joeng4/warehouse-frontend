@@ -57,30 +57,35 @@
   </div>
   <!-- 表格 -->
   <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
-            style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+            style="width: 100%; margin-top: 10px;" border stripe>
     <el-table-column type="selection" width="55"/>
-    <el-table-column label="材料图片">
+    <el-table-column label="合同图片">
       <template #default="props">
         <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.files" fit="fill" />
       </template>
     </el-table-column>
-    <el-table-column prop="contractId" label="合同ID" sortable/>
-    <el-table-column prop="contractName" label="合同名" sortable/>
-    <el-table-column label="合同状态" sortable>
+    <el-table-column prop="contractId" label="合同ID" />
+    <el-table-column prop="contractName" label="合同名" width="120"/>
+    <el-table-column prop="productName" label="产品名称" width="120"/>
+    <el-table-column prop="productNum" label="生产数量" width="120"/>
+    <el-table-column prop="startTime" label="工期开始时间" width="100"/>
+    <el-table-column prop="endTime" label="工期结束时间" width="100"/>
+    <el-table-column prop="workRegion" label="关联工区" width="120"/>
+    <el-table-column label="合同状态" width="120">
       <template #default="props">
         <span :class="{red:props.row.contractState=='1'}">{{
             props.row.contractState == "1" ? "待结算" : "结算中"
           }}</span>
       </template>
     </el-table-column>
-    <el-table-column label="是否需要采购" sortable>
+    <el-table-column label="是否需要采购" width="120">
       <template #default="props">
         <span :class="{red:props.row.ifPurchase=='1'}">{{
             props.row.ifPurchase == "1" ? "需要采购" : "无需采购"
           }}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="createTime" label="创建时间" sortable/>
+    <el-table-column prop="createTime" label="创建时间" width="100"/>
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
         <el-link type="primary" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
@@ -112,6 +117,9 @@
 
   <!-- 查看合同详细信息 -->
   <contract-detail ref="contractDetailRef"></contract-detail>
+  
+<!--  合同驳回原因-->
+  <contract-reason ref="contractReasonRef"></contract-reason>
  </template>
 <script setup>
 import {reactive, ref} from "vue";
@@ -260,24 +268,25 @@ const agree = (contract) => {
   })
 }
 
+import ContractReason from './contract-reason.vue'
+const contractReasonRef = ref()
 const reject = (contractId,state) => {
-  console.log(contractId)
-  console.log(state)
   let data = {
     contractId:contractId,
     state: state
   }
-  console.log(data)
-  post("/activiti/start-instance", data).then(result => {
-    console.log(result)
-
-    if(result.message === "启动流程成功"){
-      tip.success(result.message)
-    }else {
-      tip.warning(result.message)
-    }
-    getContractList()
-  })
+  contractReasonRef.value.open(data);
+  
+  // post("/activiti/skip-task", data).then(result => {
+  //   console.log(result)
+  //
+  //   if(result.message === "退回成功"){
+  //     tip.success(result.message)
+  //   }else {
+  //     tip.warning(result.message)
+  //   }
+  //   getContractList()
+  // })
 }
 </script>
 

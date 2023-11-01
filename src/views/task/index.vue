@@ -18,8 +18,12 @@
         <el-link type="primary" @click.prevent="openContractDetail(props.row)" style="margin-right: 8px">查看合同</el-link>
         <el-link type="primary" @click.prevent="toPurchaseDetail(props.row)" style="margin-right: 8px">
           采购审核</el-link>
-        <el-link type="primary" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
+        <el-link type="primary" @click.prevent="toCommodity(props.row)" style="margin-right: 8px">
           前往采购</el-link>
+        <el-link type="primary" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
+          检查采购</el-link>
+        <el-link type="primary" @click.prevent="toInStore(props.row)" style="margin-right: 8px">
+          前往入库</el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -107,8 +111,13 @@ const completeTask = (task) =>{
   })
 }
 
-// 跳转去采购
+// 跳转去物料界面采购
 const toPurchase = (task) =>{
+  router.push({path: "/purchase/index", query: {"contractId": task.contractId}})
+}
+
+// 跳转去采购页面
+const toCommodity = (task) =>{
   router.push({path: "/commodity/index", query: {"contractId": task.contractId}})
 }
 
@@ -119,6 +128,11 @@ const purchaseDetailRef = ref()
 const toPurchaseDetail = (task) =>{
   // router.push({path: "/commodity/index", query: {"contractId": "109"}})
   purchaseDetailRef.value.open(task.contractId)
+}
+
+// 前往入库
+const toInStore = (task) =>{
+  router.push({path: "/instore/index", query: {"contractId": task.contractId}})
 }
 </script>
 
