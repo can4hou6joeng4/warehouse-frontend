@@ -65,6 +65,7 @@
     <el-table-column prop="createTime" label="创建时间" sortable />
     <el-table-column label="操作">
       <template #default="props">
+        <el-button type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
         <el-button v-if="props.row.isOut==0" type="primary" title="确定出库" @click="confirmOutstore(props.row)" :key="props.row.outsId">确定出库</el-button>
       </template>
     </el-table-column>
@@ -82,8 +83,12 @@
     @current-change="changeCurrent"
   />
   
+<!--  添加合同-->
   <outstore-add ref="outstoreAddRef" @ok="getOutstorePageList"></outstore-add>
 
+<!--  修改合同-->
+  <outstore-update ref="outstoreUpdateRef" @ok="getOutstorePageList"></outstore-update>
+  
 </template>
 
 <script setup>
@@ -173,8 +178,15 @@ const confirmOutstore = outstore => {
 // 跳向添加出库单
 import OutstoreAdd from "./outstore-add.vue";
 const outstoreAddRef = ref();
-const openOutstoreAdd = (commodity) => {
-  outstoreAddRef.value.open(commodity);
+const openOutstoreAdd = () => {
+  outstoreAddRef.value.open();
+};
+
+// 跳向修改出库单
+import OutstoreUpdate from "./outstore-update.vue";
+const outstoreUpdateRef = ref();
+const openUpdateInstore = (outstore) => {
+  outstoreUpdateRef.value.open(outstore);
 };
 
 

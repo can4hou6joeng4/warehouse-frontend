@@ -1,42 +1,42 @@
 <template>
   <!-- 添加出库单对话框 -->
   <el-dialog v-model="visible" title="添加出库单" width="400px" @close="close" destroy-on-close>
-    <el-form ref="outstoreAddForm" :model="outstoreAdd" :rules="rules" label-position="top" label-width="120px">
+    <el-form ref="outstoreAddForm" :model="outstoreUpdate" :rules="rules" label-position="top" label-width="120px">
       <el-form-item label="产品：" prop="storeId">
-        <el-select placeholder="请选择产品" v-model="outstoreAdd.productId" clearable>
+        <el-select placeholder="请选择产品" v-model="outstoreUpdate.productId" clearable>
           <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="仓库：" prop="storeId">
-        <el-select placeholder="请选择仓库" v-model="outstoreAdd.storeId" clearable>
+        <el-select placeholder="请选择仓库" v-model="outstoreUpdate.storeId" clearable>
           <el-option v-for="store of storeList" :label="store.storeName" :value="store.storeId" :key="store.storeId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="所属合同：" prop="storeId">
-        <el-select placeholder="请选择合同" v-model="outstoreAdd.contractId" clearable @change="handleSelectContractChange">
+        <el-select placeholder="请选择合同" v-model="outstoreUpdate.contractId" clearable @change="handleSelectContractChange">
           <el-option v-for="contract of contractList" :label="contract.contractName" :value="contract.contractId" :key="contract.contractId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联工区：" prop="workRegion">
-        <el-input v-model="outstoreAdd.workRegion" />
+        <el-input v-model="outstoreUpdate.workRegion" />
       </el-form-item>
       <el-form-item label="客户：" prop="custom">
-        <el-input v-model="outstoreAdd.custom" />
+        <el-input v-model="outstoreUpdate.custom" />
       </el-form-item>
       <el-form-item label="出库数量：" prop="outNum">
-        <el-input v-model="outstoreAdd.outNum" />
+        <el-input v-model="outstoreUpdate.outNum" />
       </el-form-item>
       <el-form-item label="销售单价：" prop="salePrice">
-        <el-input v-model="outstoreAdd.salePrice" />
+        <el-input v-model="outstoreUpdate.salePrice" />
       </el-form-item>
       <el-form-item label="车牌号：" prop="carNumber">
-        <el-input v-model="outstoreAdd.carNumber" />
+        <el-input v-model="outstoreUpdate.carNumber" />
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="addOutstore">确定</el-button>
+        <el-button type="primary" @click="updateOutstore">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -50,7 +50,7 @@ import { post, tip, get } from "@/common"
 const visible = ref(false);
 
 // 添加出库单对象
-const outstoreAdd = reactive({
+const outstoreUpdate = reactive({
   productId: '',
   storeId: '',
   storeName: '',
@@ -111,28 +111,28 @@ const rules = reactive({
 
 // 关闭
 const close = () => {
-  outstoreAdd.outNum = '';
   visible.value = false;
 }
 
 // 该对话框打开，进行数据初始化
-const open = (commodity) => {
+const open = (outstore) => {
   visible.value = true;
-  for(let prop in commodity){
-    outstoreAdd[prop] = commodity[prop];
+  for(let prop in outstore){
+    outstoreUpdate[prop] = outstore[prop];
   }
+  console.log(outstore)
 };
 
 const outstoreAddForm = ref();
 // 定义
 const emit = defineEmits(["ok"]);
 // 出库单提交
-const addOutstore = () => {
+const updateOutstore = () => {
   outstoreAddForm.value.validate((valid) => {
     if(valid){
-      console.log(outstoreAdd)
-      post('/outstore/outstore-add', outstoreAdd).then(result => {
-        emit('ok', outstoreAdd.storeId);
+      console.log(outstoreUpdate)
+      post('/outstore/outstore-update', outstoreUpdate).then(result => {
+        emit('ok');
         tip.success(result.message);
       });
       visible.value = false; // 关闭对话框
