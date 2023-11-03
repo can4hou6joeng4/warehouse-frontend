@@ -39,33 +39,34 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button @click="openOutstoreAdd()">添加出库</el-button>
+      <el-button type="primary" @click="openOutstoreAdd()">添加出库</el-button>
+      <el-button type="primary" @click="completeOutStoreTask()">出库完成</el-button>
 
     </div>
   </div>
 
   <!-- 表格 -->
-  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" size="large" border stripe>
-    <el-table-column prop="outsId" label="出库单ID" sortable />
-    <el-table-column prop="storeName" label="仓库名称" sortable />
-    <el-table-column prop="productName" label="产品名称" sortable />
-    <el-table-column prop="workRegion" label="工区名称" sortable />
-    <el-table-column prop="custom" label="客户" sortable />
-    <el-table-column prop="contractName" label="所属合同" sortable />
-    <el-table-column prop="carNumber" label="车牌号" sortable />
-    <el-table-column prop="outNum" label="出库数量" sortable />
-    <el-table-column prop="salePrice" label="单价" sortable />
-    <el-table-column prop="salePriceSum" label="金额" sortable />
-    <el-table-column label="出库状态" sortable>
+  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" border stripe>
+    <el-table-column prop="outsId" label="出库单ID" width="130"/>
+    <el-table-column prop="storeName" label="仓库名称" width="130"/>
+    <el-table-column prop="productName" label="产品名称" width="130"/>
+    <el-table-column prop="workRegion" label="工区名称" width="130"/>
+    <el-table-column prop="custom" label="客户" width="130"/>
+    <el-table-column prop="contractName" label="所属合同" width="130"/>
+    <el-table-column prop="carNumber" label="车牌号" width="130"/>
+    <el-table-column prop="outNum" label="出库数量" width="130"/>
+    <el-table-column prop="salePrice" label="单价" width="130"/>
+    <el-table-column prop="salePriceSum" label="金额" width="130"/>
+    <el-table-column label="出库状态" width="130">
       <template #default="props">
           <span :class="{red:props.row.isOut==0, green: props.row.isOut==1}">{{props.row.isOut==0?"未出库":"已出库"}}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="userCode" label="创建人" sortable />
-    <el-table-column prop="createTime" label="创建时间" sortable />
-    <el-table-column label="操作">
+    <el-table-column prop="userCode" label="创建人"  width="130"/>
+    <el-table-column prop="createTime" label="创建时间"  width="130"/>
+    <el-table-column label="操作" fixed="right" width="200">
       <template #default="props">
-        <el-button type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
+        <el-button v-if="props.row.isOut==0" type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
         <el-button v-if="props.row.isOut==0" type="primary" title="确定出库" @click="confirmOutstore(props.row)" :key="props.row.outsId">确定出库</el-button>
       </template>
     </el-table-column>
@@ -93,7 +94,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { get, put, tip, export2excel } from "@/common";
+import {get, put, tip, export2excel, post} from "@/common";
 import { useRoute } from 'vue-router'
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -117,14 +118,13 @@ const outstorePageList = ref();
 // 获取分页模糊查询结果
 const getOutstorePageList = () => {
   // 如果从添加出库单跳过来，会传参storeId
-  if(route.query.storeId){
-    params.storeId = parseInt(route.query.storeId);
+  if(route.query.contractId){
+    params.contractId = parseInt(route.query.contractId);
   }
   // 后台获取查询结果
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
     outstorePageList.value.forEach(function (item, index){
-      console.log(item)
       item.salePriceSum = item.salePrice * item.outNum
     })
     params.totalNum = result.data.totalNum;
@@ -168,7 +168,8 @@ const export2Table = () => {
 }
 
 // 确定入库
-const confirmOutstore = outstore => {
+const confirmOutstore = (outstore) => {
+  console.log(outstore)
   put('/outstore/outstore-confirm', outstore).then(res => {
     tip.success(res.message);
     getOutstorePageList();
@@ -201,6 +202,24 @@ const changeCurrent = (num) => {
   params.pageNum = num;
   // 重新查询
   getOutstorePageList();
+}
+
+// 完成出库任务
+const completeOutStoreTask = () => {
+  if(route.query.contractId) {
+    let flow = {}
+    flow.contractId = route.query.contractId
+    post("/activiti/complete-task", flow).then(result => {
+      console.log(result)
+      if(result.message === "完成任务"){
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    })
+  }else{
+    tip.error("暂无合同需要入库")
+  }
 }
 </script>
 

@@ -156,6 +156,12 @@ const routes = [
                 component: () => import('@/views/ratio/index.vue'),
                 meta: {nav: ['产品材料比例管理', '产品材料比例列表']}
             },
+            {
+                path: '/settlement/index',
+                name: 'settlementList',
+                component: () => import('@/views/settlement/index.vue'),
+                meta: {nav: ['结算管理', '合同结算列表']}
+            },
         ]
     },
     {

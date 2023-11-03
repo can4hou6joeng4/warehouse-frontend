@@ -12,7 +12,7 @@
           <el-option v-for="store of storeList" :label="store.storeName" :value="store.storeId" :key="store.storeId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属合同：" prop="storeId">
+      <el-form-item label="所属合同：" prop="contractId">
         <el-select placeholder="请选择合同" v-model="outstoreAdd.contractId" clearable @change="handleSelectContractChange">
           <el-option v-for="contract of contractList" :label="contract.contractName" :value="contract.contractId" :key="contract.contractId"></el-option>
         </el-select>
@@ -45,6 +45,7 @@
 <script setup>
 import { ref, reactive } from 'vue'
 import { post, tip, get } from "@/common"
+import {useRoute} from "vue-router";
 
 // 该页面的可见性
 const visible = ref(false);
@@ -115,12 +116,15 @@ const close = () => {
   visible.value = false;
 }
 
+const route = useRoute(); // 获取路由信息
+
 // 该对话框打开，进行数据初始化
-const open = (commodity) => {
+const open = () => {
+  // if(route.query.contractId){
+  //   outstoreAdd.contractId = route.query.contractId
+  //   outstoreAdd.workRegion = contractList.value.find(item => item.contractId === outstoreAdd.contractId).workRegion
+  // }
   visible.value = true;
-  for(let prop in commodity){
-    outstoreAdd[prop] = commodity[prop];
-  }
 };
 
 const outstoreAddForm = ref();

@@ -18,15 +18,15 @@
         <el-input v-model="purchaseUpdate.factBuyNum" controls-position="right" />
       </el-form-item>
       <el-form-item label="供应商：">
-        <el-select v-model="purchaseUpdate.supplyId" style="width: 120px;" clearable @change="handleSelectSupplyChange">
+        <el-select v-model="purchaseUpdate.supplyId" clearable @change="handleSelectSupplyChange">
           <el-option v-for="supply of supplyList" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="供应商联系人：" prop="storeName">
-        <span>{{ supplyConcat }}</span>
+      <el-form-item label="供应商联系人：" prop="storeName" v-if="showSupply" >
+        <el-input v-model="supplyConcat" controls-position="right" disabled/>
       </el-form-item>
-      <el-form-item label="供应商联系方式：" prop="storeName">
-        <span>{{ supplyPhone }}</span>
+      <el-form-item label="供应商联系方式：" prop="storeName" v-if="showSupply">
+        <el-input v-model="supplyPhone" controls-position="right" disabled/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -71,6 +71,16 @@ const close = () => {
   visible.value = false;
 }
 
+const showSupply = ref(false);
+
+// 获得所有供应商信息
+const supplyList = ref();
+const getSupplyList= (materialId) => {
+  get(`/supply/supply-list/${materialId}`).then(result => {
+    supplyList.value = result.data;
+  });
+}
+
 // 该对话框打开，进行数据初始化
 const open = (purchase) => {
   for(let prop in purchase){
@@ -78,8 +88,6 @@ const open = (purchase) => {
   }
   visible.value = true;
   getSupplyList(purchaseUpdate.materialId)
-  supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).concat
-  supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).phone
 };
 
 const purchaseUpdateForm = ref();
@@ -98,20 +106,15 @@ const updatePurchase = () => {
   });
 }
 
-// 获得所有供应商信息
-const supplyList = ref();
-const getSupplyList= (materialId) => {
-  get(`/supply/supply-list/${materialId}`).then(result => {
-    supplyList.value = result.data;
-  });
-}
-
 const supplyConcat = ref()
 const supplyPhone = ref()
 // 选择不同供应商时显示该供应商的信息
 const handleSelectSupplyChange = () => {
-  supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).concat
-  supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).phone
+  if(supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId) != null){
+    supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).concat
+    supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseUpdate.supplyId).phone
+    showSupply.value = true
+  }
 }
 defineExpose({ open });
 </script>

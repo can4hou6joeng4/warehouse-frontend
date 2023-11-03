@@ -8,17 +8,6 @@
       <el-form-item label="仓库：" prop="storeName">
         <span>{{ purchaseAdd.storeName }}</span>
       </el-form-item>
-      <el-form-item label="供应商：">
-        <el-select v-model="purchaseAdd.supplyId" style="width: 120px;" clearable @change="handleSelectSupplyChange">
-          <el-option v-for="supply of supplyList" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="供应商联系人：" prop="storeName">
-        <span>{{ supplyConcat }}</span>
-      </el-form-item>
-      <el-form-item label="供应商联系方式：" prop="storeName">
-        <span>{{ supplyPhone }}</span>
-      </el-form-item>
       <el-form-item label="预计采购量：" prop="buyNum">
         <el-input v-model="purchaseAdd.buyNum" />
       </el-form-item>
@@ -27,6 +16,17 @@
       </el-form-item>
       <el-form-item label="采购人电话：" prop="phone">
         <el-input v-model="purchaseAdd.phone" />
+      </el-form-item>
+      <el-form-item label="供应商：">
+        <el-select v-model="purchaseAdd.supplyId" clearable @change="handleSelectSupplyChange">
+          <el-option v-for="supply of supplyList" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="联系人：" prop="storeName">
+        <span>{{ supplyConcat }}</span>
+      </el-form-item> 
+      <el-form-item label="联系方式：" prop="storeName">
+        <span>{{ supplyPhone }}</span>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { post, tip, get } from "@/common"
 
 // 该页面的可见性

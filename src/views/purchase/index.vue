@@ -50,7 +50,7 @@
   <!-- 表格 -->
   <el-table :data="purchasePageList" style="width: 100%;margin-top: 10px;" size="large" border stripe>
     <el-table-column type="index" width="50" fixed="left"/>
-    <el-table-column prop="storeName" label="仓库名" sortable />
+    <el-table-column prop="storeName" label="仓库名" width="130" />
     <el-table-column prop="materialName" label="材料名" width="130" />
     <el-table-column prop="buyNum" label="预计采购数量" sortable />
     <el-table-column prop="factBuyNum" label="实际采购数量" sortable />
@@ -59,16 +59,16 @@
     <el-table-column prop="phone" label="采购人电话" width="130" />
     <el-table-column prop="supplyName" label="供应商" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="130"/>
-    <el-table-column label="入库状态" sortable>
+    <el-table-column label="入库状态" width="130">
       <template #default="props">
           <span :class="{red:props.row.isIn==0, green: props.row.isIn==1}">{{props.row.isIn==0?"未入库":"已入库"}}</span>
       </template>
     </el-table-column>
-    <el-table-column label="操作" fixed="right" width="130">
+    <el-table-column label="操作" fixed="right" width="150">
       <template #default="props">
-        <el-button type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)" />
-        <el-button type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
-        <el-button v-if="props.row.isIn==0 && props.row.factBuyNum>0" type="primary" @click="instore(props.row)">生成入库单</el-button>
+        <el-button v-if="props.row.isIn==0" type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)"  style="margin-left: 20px"/>
+        <el-button v-if="props.row.isIn==0" type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
+        <el-button v-if="props.row.isIn==0 && props.row.factBuyNum>0" type="primary" @click="instore(props.row)" style="margin-top: 10px">生成入库单</el-button>
       </template>
     </el-table-column>
   </el-table>

@@ -25,6 +25,10 @@
           检查采购</el-link>
         <el-link type="primary" @click.prevent="toInStore(props.row)" style="margin-right: 8px">
           前往入库</el-link>
+        <el-link type="primary" @click.prevent="toOutStore(props.row)" style="margin-right: 8px">
+          前往出库</el-link>
+        <el-link type="primary" @click.prevent="toSettlement(props.row)" style="margin-right: 8px">
+          前往结算</el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -49,23 +53,18 @@ const taskStatus = ref(false);
 onMounted(() => {
   console.log("加载完成")
 
-  // get("/activiti/have-task", {}).then(result => {
-  //   console.log(result)
-  //   if(result.message === "有还未审核的合同"){
-  //     ElMessageBox.confirm('是否前往处理?', '还有未审核的合同', {
-  //       confirmButtonText: '前往处理',
-  //       cancelButtonText: 'Cancel',
-  //     })
-  //         .then(() => {
-  //           router.push({ path: "/contract/index" });
-  //         })
-  //         .catch(() => {
-  //         });
-  //   }
-  //   if(result.data.length !== 0){
-  //     tip.warning("您有任务待处理")
-  //   }
-  // });
+  get("/activiti/have-task", {}).then(result => {
+    console.log(result)
+    if(result.message === "有还未审核的合同"){
+      tip.warning("有还未审核的合同")
+    }
+    if(result.message === "有审核未通过的合同，请前往修改"){
+      tip.warning("有审核未通过的合同，请前往修改")
+    }
+    if(result.data.length !== 0){
+      tip.warning("您有任务待处理")
+    }
+  });
 
   init()
 })
@@ -136,6 +135,18 @@ const toPurchaseDetail = (task) =>{
 const toInStore = (task) =>{
   router.push({path: "/instore/index", query: {"contractId": task.contractId}})
 }
+
+// 前往出库
+const toOutStore = (task) =>{
+  router.push({path: "/outstore/index", query: {"contractId": task.contractId}})
+}
+
+
+// 前往合同结算
+const toSettlement = (task) =>{
+  router.push({path: "/settlement/index", query: {"contractId": task.contractId}})
+}
+
 </script>
 
 <style scoped>

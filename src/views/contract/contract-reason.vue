@@ -58,7 +58,7 @@ const define = () => {
   console.log(reason)
   data.value.reason = reason.value
 
-  post("/activiti/skip-task", data.value).then(result => {
+  post("/contract/contract-reject", data.value).then(result => {
     console.log(result)
     if(result.message === "退回成功"){
       emit('ok');

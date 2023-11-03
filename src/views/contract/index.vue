@@ -61,7 +61,7 @@
     <el-table-column type="selection" width="55"/>
     <el-table-column label="合同图片">
       <template #default="props">
-        <el-image style="width: 60px; height: 60px" :src="WAREHOUSE_CONTEXT_PATH + props.row.files" fit="fill" />
+        <el-image style="width: 60px; height: 60px" :src="props.row.files" fit="fill" />
       </template>
     </el-table-column>
     <el-table-column prop="contractId" label="合同ID" />
@@ -73,9 +73,15 @@
     <el-table-column prop="workRegion" label="关联工区" width="120"/>
     <el-table-column label="合同状态" width="120">
       <template #default="props">
-        <span :class="{red:props.row.contractState=='1'}">{{
-            props.row.contractState == "1" ? "待结算" : "结算中"
-          }}</span>
+        <span :class="{red:props.row.contractState=='1'}">
+          {{ 
+            props.row.contractState === '0' ? '未审核'
+                : props.row.contractState === '1' ? '待结算'
+                    : props.row.contractState === '2' ? '结算中' 
+                        : props.row.contractState === '3' ? '已结算' 
+                            : '其他'
+          }}
+        </span>
       </template>
     </el-table-column>
     <el-table-column label="是否需要采购" width="120">
@@ -146,6 +152,18 @@ const contractList = ref();
 
 // 获取路由信息
 const route = useRoute();
+
+const changeFileName = (list) => {
+  list.forEach(function(item) {
+    const parts = item.files.split('/'); // 先按"/"切割路径
+    let filename = parts.pop(); // 弹出数组的最后一个元素（文件名）
+    const basename = filename.split('.')[0]; // 切割文件名，保留第一个部分
+    const extension = filename.split('.').pop(); // 获取文件扩展名
+    filename = basename +'.'+ extension
+    item.files = WAREHOUSE_CONTEXT_PATH+'/contract/download-image/'+filename
+  });
+}
+
 // 获取查询结果
 const getContractList = () => {
   console.log(route.query.contractId)
@@ -155,17 +173,21 @@ const getContractList = () => {
       console.log(result.data)
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
+      changeFileName(contractList.value)
+      console.log(contractList.value)
     });
   }else{
     get("/contract/contract-list",params).then(result => {
       console.log(result.data)
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
+      changeFileName(contractList.value)
     });
   }
-
 }
 getContractList();
+
+
 
 // 复选框的操作
 const multipleTableRef = ref();
@@ -239,10 +261,11 @@ const export2Table = () => {
 
 // 下载合同照片
 const downloadFiles = (contract) => {
-  console.log(contract.files.substring(12,19));
+  console.log(contract.files);
+
   // 创建一个链接元素
   const link = document.createElement('a');
-  link.href = "http://localhost:9999/warehouse/contract/download-image/"+contract.files.substring(12,19);
+  link.href = contract.files;
   link.target = '_blank';
 
   // 设置链接的下载属性
@@ -259,7 +282,7 @@ const agree = (contract) => {
   let flow = {}
   flow.contractId = contract.contractId
   console.log(flow)
-  post("/activiti/complete-task", flow).then(result => {
+  post("/contract/contract-agree", flow).then(result => {
     console.log(result)
     if(result.message === "完成任务"){
       tip.success(result.message)
@@ -285,7 +308,7 @@ const reject = (contractId,ifPurchase) => {
 const completeTask = (contract) =>{
   let flow = {}
   flow.contractId = contract.contractId
-  post("/activiti/complete-task", flow).then(result => {
+  post("/contract/contract-again", flow).then(result => {
     console.log(result)
     if(result.message === "完成任务"){
       tip.success(result.message)
@@ -295,5 +318,7 @@ const completeTask = (contract) =>{
     getContractList()
   })
 }
+
+const inlineFile =ref(WAREHOUSE_CONTEXT_PATH+'/contract/inline-image/');
 </script>
 

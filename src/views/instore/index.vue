@@ -60,7 +60,7 @@
     </el-table-column>
     <el-table-column label="操作" fixed="right" width="200">
       <template #default="props">
-        <el-button type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
+        <el-button v-if="props.row.isIn==0" type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
         <el-button v-if="props.row.isIn==0" type="primary" title="确定入库" @click="confirmInstore(props.row)" :key="props.row.insId">确定入库</el-button>
       </template>
     </el-table-column>
@@ -161,7 +161,6 @@ const export2Table = () => {
 
 // 确定入库
 const confirmInstore = (instore) => {
-  console.log(instore)
   put('/instore/instore-confirm', instore).then(res => {
     tip.success(res.message);
     getInstorePageList();
@@ -187,7 +186,7 @@ const changeCurrent = (num) => {
   getInstorePageList();
 }
 
-// 完成采购任务
+// 完成入库任务
 const completeInStoreTask = () => {
   if(route.query.contractId) {
     let flow = {}

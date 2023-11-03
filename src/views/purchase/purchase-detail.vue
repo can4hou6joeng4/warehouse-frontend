@@ -1,12 +1,12 @@
 <template>
   <!-- 采购详情对话框 -->
-  <el-dialog v-model="visible" title="添加合同" width="800px" @close="close">
+  <el-dialog v-model="visible" title="采购详情" width="800px" @close="close">
     <el-form ref="contractAddForm" :model="purchaseDetail" :rules="rules" label-position="top">
-      <el-form-item label="采购员：" prop="buyName">
-        <el-input v-model="purchaseDetail.buyName" autocomplete="off"/>
+      <el-form-item label="采购员：" prop="buyName" >
+        <el-input v-model="purchaseDetail.buyName" autocomplete="off" disabled/>
       </el-form-item>
-      <el-form-item label="生产产品：" prop="productName">
-        <el-input v-model="purchaseDetail.productName" autocomplete="off"/>
+      <el-form-item label="生产产品：" prop="productName" >
+        <el-input v-model="purchaseDetail.productName" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="材料比例：">
         <el-tag
@@ -14,18 +14,19 @@
             :key="tag.name"
             class="mx-1"
         >
-          {{ tag.materialName }} : {{ tag.ratio }}
+          <div>原材料: {{ tag.materialName }}</div>
+           占比: {{ tag.ratio }}
         </el-tag>
       </el-form-item>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="原材料：">
+          <el-form-item label="原材料：" style="width: 150px">
             <el-select v-model="purchaseDetail.materialId" clearable @change="handleSelectMaterial">
               <el-option v-for="material of purchaseList" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="所选供应商：" style="width: 120px">
-            <el-input v-model="supplyNameByPurchase" autocomplete="off"/>
+          <el-form-item label="所选供应商：" style="width: 150px" >
+            <el-input v-model="supplyNameByPurchase" autocomplete="off" disabled/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -142,5 +143,13 @@ defineExpose({open});
   width: 100px;
   height: 100px;
   display: block;
+}
+
+.mx-1 {
+  width: 90px;
+  height: 52px;
+  line-height: 20px;
+  font-size: 14px;
+  margin-left: 10px;
 }
 </style>

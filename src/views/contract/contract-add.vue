@@ -49,7 +49,8 @@
                 :key="tag.name"
                 class="mx-1"
             >
-              {{ tag.materialName }} : {{ tag.ratio }}
+              <div>原材料: {{ tag.materialName }}</div>
+              占比: {{ tag.ratio }}            
             </el-tag>
           </el-form-item>
           <el-form-item label="原材料：" v-if="showRatio">
@@ -235,5 +236,14 @@ defineExpose({open});
   width: 100px;
   height: 100px;
   display: block;
+}
+
+.mx-1 {
+  width: 88px;
+  height: 45px;
+  line-height: 20px;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 </style>
