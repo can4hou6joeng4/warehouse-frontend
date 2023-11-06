@@ -40,11 +40,23 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row style="margin-top: 30px">
+        <el-col :span="12">
+          <el-select v-model="selectedOption" placeholder="请选择默认选项" @change="handleSelectChange">
+            <el-option label="采购通过" value="agree"></el-option>
+            <el-option label="采购退回" value="reject"></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="12">
+          <el-input v-model="reason" autocomplete="off" v-if="showReason" placeholder="驳回理由"/>
+
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="addUser">确定</el-button>
+        <el-button type="primary" @click="submit">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -81,7 +93,9 @@ const rules = reactive({
 const purchaseDetail = reactive({
   buyName:'',
   productName:'',
-  materialId:''
+  materialId:'',
+  buyId:'',
+  contractId:''
 });
 
 // 配料比列表
@@ -95,6 +109,8 @@ const open = (task) => {
   get(`/purchase/purchase-list/${contractId}`).then(result => {
     purchaseDetail["buyName"] = result.data[0].buyName
     purchaseDetail["productName"] = result.data[0].productName
+    purchaseDetail["buyId"] = result.data[0].purchaseList[0].buyId
+    purchaseDetail["contractId"] = contractId
     ratioDetails.value = result.data[0].ratioList
     purchaseList.value = result.data[0].purchaseList
   });
@@ -108,7 +124,7 @@ const handleSelectMaterial = () => {
   getSupplyList(purchaseDetail.materialId)
 }
 
-// 获得所有产品
+// 获得所有供应商
 const supplyList = ref();
 const getSupplyList= (materialId) => {
   get(`/supply/supply-list/${materialId}`).then(result => {
@@ -120,20 +136,50 @@ const getSupplyList= (materialId) => {
 const contractAddForm = ref();
 // 定义
 const emit = defineEmits(["ok"]);
-// 添加用户提交
-const addUser = () => {
-  contractAddForm.value.validate(valid => {
-    if (valid) {
-      contractAdd.startTime = formatDate(contractAdd.date[0])
-      contractAdd.endTime = formatDate(contractAdd.date[1])
-      delete contractAdd.date
-      post('/contract/addContract', contractAdd).then(result => {
+
+// 审核状态
+const selectedOption = ref("agree")
+const reason = ref("") // 驳回理由
+const showReason = ref(false)
+
+const handleSelectChange = () => {
+  if(selectedOption.value == "agree"){
+    showReason.value = false
+  }else{
+    showReason.value = true
+  }
+}
+
+// 提交审核
+const submit = () => {
+  console.log("确定")
+  console.log(selectedOption.value)
+  let data = {}
+  data.buyId = purchaseDetail.buyId
+  data.contractId = purchaseDetail.contractId
+  if(selectedOption.value == "agree"){
+    console.log(data)
+    post(`/purchase/purchase-agree`, data).then(result => {
+      if(result.message === "完成任务"){
         emit('ok');
-        tip.success(result.message);
-        visible.value = false; // 关闭对话框
-      });
-    }
-  });
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    });
+  }else{
+    data.reason = reason.value
+    console.log(data)
+    post(`/purchase/purchase-reject`, data).then(result => {
+      if(result.message === "退回成功"){
+        emit('ok');
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    });
+
+  }
 }
 
 defineExpose({open});

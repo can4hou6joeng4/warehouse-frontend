@@ -1,4 +1,6 @@
 <template>
+  <el-button type="primary" @click="completeSettlementTask">结算完成</el-button>
+
   <!-- 出库单表格 -->
   <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" height="250px" table-layout="auto" border stripe>
     <el-table-column prop="outsId" label="出库单ID" width="130"/>
@@ -109,6 +111,24 @@ const getInstorePageList = () => {
       inStoreSum.value += item.priceSum
     })
   });
+}
+
+// 完成结算任务
+const completeSettlementTask = () => {
+  if(route.query.contractId) {
+    let flow = {}
+    flow.contractId = route.query.contractId
+    post("/activiti/complete-task", flow).then(result => {
+      console.log(result)
+      if(result.message === "完成任务"){
+        tip.success(result.message)
+      }else {
+        tip.warning(result.message)
+      }
+    })
+  }else{
+    tip.error("暂无合同需要入库")
+  }
 }
 </script>
 

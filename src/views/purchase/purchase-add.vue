@@ -84,7 +84,8 @@ const close = () => {
   for(let prop in purchaseAdd){
     purchaseAdd[prop] = '';
   }
-  
+  supplyConcat.value = ''
+  supplyPhone.value = ''
   visible.value = false;
 }
 

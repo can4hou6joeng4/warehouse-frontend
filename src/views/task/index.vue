@@ -34,16 +34,14 @@
   </el-table>
   <task-detail ref="taskDetailRef"></task-detail>
   
-  <purchase-detail ref="purchaseDetailRef"></purchase-detail>
+  <purchase-detail ref="purchaseDetailRef" @ok="init"></purchase-detail>
 </template>
 
 <script setup>
 import {get, post, tip} from "@/common";
 import {onMounted, ref} from "vue";
-import { ElMessageBox } from 'element-plus';
 import { useRouter } from "vue-router";
 import TaskDetail from "@/views/task/task-detail.vue";
-import {Delete, Edit} from "@element-plus/icons-vue";
 const router = useRouter(); // 获取路由器
 
 const flowPageList = ref();
@@ -51,18 +49,18 @@ const flowPageList = ref();
 const taskStatus = ref(false);
 
 onMounted(() => {
-  console.log("加载完成")
-
   get("/activiti/have-task", {}).then(result => {
     console.log(result)
     if(result.message === "有还未审核的合同"){
       tip.warning("有还未审核的合同")
     }
-    if(result.message === "有审核未通过的合同，请前往修改"){
+    else if(result.message === "有审核未通过的合同，请前往修改"){
       tip.warning("有审核未通过的合同，请前往修改")
     }
-    if(result.data.length !== 0){
+    else if(result.data.length !== 0){
       tip.warning("您有任务待处理")
+    }else{
+      tip.success("当前无任务需要处理")
     }
   });
 

@@ -58,8 +58,8 @@
   <!-- 表格 -->
   <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
             style="width: 100%; margin-top: 10px;" border stripe>
-    <el-table-column type="selection" width="55"/>
-    <el-table-column label="合同图片">
+<!--    <el-table-column type="selection" width="55"/>-->
+    <el-table-column label="合同图片" width="90">
       <template #default="props">
         <el-image style="width: 60px; height: 60px" :src="props.row.files" fit="fill" />
       </template>
@@ -68,18 +68,19 @@
     <el-table-column prop="contractName" label="合同名" width="120"/>
     <el-table-column prop="productName" label="产品名称" width="120"/>
     <el-table-column prop="productNum" label="生产数量" width="120"/>
-    <el-table-column prop="startTime" label="工期开始时间" width="100"/>
-    <el-table-column prop="endTime" label="工期结束时间" width="100"/>
+    <el-table-column prop="startTime" label="工期开始时间" width="120"/>
+    <el-table-column prop="endTime" label="工期结束时间" width="120"/>
     <el-table-column prop="workRegion" label="关联工区" width="120"/>
     <el-table-column label="合同状态" width="120">
       <template #default="props">
-        <span :class="{red:props.row.contractState=='1'}">
+        <span :class="{red:props.row.contractState ==='0'}">
           {{ 
             props.row.contractState === '0' ? '未审核'
-                : props.row.contractState === '1' ? '待结算'
-                    : props.row.contractState === '2' ? '结算中' 
-                        : props.row.contractState === '3' ? '已结算' 
-                            : '其他'
+                : props.row.contractState === '1' ? '被驳回'
+                    : props.row.contractState === '2' ? '待结算' 
+                        : props.row.contractState === '3' ? '结算中'
+                            : props.row.contractState === '4' ? '已结算'
+                                : '其他'
           }}
         </span>
       </template>
@@ -98,8 +99,8 @@
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
         <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
         <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0'" style="margin-right: 8px">通过</el-link>
-        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)" v-if="props.row.contractState === '0'" style="margin-right: 8px">退回</el-link>
-        <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px" v-if="props.row.task !== '任务已结束'">
+        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"  style="margin-right: 8px">退回</el-link>
+        <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px">
           再次提交审核</el-link>
         </template>
     </el-table-column>
@@ -160,6 +161,7 @@ const changeFileName = (list) => {
     const basename = filename.split('.')[0]; // 切割文件名，保留第一个部分
     const extension = filename.split('.').pop(); // 获取文件扩展名
     filename = basename +'.'+ extension
+    console.log(filename)
     item.files = WAREHOUSE_CONTEXT_PATH+'/contract/download-image/'+filename
   });
 }
@@ -174,7 +176,6 @@ const getContractList = () => {
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
       changeFileName(contractList.value)
-      console.log(contractList.value)
     });
   }else{
     get("/contract/contract-list",params).then(result => {
@@ -302,12 +303,15 @@ const reject = (contractId,ifPurchase) => {
     ifPurchase: ifPurchase
   }
   contractReasonRef.value.open(data);
+  getContractList()
 }
 
 // 再次提交审核
 const completeTask = (contract) =>{
   let flow = {}
   flow.contractId = contract.contractId
+  flow.ifPurchase = contract.ifPurchase
+  console.log(flow)
   post("/contract/contract-again", flow).then(result => {
     console.log(result)
     if(result.message === "完成任务"){

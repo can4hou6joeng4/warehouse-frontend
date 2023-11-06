@@ -43,6 +43,7 @@
         &nbsp;导出数据
       </el-button>
       <el-button type="primary" @click="completePurchaseTask">采购完成</el-button>
+      <el-button type="primary" @click="completePurchaseTask">再次提交采购计划审核</el-button>
 
     </div>
   </div>
@@ -59,16 +60,25 @@
     <el-table-column prop="phone" label="采购人电话" width="130" />
     <el-table-column prop="supplyName" label="供应商" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="130"/>
+    <el-table-column prop="reason" label="驳回原因" width="130"/>
     <el-table-column label="入库状态" width="130">
       <template #default="props">
-          <span :class="{red:props.row.isIn==0, green: props.row.isIn==1}">{{props.row.isIn==0?"未入库":"已入库"}}</span>
+          <span :class="{red:props.row.isIn==0, green: props.row.isIn==2, red:props.row.isIn==1}">
+            {{
+              props.row.isIn==0?"未审核"
+                  : props.row.isIn==1?"审核未通过"
+                      : props.row.isIn==2?"审核已通过"
+                          : props.row.isIn==3?"已完成"
+                              : "其他"
+            }}
+          </span>
       </template>
     </el-table-column>
     <el-table-column label="操作" fixed="right" width="150">
       <template #default="props">
-        <el-button v-if="props.row.isIn==0" type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)"  style="margin-left: 20px"/>
-        <el-button v-if="props.row.isIn==0" type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
-        <el-button v-if="props.row.isIn==0 && props.row.factBuyNum>0" type="primary" @click="instore(props.row)" style="margin-top: 10px">生成入库单</el-button>
+        <el-button v-if="props.row.isIn==0 || props.row.isIn==1 || props.row.isIn==2" type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)"  style="margin-left: 20px"/>
+        <el-button v-if="props.row.isIn==0 || props.row.isIn==1 || props.row.isIn==2" type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
+        <el-button v-if="props.row.isIn==2 && props.row.factBuyNum>0" type="primary" @click="instore(props.row)" style="margin-top: 10px">生成入库单</el-button>
       </template>
     </el-table-column>
   </el-table>
