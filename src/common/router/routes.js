@@ -168,6 +168,18 @@ const routes = [
                 component: () => import('@/views/controller/index.vue'),
                 meta: {nav: ['控制中心', '控制面板']}
             },
+            {
+                path: '/summary/out',
+                name: 'outSummarList',
+                component: () => import('@/views/summary/out-summary.vue'),
+                meta: {nav: ['汇总管理', '项目结算情况汇总表']}
+            },
+            {
+                path: '/summary/in',
+                name: 'inSummarList',
+                component: () => import('@/views/summary/in-summary.vue'),
+                meta: {nav: ['汇总管理', '供应商结算应付汇总表']}
+            },
         ]
     },
     {
