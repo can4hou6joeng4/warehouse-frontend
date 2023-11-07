@@ -23,10 +23,10 @@
       <el-form-item label="客户：" prop="custom">
         <el-input v-model="outstoreAdd.custom" />
       </el-form-item>
-      <el-form-item label="出库数量：" prop="outNum">
+      <el-form-item label="出库数量/单位：吨：" prop="outNum">
         <el-input v-model="outstoreAdd.outNum" />
       </el-form-item>
-      <el-form-item label="销售单价：" prop="salePrice">
+      <el-form-item label="销售单价/单位：吨：" prop="salePrice">
         <el-input v-model="outstoreAdd.salePrice" />
       </el-form-item>
       <el-form-item label="车牌号：" prop="carNumber">
@@ -59,6 +59,7 @@ const outstoreAdd = reactive({
   outNum: '',
   carNumber:'',
   contractId:'',
+  contractName:'',
   workRegion:'',
   salePrice:'',
   custom: '',
@@ -73,7 +74,6 @@ const getStoreList = () => {
     storeList.value = result.data;
   });
 }
-getStoreList();
 
 // 获取所有产品
 const productList = ref();
@@ -82,16 +82,20 @@ const getProductList = () => {
     productList.value = result.data;
   });
 }
-getProductList();
 
 // 获取所有合同
 const contractList = ref();
-const getContractList= () => {
+const getContractList= (id) => {
   get("/contract/contract-all").then(result => {
     contractList.value = result.data;
+    console.log(parseInt(id))
+    if(id!=null){
+      outstoreAdd.contractId = contractList.value.find(item => item.contractId === parseInt(id)).contractId
+      outstoreAdd.workRegion = contractList.value.find(item => item.contractId === parseInt(id)).workRegion
+      outstoreAdd.productId = contractList.value.find(item => item.contractId === parseInt(id)).productId
+    }
   });
 }
-getContractList();
 
 // 出库数量不能大于库存
 const validateOutNum = (rule, outNum, callback) => {
@@ -119,12 +123,17 @@ const close = () => {
 const route = useRoute(); // 获取路由信息
 
 // 该对话框打开，进行数据初始化
-const open = () => {
+const open = (contractId) => {
+  console.log(contractId)
   // if(route.query.contractId){
   //   outstoreAdd.contractId = route.query.contractId
   //   outstoreAdd.workRegion = contractList.value.find(item => item.contractId === outstoreAdd.contractId).workRegion
   // }
   visible.value = true;
+  getStoreList();
+  getProductList();
+  getContractList(contractId)
+
 };
 
 const outstoreAddForm = ref();
@@ -147,6 +156,7 @@ const addOutstore = () => {
 // 选择不同的合同对应不同的工区
 const handleSelectContractChange = () =>{
   outstoreAdd.workRegion = contractList.value.find(item => item.contractId === outstoreAdd.contractId).workRegion
+  outstoreAdd.productId = contractList.value.find(item => item.contractId === outstoreAdd.contractId).productId
   console.log(contractList.value)
 }
 

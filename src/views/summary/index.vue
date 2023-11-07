@@ -1,5 +1,7 @@
 <template>
-  <!-- 出库列表-->
+<!--  结算汇总-->
+  
+  <!-- 入库列表-->
   <div>
     <el-form inline class="searchForm">
       <el-form-item>
@@ -17,13 +19,7 @@
         <el-input type="date" v-model="params.endTime" style="width: 120px;"  clearable></el-input>
       </el-form-item>
       <el-form-item>
-          <el-select v-model="params.isOut" style="width: 120px;" clearable>
-            <el-option label="未出库" :value="0"></el-option>
-            <el-option label="已出库" :value="1"></el-option>
-          </el-select>
-        </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getOutstorePageList">
+        <el-button type="primary" @click="getInstorePageList">
           <el-icon>
             <svg t="1646977561352" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3057" width="200" height="200"><path d="M986.304 871.424L747.328 630.4c-2.816-2.752-5.888-4.928-8.768-7.232 40.32-62.464 63.936-136.832 63.936-216.96 0-220.16-176.96-398.592-395.392-398.592C188.8 7.616 11.712 186.048 11.712 406.208s177.088 398.592 395.392 398.592a391.232 391.232 0 0 0 215.36-64.576c2.24 3.072 4.352 6.08 7.04 8.832l239.04 241.024a82.688 82.688 0 0 0 117.76 0 84.48 84.48 0 0 0 0-118.656m-579.2-192.512c-149.12 0-270.528-122.368-270.528-272.704 0-150.4 121.344-272.768 270.528-272.768 149.12 0 270.528 122.432 270.528 272.768 0 150.4-121.408 272.704-270.528 272.704" p-id="3058"></path></svg>
           </el-icon>
@@ -39,64 +35,56 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button type="primary" @click="openOutstoreAdd()">添加出库</el-button>
-      <el-button type="primary" @click="completeOutStoreTask()">出库完成</el-button>
-
+      <el-button type="primary" @click="completeInStoreTask">入库完成</el-button>
     </div>
   </div>
 
   <!-- 表格 -->
-  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" border stripe>
-    <el-table-column prop="outsId" label="出库单ID" width="130"/>
-    <el-table-column prop="storeName" label="仓库名称" width="130"/>
-    <el-table-column prop="productName" label="产品名称" width="130"/>
-    <el-table-column prop="workRegion" label="工区名称" width="130"/>
-    <el-table-column prop="custom" label="客户" width="130"/>
-    <el-table-column prop="contractName" label="所属合同" width="130"/>
-    <el-table-column prop="carNumber" label="车牌号" width="130"/>
-    <el-table-column prop="outNum" label="出库数量/单位：吨" width="150"/>
-    <el-table-column prop="salePrice" label="单价/单位：吨" width="130"/>
-    <el-table-column prop="salePriceSum" label="金额" width="130"/>
-    <el-table-column label="出库状态" width="130">
+  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;"  :span-method="customSpanMethod">
+    <el-table-column prop="materialName" label="材料名称"  width="130" fixed="left"/>
+    <el-table-column prop="storeName" label="仓库名称" width="95"/>
+    <el-table-column prop="inNum" label="公司数量"  width="95" />
+    <el-table-column prop="relativeNum" label="对方数量"  width="80" />
+    <el-table-column prop="price" label="单价"  width="95" />
+    <el-table-column prop="priceSum" label="金额"  width="95" />
+    <el-table-column prop="freight" label="运费单价"  width="95" />
+    <el-table-column prop="freightSum" label="运费金额"  width="95" />
+    <el-table-column prop="supplyName" label="供应商"  width="130" />
+    <el-table-column prop="carNumber" label="车牌号"  width="95" />
+    <el-table-column prop="contractId" label="所属合同" width="95"/>
+    <el-table-column prop="remarks" label="备注" width="150" />
+
+    <el-table-column label="入库状态" >
       <template #default="props">
-          <span :class="{red:props.row.isOut==0, green: props.row.isOut==1}">{{props.row.isOut==0?"未出库":"已出库"}}</span>
+        <span :class="{red:props.row.isIn==0, green: props.row.isIn==1}">{{props.row.isIn==0?"未入库":"已入库"}}</span>
       </template>
     </el-table-column>
-    <el-table-column prop="userCode" label="创建人"  width="130"/>
-    <el-table-column prop="createTime" label="创建时间"  width="130"/>
     <el-table-column label="操作" fixed="right" width="200">
       <template #default="props">
-        <el-button v-if="props.row.isOut==0" type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
-        <el-button v-if="props.row.isOut==0" type="primary" title="确定出库" @click="confirmOutstore(props.row)" :key="props.row.outsId">确定出库</el-button>
+        <el-button v-if="props.row.isIn==0" type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
+        <el-button v-if="props.row.isIn==0" type="primary" title="确定入库" @click="confirmInstore(props.row)" :key="props.row.insId">确定入库</el-button>
       </template>
     </el-table-column>
   </el-table>
   <!-- 分页 -->
   <el-pagination
-    background
-    :total="params.totalNum"
-    :page-sizes="[5, 10, 15, 20, 25, 30]"
-    v-model:page-size="params.pageSize"
-    v-model:currentPage="params.pageNum"
-    layout="total, sizes, prev, pager, next, jumper"
-    style="margin-top: 20px;"
-    @size-change="changeSize"
-    @current-change="changeCurrent"
+      background
+      :total="params.totalNum"
+      :page-sizes="[5, 10, 15, 20, 25, 30]"
+      v-model:page-size="params.pageSize"
+      v-model:currentPage="params.pageNum"
+      layout="total, sizes, prev, pager, next, jumper"
+      style="margin-top: 20px;"
+      @size-change="changeSize"
+      @current-change="changeCurrent"
   />
-  
-<!--  添加合同-->
-  <outstore-add ref="outstoreAddRef" @ok="getOutstorePageList"></outstore-add>
 
-<!--  修改合同-->
-  <outstore-update ref="outstoreUpdateRef" @ok="getOutstorePageList"></outstore-update>
-  
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue';
 import {get, put, tip, export2excel, post} from "@/common";
 import { useRoute } from 'vue-router'
-import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
 const route = useRoute(); // 获取路由信息
 
@@ -106,37 +94,40 @@ const params = reactive({
   productName: '',
   startTime: '',
   endTime: '',
-  isOut: '',
   pageSize: 5,
   pageNum: 1,
   totalNum: 0
 })
 
 // 表格数据
-const outstorePageList = ref();
+const instorePageList = ref([]);
 
 // 获取分页模糊查询结果
-const getOutstorePageList = () => {
-  // 如果从添加出库单跳过来，会传参storeId
+const getInstorePageList = () => {
+  // 如果从添加入库单跳过来，会传参storeId
   if(route.query.contractId){
     params.contractId = parseInt(route.query.contractId);
   }
   // 后台获取查询结果
-  get("/outstore/outstore-page-list", params).then(result => {
-    outstorePageList.value = result.data.resultList;
-    outstorePageList.value.forEach(function (item, index){
-      item.salePriceSum = item.salePrice * item.outNum
+  get("/instore/instore-page-list", params).then(result => {
+    instorePageList.value = result.data.resultList;
+    instorePageList.value.forEach(function (item, index){
+      console.log(item)
+      item.priceSum = item.price * item.inNum
+      item.freightSum = item.freight * item.inNum
     })
+
     params.totalNum = result.data.totalNum;
+
   });
 }
-getOutstorePageList();
+getInstorePageList();
 
 // 所有仓库
 const storeList = ref();
 // 获取所有仓库
 const getStoreList = () => {
-  get("/outstore/store-list").then(result => {
+  get("/instore/store-list").then(result => {
     storeList.value = result.data;
   });
 }
@@ -144,72 +135,51 @@ getStoreList();
 
 // 导出数据
 const export2Table = () => {
-  get("/outstore/exportTable", params).then(result => {
+  get("/instore/exportTable", params).then(result => {
     // 要导出的数据
     const instoreList = result.data;
     // 将isIn字段的0、1转化为是否
     instoreList.reduce((pre, cur) => {
-      cur.isIn = cur.isOut==1?"已出库":"未出库";
+      cur.isIn = cur.isIn==1?"已入库":"未入库";
       return pre;
     }, []);
     const columns = [
-      {"title": "出库单ID", "key": "outsId"},
-      {"title": "仓库名称", "key": "storeName"},
-      {"title": "材料名称", "key": "productName"},
-      {"title": "理货员", "key": "tallyCode"},
-      {"title": "出库数量", "key": "outNum"},
-      {"title": "出库价格", "key": "outPrice"},
-      {"title": "出库状态", "key": "isOut"},
+      {"title": "入库单ID", "key": "insId"},
+      {"title": "仓库名", "key": "storeName"},
+      {"title": "材料名", "key": "productName"},
+      {"title": "入库数量", "key": "inNum"},
+      {"title": "入库价格", "key": "inPrice"},
+      {"title": "入库状态", "key": "isIn"},
       {"title": "创建人", "key": "userCode"},
       {"title": "创建时间", "key": "createTime"},
     ];
-    export2excel(columns, instoreList, "出库单列表");
+    export2excel(columns, instoreList, "入库单列表");
   });
 }
 
 // 确定入库
-const confirmOutstore = (outstore) => {
-  console.log(outstore)
-  put('/outstore/outstore-confirm', outstore).then(res => {
+const confirmInstore = (instore) => {
+  put('/instore/instore-confirm', instore).then(res => {
     tip.success(res.message);
-    getOutstorePageList();
+    getInstorePageList();
   });
 }
-
-// 跳向添加出库单
-import OutstoreAdd from "./outstore-add.vue";
-const outstoreAddRef = ref();
-const openOutstoreAdd = () => {
-  if(route.query.contractId){
-    outstoreAddRef.value.open(route.query.contractId);
-  }else{
-    tip.warning("暂无合同需要出库！")
-  }
-};
-
-// 跳向修改出库单
-import OutstoreUpdate from "./outstore-update.vue";
-const outstoreUpdateRef = ref();
-const openUpdateInstore = (outstore) => {
-  outstoreUpdateRef.value.open(outstore);
-};
-
 
 // 修改每页显示条数
 const changeSize = (size) => {
   params.pageSize = size;
   // 重新查询
-  getOutstorePageList();
+  getInstorePageList();
 }
 // 修改当前页码
 const changeCurrent = (num) => {
   params.pageNum = num;
   // 重新查询
-  getOutstorePageList();
+  getInstorePageList();
 }
 
-// 完成出库任务
-const completeOutStoreTask = () => {
+// 完成入库任务
+const completeInStoreTask = () => {
   if(route.query.contractId) {
     let flow = {}
     flow.contractId = route.query.contractId
@@ -222,7 +192,26 @@ const completeOutStoreTask = () => {
       }
     })
   }else{
-    tip.error("暂无合同需要出库")
+    tip.error("暂无合同需要入库")
+  }
+}
+
+const customSpanMethod = ({ row, column, rowIndex, columnIndex }) => {
+  if (columnIndex === 0) {
+    console.log(instorePageList)
+    console.log(rowIndex)
+    if (rowIndex > 0 && row.materialName === instorePageList.value[rowIndex - 1].materialName) {
+      return {
+        rowspan: 0,
+        colspan: 1,
+      };
+    } else {
+      const count = instorePageList.value.filter((item) => item.materialName === row.materialName).length;
+      return {
+        rowspan: count,
+        colspan: 1,
+      };
+    }
   }
 }
 </script>

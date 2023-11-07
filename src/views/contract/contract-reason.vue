@@ -54,6 +54,8 @@ const open = (contract) => {
 
 const reason = ref()
 
+const emit = defineEmits(["ok"]);
+
 const define = () => {
   console.log(reason)
   data.value.reason = reason.value

@@ -4,7 +4,7 @@
 <!--    采购审核</el-link>-->
   
   <!-- 表格 -->
-  <el-table :data="flowPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+  <el-table :data="flowPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe v-model="visible" >
     <el-table-column type="index" width="50" />
     <el-table-column prop="instanceId" label="流程编号" sortable />
     <el-table-column prop="task" label="当前任务" sortable />
@@ -17,21 +17,31 @@
         <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px" v-if="props.row.task !== '任务已结束'">
           完成任务</el-link>
         <el-link type="primary" @click.prevent="openContractDetail(props.row)" style="margin-right: 8px">查看合同</el-link>
-        <el-link type="primary" @click.prevent="toPurchaseDetail(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '采购审批'" @click.prevent="toPurchaseDetail(props.row)" style="margin-right: 8px">
           采购审核</el-link>
-        <el-link type="primary" @click.prevent="toCommodity(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '采购创建'" @click.prevent="toCommodity(props.row)" style="margin-right: 8px">
           前往采购</el-link>
-        <el-link type="primary" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '采购完成'" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
           检查采购</el-link>
-        <el-link type="primary" @click.prevent="toInStore(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '入库确认'" @click.prevent="toInStore(props.row)" style="margin-right: 8px">
           前往入库</el-link>
-        <el-link type="primary" @click.prevent="toOutStore(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '出库确认'" @click.prevent="toOutStore(props.row)" style="margin-right: 8px">
           前往出库</el-link>
-        <el-link type="primary" @click.prevent="toSettlement(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '结算确认'" @click.prevent="toSettlement(props.row)" style="margin-right: 8px">
           前往结算</el-link>
       </template>
     </el-table-column>
   </el-table>
+  
+<!--  历史任务列表-->
+  <el-table :data="hisFlowPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe v-if="showHisTask">
+    <el-table-column type="index" width="50" />
+    <el-table-column prop="instanceId" label="流程编号" sortable />
+    <el-table-column prop="task" label="当前任务" sortable />
+    <el-table-column prop="assignee" label="当前负责人" sortable />
+    <el-table-column prop="contractName" label="所属合同名称" sortable />
+  </el-table>
+  
   <task-detail ref="taskDetailRef"></task-detail>
   
   <purchase-detail ref="purchaseDetailRef" @ok="init"></purchase-detail>
@@ -45,8 +55,11 @@ import TaskDetail from "@/views/task/task-detail.vue";
 const router = useRouter(); // 获取路由器
 
 const flowPageList = ref();
+const hisFlowPageList = ref([]); // 历史任务列表
 
 const taskStatus = ref(false);
+
+const showHisTask = ref(true)
 
 onMounted(() => {
   get("/activiti/have-task", {}).then(result => {
@@ -65,7 +78,34 @@ onMounted(() => {
   });
 
   init()
+
 })
+
+const open = (haveHistask) => {
+  console.log(haveHistask)
+  get("/activiti/have-task", {}).then(result => {
+    console.log(result)
+    if(result.message === "有还未审核的合同"){
+      tip.warning("有还未审核的合同")
+    }
+    else if(result.message === "有审核未通过的合同，请前往修改"){
+      tip.warning("有审核未通过的合同，请前往修改")
+    }
+    else if(result.data.length !== 0){
+      tip.warning("您有任务待处理")
+    }else{
+      tip.success("当前无任务需要处理")
+    }
+  });
+
+  showHisTask.value = !(haveHistask == '1');
+  
+  init()
+}
+
+defineExpose({ open });
+
+const visible = ref(false)
 
 function init(){
   get("/activiti/activiti-page-list", {}).then(result => {
@@ -74,14 +114,17 @@ function init(){
       return Object.keys(obj).length > 0;
     });
     data.forEach(function (item){
-      console.log(item)
       if(item.flag === "已结束"){
         item.task = "任务已结束"
         item.assignee = "任务已结束"
+        hisFlowPageList.value.push(item)
+        data.splice(data.indexOf(item),1)
       }
     })
-
+    console.log(hisFlowPageList.value)
     flowPageList.value = data
+    
+    visible.value = true
   })
 }
 

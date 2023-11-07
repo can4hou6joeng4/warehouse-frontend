@@ -162,6 +162,12 @@ const routes = [
                 component: () => import('@/views/settlement/index.vue'),
                 meta: {nav: ['结算管理', '合同结算列表']}
             },
+            {
+                path: '/controller/index',
+                name: 'controllerList',
+                component: () => import('@/views/controller/index.vue'),
+                meta: {nav: ['控制中心', '控制面板']}
+            },
         ]
     },
     {

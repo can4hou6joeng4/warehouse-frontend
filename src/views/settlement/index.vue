@@ -1,4 +1,6 @@
 <template>
+<!--  按合同结算-->
+  
   <el-button type="primary" @click="completeSettlementTask">结算完成</el-button>
 
   <!-- 出库单表格 -->
@@ -32,7 +34,7 @@
     <el-table-column prop="remarks" label="备注" />
   </el-table>
   <div>
-    <span>出库总金额：{{inStoreSum}}</span>
+    <span>入库总金额：{{inStoreSum}}</span>
   </div>
 
   <!--  &lt;!&ndash; 分页 &ndash;&gt;-->

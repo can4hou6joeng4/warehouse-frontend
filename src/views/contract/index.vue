@@ -95,12 +95,12 @@
     <el-table-column prop="createTime" label="创建时间" width="100"/>
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
-        <el-link type="primary" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
+        <el-link type="primary" v-if="props.row.contractState === '0' || props.row.contractState === '1'" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
         <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
         <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0'" style="margin-right: 8px">通过</el-link>
         <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"  style="margin-right: 8px">退回</el-link>
-        <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)" style="margin-right: 8px">
           再次提交审核</el-link>
         </template>
     </el-table-column>
@@ -156,19 +156,20 @@ const route = useRoute();
 
 const changeFileName = (list) => {
   list.forEach(function(item) {
-    const parts = item.files.split('/'); // 先按"/"切割路径
-    let filename = parts.pop(); // 弹出数组的最后一个元素（文件名）
-    const basename = filename.split('.')[0]; // 切割文件名，保留第一个部分
-    const extension = filename.split('.').pop(); // 获取文件扩展名
-    filename = basename +'.'+ extension
-    console.log(filename)
+    let parts = item.files.split('/'); // 先按"/"切割路径
+    let file = parts.pop()
+    console.log(parts)
+    let part2 = file.split('\\')
+
+    let filename = part2.pop(); // 弹出数组的最后一个元素（文件名）
+
+
     item.files = WAREHOUSE_CONTEXT_PATH+'/contract/download-image/'+filename
   });
 }
 
 // 获取查询结果
 const getContractList = () => {
-  console.log(route.query.contractId)
   if(route.query.contractId){
     params.contractId = parseInt(route.query.contractId)
     get("/contract/contract-list",params).then(result => {
