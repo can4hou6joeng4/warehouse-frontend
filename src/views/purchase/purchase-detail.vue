@@ -19,7 +19,7 @@
         </el-tag>
       </el-form-item>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="原材料：" style="width: 150px">
             <el-select v-model="purchaseDetail.materialId" clearable @change="handleSelectMaterial">
               <el-option v-for="material of purchaseList" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
@@ -29,7 +29,7 @@
             <el-input v-model="supplyNameByPurchase" autocomplete="off" disabled/>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="18">
           <el-form-item label="供应商信息：">
             <el-table :data="supplyList" style="width: 100%">
               <el-table-column prop="supplyName" label="供应商名称" />
@@ -152,17 +152,15 @@ const handleSelectChange = () => {
 
 // 提交审核
 const submit = () => {
-  console.log("确定")
-  console.log(selectedOption.value)
   let data = {}
   data.buyId = purchaseDetail.buyId
   data.contractId = purchaseDetail.contractId
   if(selectedOption.value == "agree"){
-    console.log(data)
     post(`/purchase/purchase-agree`, data).then(result => {
       if(result.message === "完成任务"){
         emit('ok');
         tip.success(result.message)
+        visible.value=false
       }else {
         tip.warning(result.message)
       }
@@ -171,9 +169,10 @@ const submit = () => {
     data.reason = reason.value
     console.log(data)
     post(`/purchase/purchase-reject`, data).then(result => {
-      if(result.message === "退回成功"){
+      if(result.message === "执行成功"){
         emit('ok');
         tip.success(result.message)
+        visible.value=false
       }else {
         tip.warning(result.message)
       }

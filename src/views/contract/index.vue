@@ -98,8 +98,8 @@
         <el-link type="primary" v-if="props.row.contractState === '0' || props.row.contractState === '1'" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
         <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
-        <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0'" style="margin-right: 8px">通过</el-link>
-        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"  style="margin-right: 8px">退回</el-link>
+        <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0' && props.row.contractId != ''" style="margin-right: 8px">通过</el-link>
+        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)" v-if="props.row.contractState === '0' && props.row.contractId != ''" style="margin-right: 8px">退回</el-link>
         <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)" style="margin-right: 8px">
           再次提交审核</el-link>
         </template>

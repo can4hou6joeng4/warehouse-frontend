@@ -34,10 +34,10 @@
   <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod">
     <el-table-column label="序号" type="index" width="60"></el-table-column>
     <el-table-column prop="workRegion" label="项目名称" width="170"/>
-    <el-table-column prop="salePrice" label="单价"  width="80" />
+    <el-table-column prop="unit" label="单位"  width="80" />
     <el-table-column prop="productName" label="费用名称" width="170"/>
     <el-table-column prop="outNum" label="数量"  width="95" />
-    <el-table-column prop="price" label="单价"  width="80" />
+    <el-table-column prop="salePrice" label="单价"  width="80" />
     <el-table-column prop="money" label="金额"  width="95" />
     <el-table-column prop="totalAmount" label="结算金额"  width="95" />
     <el-table-column prop="remarks" label="备注"/>
@@ -87,16 +87,14 @@ const supplyList = ref();
 const getSupplyList= () => {
   get(`/supply/supply-list`).then(result => {
     supplyList.value = result.data;
-    console.log(supplyList)
   });
 }
 
 // 获取分页模糊查询结果
 const getSummaryPageList = () => {
-  console.log(params)
   selectTime.value = ''
   if (params.startTime != '' && params.startTime!=null){
-    selectTime.value = params.startTime.replace("-","年")+"月止"
+    selectTime.value = params.startTime.replace('-',"年")+"月止"
     params.startTime = params.startTime+"-01"
   }
   moneySum.value = 0
@@ -108,8 +106,9 @@ const getSummaryPageList = () => {
     summaryPageList.value.forEach(function (item) {
       item.remarks = dateTransform(item.earliestCreateTime) +'-'+ getDay(item.latestCreateTime) + "出料施工" +item.total + "车"
       moneySum.value+=item.money
-      
+      item.unit = "元/吨"
     })
+    params.startTime = ''
   });
   getSupplyList()
 }

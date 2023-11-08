@@ -13,7 +13,7 @@
           <el-form-item label="合同工期">
             <el-date-picker
                 v-model="contractAdd.date"
-                type="datetimerange"
+                type="daterange"
                 unlink-panels
                 range-separator="To"
                 start-placeholder="开始日期"

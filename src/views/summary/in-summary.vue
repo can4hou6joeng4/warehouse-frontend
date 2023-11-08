@@ -36,7 +36,7 @@
   <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod">
     <el-table-column label="序号" type="index" width="60"></el-table-column>
     <el-table-column prop="supplyName" label="供应商名称" width="170"/>
-    <el-table-column prop="price" label="单价"  width="80" />
+    <el-table-column prop="unitName" label="单位"  width="80" />
     <el-table-column prop="materialName" label="费用名称" width="170"/>
     <el-table-column prop="inNum" label="数量"  width="95" />
     <el-table-column prop="price" label="单价"  width="80" />
@@ -96,8 +96,9 @@ const getSupplyList= () => {
 // 获取分页模糊查询结果
 const getSummaryPageList = () => {
   console.log(params)
+  selectTime.value = ''
   if (params.startTime != '' && params.startTime!=null){
-    selectTime.value = params.startTime.replace("-","年")+"月"
+    selectTime.value = params.startTime.replace('-',"年")+"月止"
     params.startTime = params.startTime+"-01"
   }
   moneySum.value = 0
@@ -110,6 +111,8 @@ const getSummaryPageList = () => {
       item.remarks = dateTransform(item.earliestCreateTime) +'-'+ getDay(item.latestCreateTime) + "入料" +item.total + "车"
       moneySum.value+=item.money
     })
+    params.startTime = ''
+
   });
   getSupplyList()
 }

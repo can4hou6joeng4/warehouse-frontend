@@ -8,6 +8,9 @@
       <el-form-item label="仓库：" prop="storeName">
         <span>{{ purchaseAdd.storeName }}</span>
       </el-form-item>
+      <el-form-item label="合同所需量：" prop="needNum">
+        <el-input v-model="needNum" disabled/>
+      </el-form-item>
       <el-form-item label="预计采购量：" prop="buyNum">
         <el-input v-model="purchaseAdd.buyNum" />
       </el-form-item>
@@ -96,8 +99,8 @@ const open = (commodity, contractId) => {
     purchaseAdd[prop] = commodity[prop];
   }
   purchaseAdd['contractId']=contractId
-  console.log(purchaseAdd)
   getSupplyList(purchaseAdd.materialId)
+  getNeedMaterialNum(purchaseAdd.materialId, purchaseAdd.contractId)
 };
 
 const purchaseAddForm = ref();
@@ -125,8 +128,23 @@ const getSupplyList= (materialId) => {
     supplyList.value = result.data;
   });
 }
+
+// 获取该合同需要该材料的数量
+const needNum = ref();
+const getNeedMaterialNum= (materialId, contractId) => {
+  let data={}
+  data.materialId = materialId
+  data.contractId = contractId
+  get(`/contract/material-num`, data).then(result => {
+    console.log(result)
+    // supplyList.value = result.data;
+    needNum.value = result.data.materialNum;
+  });
+}
+
 defineExpose({ open });
 
+// 供应商的联系人和手机号
 const supplyConcat = ref()
 const supplyPhone = ref()
 // 选择不同供应商时显示该供应商的信息

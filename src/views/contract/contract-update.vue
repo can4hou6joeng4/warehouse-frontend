@@ -63,12 +63,12 @@
           <el-form-item label="需要数量：">
             <el-input v-model="needNum" autocomplete="off"/>
           </el-form-item>
-          <el-form-item label="是否需要采购：">
-            <el-select v-model="contractUpdate.ifPurchase" autocomplete="off">
-              <el-option label="无需采购" value="0"></el-option>
-              <el-option label="需要采购" value="1"></el-option>
-            </el-select>
-          </el-form-item>
+<!--          <el-form-item label="是否需要采购：">-->
+<!--            <el-select v-model="contractUpdate.ifPurchase" autocomplete="off">-->
+<!--              <el-option label="无需采购" value="0"></el-option>-->
+<!--              <el-option label="需要采购" value="1"></el-option>-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
         </el-col>
       </el-row>
     </el-form>

@@ -42,8 +42,8 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button type="primary" @click="completePurchaseTask">采购完成</el-button>
-      <el-button type="primary" @click="completePurchaseTask">再次提交采购计划审核</el-button>
+      <el-button type="primary" @click="completePurchaseTask" v-if="showTask">采购完成</el-button>
+      <el-button type="primary" @click="againPurchaseTask" v-if="showTask">再次提交采购计划审核</el-button>
 
     </div>
   </div>
@@ -61,7 +61,7 @@
     <el-table-column prop="supplyName" label="供应商" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="130"/>
     <el-table-column prop="reason" label="驳回原因" width="130"/>
-    <el-table-column label="入库状态" width="130">
+    <el-table-column label="采购状态" width="130">
       <template #default="props">
           <span :class="{red:props.row.isIn==0, green: props.row.isIn==2, red:props.row.isIn==1}">
             {{
@@ -76,9 +76,9 @@
     </el-table-column>
     <el-table-column label="操作" fixed="right" width="150">
       <template #default="props">
-        <el-button v-if="props.row.isIn==0 || props.row.isIn==1 || props.row.isIn==2" type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)"  style="margin-left: 20px"/>
-        <el-button v-if="props.row.isIn==0 || props.row.isIn==1 || props.row.isIn==2" type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
-        <el-button v-if="props.row.isIn==2 && props.row.factBuyNum>0" type="primary" @click="instore(props.row)" style="margin-top: 10px">生成入库单</el-button>
+        <el-button v-if="(props.row.isIn==0 || props.row.isIn==1 || props.row.isIn==2) && props.row.contractId != ''" type="primary" title="修改采购单" :icon="Edit" circle @click="openPurchaseUpdate(props.row)"  style="margin-left: 20px"/>
+        <el-button v-if="(props.row.isIn==0 || props.row.isIn==1 || props.row.isIn==2) && props.row.contractId != ''" type="danger" title="删除采购单" :icon="Delete" circle @click="deletePurchase(props.row.buyId)" />
+        <el-button v-if="props.row.isIn==2 && props.row.factBuyNum>0 && props.row.contractId != ''" type="primary" @click="instore(props.row)" style="margin-top: 10px">生成入库单</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -124,11 +124,16 @@ const params = reactive({
 // 表格数据
 const purchasePageList = ref();
 
+// 控制再次提交采购计划审核和采购完成按钮的可见性
+const showTask = ref(false);
+
 // 获取分页模糊查询结果
 const getPurchasePageList = () => {
+  showTask.value=false
   // 如果从添加采购单跳过来，会传参storeId
-  if(route.query.storeId){
-    params.storeId = parseInt(route.query.storeId);
+  if(route.query.contractId){
+    params.contractId = parseInt(route.query.contractId);
+    showTask.value=true
   }
   // 后台获取查询结果
   get("/purchase/purchase-page-list", params).then(result => {
@@ -211,6 +216,25 @@ const changeCurrent = (num) => {
   getPurchasePageList();
 }
 
+// 再次提交采购审核
+const againPurchaseTask = () => {
+  if(route.query.contractId) {
+    let flow = {}
+    flow.contractId = route.query.contractId
+    post("/purchase/purchase-again", flow).then(result => {
+      console.log(result)
+      if(result.message === "执行成功"){
+        tip.success(result.message)
+        router.push({path:"/purchase/index"})
+      }else {
+        tip.warning(result.message)
+      }
+    })
+  }else{
+    tip.error("暂无合同需要采购")
+  }
+}
+
 // 完成采购任务
 const completePurchaseTask = () => {
   if(route.query.contractId) {
@@ -220,6 +244,7 @@ const completePurchaseTask = () => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)
+        router.push({path:"/purchase/index"})
       }else {
         tip.warning(result.message)
       }

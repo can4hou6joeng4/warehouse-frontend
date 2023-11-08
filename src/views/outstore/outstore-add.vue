@@ -18,7 +18,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="关联工区：" prop="workRegion">
-        <el-input v-model="outstoreAdd.workRegion" />
+        <el-input v-model="outstoreAdd.workRegion" disabled/>
+      </el-form-item>
+      <el-form-item label="合同生产数量：" prop="custom">
+        <el-input v-model="outstoreAdd.productNum" disabled/>
       </el-form-item>
       <el-form-item label="客户：" prop="custom">
         <el-input v-model="outstoreAdd.custom" />
@@ -88,11 +91,11 @@ const contractList = ref();
 const getContractList= (id) => {
   get("/contract/contract-all").then(result => {
     contractList.value = result.data;
-    console.log(parseInt(id))
     if(id!=null){
       outstoreAdd.contractId = contractList.value.find(item => item.contractId === parseInt(id)).contractId
       outstoreAdd.workRegion = contractList.value.find(item => item.contractId === parseInt(id)).workRegion
       outstoreAdd.productId = contractList.value.find(item => item.contractId === parseInt(id)).productId
+      outstoreAdd.productNum = contractList.value.find(item => item.contractId === parseInt(id)).productNum
     }
   });
 }
@@ -117,6 +120,10 @@ const rules = reactive({
 // 关闭
 const close = () => {
   outstoreAdd.outNum = '';
+  outstoreAdd.salePrice = '';
+  outstoreAdd.custom = '';
+  outstoreAdd.carNumber='';
+
   visible.value = false;
 }
 
@@ -124,7 +131,6 @@ const route = useRoute(); // 获取路由信息
 
 // 该对话框打开，进行数据初始化
 const open = (contractId) => {
-  console.log(contractId)
   // if(route.query.contractId){
   //   outstoreAdd.contractId = route.query.contractId
   //   outstoreAdd.workRegion = contractList.value.find(item => item.contractId === outstoreAdd.contractId).workRegion

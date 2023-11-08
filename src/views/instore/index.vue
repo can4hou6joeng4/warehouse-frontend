@@ -116,7 +116,11 @@ const getInstorePageList = () => {
     instorePageList.value.forEach(function (item, index){
       console.log(item)
       item.priceSum = item.price * item.inNum
-      item.freightSum = item.freight * item.inNum
+      if(item.freight == null){
+        item.freightSum = 0
+      }else{
+        item.freightSum = item.freight * item.inNum
+      }
     })
     
     params.totalNum = result.data.totalNum;

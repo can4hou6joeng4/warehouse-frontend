@@ -39,8 +39,8 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button type="primary" @click="openOutstoreAdd()">添加出库</el-button>
-      <el-button type="primary" @click="completeOutStoreTask()">出库完成</el-button>
+      <el-button type="primary" @click="openOutstoreAdd()" v-if="showOut">添加出库</el-button>
+      <el-button type="primary" @click="completeOutStoreTask()" v-if="showOut">出库完成</el-button>
 
     </div>
   </div>
@@ -50,7 +50,7 @@
     <el-table-column prop="outsId" label="出库单ID" width="130"/>
     <el-table-column prop="storeName" label="仓库名称" width="130"/>
     <el-table-column prop="productName" label="产品名称" width="130"/>
-    <el-table-column prop="workRegion" label="工区名称" width="130"/>
+    <el-table-column prop="workRegion" label="工区名称" width="150"/>
     <el-table-column prop="custom" label="客户" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="130"/>
     <el-table-column prop="carNumber" label="车牌号" width="130"/>
@@ -66,8 +66,8 @@
     <el-table-column prop="createTime" label="创建时间"  width="130"/>
     <el-table-column label="操作" fixed="right" width="200">
       <template #default="props">
-        <el-button v-if="props.row.isOut==0" type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
-        <el-button v-if="props.row.isOut==0" type="primary" title="确定出库" @click="confirmOutstore(props.row)" :key="props.row.outsId">确定出库</el-button>
+        <el-button v-if="props.row.isOut==0 && props.contractId!=''" type="primary" title="修改" @click="openUpdateInstore(props.row)" :key="props.row.insId">修改</el-button>
+        <el-button v-if="props.row.isOut==0 && props.contractId!=''" type="primary" title="确定出库" @click="confirmOutstore(props.row)" :key="props.row.outsId">确定出库</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -115,11 +115,16 @@ const params = reactive({
 // 表格数据
 const outstorePageList = ref();
 
+const showOut = ref(false);
+
 // 获取分页模糊查询结果
 const getOutstorePageList = () => {
+  showOut.value = false
+  
   // 如果从添加出库单跳过来，会传参storeId
   if(route.query.contractId){
     params.contractId = parseInt(route.query.contractId);
+    showOut.value=true
   }
   // 后台获取查询结果
   get("/outstore/outstore-page-list", params).then(result => {

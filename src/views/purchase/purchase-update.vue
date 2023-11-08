@@ -58,12 +58,12 @@ const purchaseUpdate = reactive({
 
 // 表单验证规则
 const rules = reactive({
-  buyNum: [
-    { required: true, message: '请输入预计采购数量', trigger: 'blur' }
-  ],
-  factBuyNum: [
-    { required: true, message: '请输入实际采购数量', trigger: 'blur' }
-  ]
+  // buyNum: [
+  //   { required: true, message: '请输入预计采购数量', trigger: 'blur' }
+  // ],
+  // factBuyNum: [
+  //   { required: true, message: '请输入实际采购数量', trigger: 'blur' }
+  // ]
 })
 
 // 关闭
@@ -83,6 +83,8 @@ const getSupplyList= (materialId) => {
 
 // 该对话框打开，进行数据初始化
 const open = (purchase) => {
+  purchaseUpdate.factBuyNum = ''
+  
   for(let prop in purchase){
     purchaseUpdate[prop] = purchase[prop];
   }

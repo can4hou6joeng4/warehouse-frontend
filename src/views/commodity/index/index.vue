@@ -33,15 +33,15 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button type="primary" @click="completePurchaseTask">采购计划创建完成</el-button>
-      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">
-        <el-option @click="deleteCommodityList">
-          <span style="float: left;">
-            <el-icon><delete /></el-icon>
-          </span>
-          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>
-        </el-option>
-      </el-select>
+      <el-button type="primary" @click="completePurchaseTask" v-if="showPurchase">采购计划创建完成</el-button>
+<!--      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">-->
+<!--        <el-option @click="deleteCommodityList">-->
+<!--          <span style="float: left;">-->
+<!--            <el-icon><delete /></el-icon>-->
+<!--          </span>-->
+<!--          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>-->
+<!--        </el-option>-->
+<!--      </el-select>-->
     </div>
   </div>
 
@@ -62,7 +62,7 @@
       <template #default="props">
         <el-link type="primary" @click.prevent="openCommodityUpdate(props.row)">修改</el-link>
         <el-link type="primary" @click.prevent="deleteCommodity(props.row.materialId)">删除</el-link>
-        <el-link type="primary" @click.prevent="openPurchaseAdd(props.row)">采购</el-link>
+        <el-link type="primary" @click.prevent="openPurchaseAdd(props.row)" v-if="showPurchase">采购</el-link>
         <el-link type="primary" v-if="props.row.upDownState==0" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
       </template>
     </el-table-column>
@@ -107,11 +107,14 @@ const params = reactive({
   materialName: '',
   storeId: '',
   unitId: '',
-  pageSize: 5,
+  pageSize: 8,
   pageNum: 1,
   totalNum: 0,
   materialId:''
 })
+    
+// 控制采购和采购任务创建完成的可见性
+const showPurchase=ref(false)
 
 // 表格数据
 const commodityPageList = ref();
@@ -122,14 +125,17 @@ const isPurchase = ref(false);
 const route = useRoute(); 
 // 获取分页模糊查询结果
 const getCommodityPageList = () => {
+  showPurchase.value = false
   if(route.query.contractId){
     params.contractId = parseInt(route.query.contractId);
+    showPurchase.value = true
     get("/material/material-page-list-contractId", params).then(result => {
       console.log(result)
       commodityPageList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
     });
   }else{
+    console.log(params.contractId)
     get("/material/material-page-list", params).then(result => {
       console.log(result)
       commodityPageList.value = result.data.resultList;
@@ -211,8 +217,9 @@ const completePurchaseTask = () => {
     flow.contractId = route.query.contractId
     post("/activiti/complete-task", flow).then(result => {
       console.log(result)
-      if(result.message === "完成任务"){
+      if(result.message == "完成任务"){
         tip.success(result.message)
+        router.push({path:"/commodity/index"})
       }else {
         tip.warning(result.message)
       }

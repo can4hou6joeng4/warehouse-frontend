@@ -54,7 +54,7 @@ import { useRouter } from "vue-router";
 import TaskDetail from "@/views/task/task-detail.vue";
 const router = useRouter(); // 获取路由器
 
-const flowPageList = ref();
+const flowPageList = ref([]);
 const hisFlowPageList = ref([]); // 历史任务列表
 
 const taskStatus = ref(false);
@@ -63,7 +63,6 @@ const showHisTask = ref(true)
 
 onMounted(() => {
   get("/activiti/have-task", {}).then(result => {
-    console.log(result)
     if(result.message === "有还未审核的合同"){
       tip.warning("有还未审核的合同")
     }
@@ -82,9 +81,7 @@ onMounted(() => {
 })
 
 const open = (haveHistask) => {
-  console.log(haveHistask)
   get("/activiti/have-task", {}).then(result => {
-    console.log(result)
     if(result.message === "有还未审核的合同"){
       tip.warning("有还未审核的合同")
     }
@@ -108,21 +105,23 @@ defineExpose({ open });
 const visible = ref(false)
 
 function init(){
+  flowPageList.value=[]
+  hisFlowPageList.value=[]
   get("/activiti/activiti-page-list", {}).then(result => {
     let data = result.data.filter(obj => {
-      // Check if the object is not empty (i.e., has at least one property)
       return Object.keys(obj).length > 0;
     });
+    
     data.forEach(function (item){
-      if(item.flag === "已结束"){
+      if(item.flag == "已结束"){
         item.task = "任务已结束"
         item.assignee = "任务已结束"
         hisFlowPageList.value.push(item)
-        data.splice(data.indexOf(item),1)
+        // data.splice(data.indexOf(item),1) // bug
+      }else{
+        flowPageList.value.push(item)
       }
     })
-    console.log(hisFlowPageList.value)
-    flowPageList.value = data
     
     visible.value = true
   })
@@ -134,7 +133,6 @@ const openTaskDetail = (task) =>{
 }
 
 const openContractDetail = (task) =>{
-  console.log(task.contractId)
   // contractRef.value.open(task.value.contractId)
   router.push({path: "/contract/index", query: {"contractId": task.contractId}})
 
@@ -143,7 +141,6 @@ const openContractDetail = (task) =>{
 // 完成任务
 const completeTask = (task) =>{
   post("/activiti/complete-task", task).then(result => {
-    console.log(result)
     if(result.message === "完成任务"){
       tip.success(result.message)
     }else {
