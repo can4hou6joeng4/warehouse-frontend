@@ -59,7 +59,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="仓库数量：" v-if="showRatio">
-            <el-input v-model="materialNum" autocomplete="off"/>
+            <el-input v-model="materialNum" autocomplete="off" disabled/>
           </el-form-item>
           <el-form-item label="需要数量：" v-if="showRatio">
             <el-input v-model="needNum" autocomplete="off"/>
@@ -226,7 +226,7 @@ const materialNum = ref();
 const handleSelectMaterial = () => {
   materialNum.value = ratioDetails.value.find(item => item.materialId === contractAdd.materialId).materialNum
   needNum.value = ratioDetails.value.find(item => item.materialId === contractAdd.materialId).ratio * contractAdd.productNum
-  console.log(contractAdd.productNum)
+  needNum.value = parseFloat(needNum.value).toFixed(2).toString()
 }
 
 defineExpose({open});

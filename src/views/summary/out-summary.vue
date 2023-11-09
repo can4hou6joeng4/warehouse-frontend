@@ -31,7 +31,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod">
+  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod" id="outSummary">
     <el-table-column label="序号" type="index" width="60"></el-table-column>
     <el-table-column prop="workRegion" label="项目名称" width="170"/>
     <el-table-column prop="unit" label="单位"  width="80" />
@@ -71,7 +71,7 @@ const route = useRoute(); // 获取路由信息
 // 分页模糊查询数据
 const params = reactive({
   startTime:'',
-  pageSize: 5,
+  pageSize: 8,
   pageNum: 1,
   totalNum: 0
 })
@@ -98,10 +98,8 @@ const getSummaryPageList = () => {
     params.startTime = params.startTime+"-01"
   }
   moneySum.value = 0
-  // console.log(params)
   // 后台获取查询结果
   get("/outstore/outstore-summary-page-list", params).then(result => {
-    // params.totalNum = result.data.totalNum;
     summaryPageList.value = result.data.resultList
     summaryPageList.value.forEach(function (item) {
       item.remarks = dateTransform(item.earliestCreateTime) +'-'+ getDay(item.latestCreateTime) + "出料施工" +item.total + "车"
@@ -109,6 +107,8 @@ const getSummaryPageList = () => {
       item.unit = "元/吨"
     })
     params.startTime = ''
+    
+    params.totalNum = summaryPageList.value.length
   });
   getSupplyList()
 }
@@ -119,26 +119,48 @@ getSummaryPageList();
 
 // 导出数据
 const export2Table = () => {
-  get("/instore/exportTable", params).then(result => {
-    // 要导出的数据
-    const instoreList = result.data;
-    // 将isIn字段的0、1转化为是否
-    instoreList.reduce((pre, cur) => {
-      cur.isIn = cur.isIn==1?"已入库":"未入库";
-      return pre;
-    }, []);
-    const columns = [
-      {"title": "入库单ID", "key": "insId"},
-      {"title": "仓库名", "key": "storeName"},
-      {"title": "材料名", "key": "productName"},
-      {"title": "入库数量", "key": "inNum"},
-      {"title": "入库价格", "key": "inPrice"},
-      {"title": "入库状态", "key": "isIn"},
-      {"title": "创建人", "key": "userCode"},
-      {"title": "创建时间", "key": "createTime"},
-    ];
-    export2excel(columns, instoreList, "入库单列表");
+  let excelName = '导出表格名称.xlsx';
+  var xlsxParam = { raw: true };//转换成excel时，使用原始的格式
+  // 克隆节点
+  let tables = document.getElementById("outSummary").cloneNode(true);
+  // 判断是否为固定列，解决（为固定列时，会重复生成表格）
+  if (tables.querySelector('.el-table__fixed') !== null) {
+    tables.removeChild(tables.querySelector('.el-table__fixed'))
+  }
+  let table_book = this.$XLSX.utils.table_to_book(tables,xlsxParam);
+  var table_write = this.$XLSX.write(table_book, {
+    bookType: "xlsx",
+    bookSST: true,
+    type: "array"
   });
+  try {
+    this.$FileSaver.saveAs(
+        new Blob([table_write], { type: "application/octet-stream" }),
+        excelName
+    );
+  } catch (e) {
+    if (typeof console !== "undefined") console.log(e, table_write);
+  }
+  return table_write;
+  //   // 要导出的数据
+  //   const instoreList = result.data;
+  //   // 将isIn字段的0、1转化为是否
+  //   instoreList.reduce((pre, cur) => {
+  //     cur.isIn = cur.isIn==1?"已入库":"未入库";
+  //     return pre;
+  //   }, []);
+  //   const columns = [
+  //     {"title": "项目名称", "key": "workRegion"},
+  //     {"title": "单位", "key": "unit"},
+  //     {"title": "费用名称", "key": "productName"},
+  //     {"title": "数量", "key": "outNum"},
+  //     {"title": "单价", "key": "salePrice"},
+  //     {"title": "金额", "key": "money"},
+  //     {"title": "结算金额", "key": "totalAmount"},
+  //     {"title": "备注", "key": "remarks"}
+  //   ];
+  //   export2excel(columns, instoreList, "入库单列表");
+  // });
 }
 
 // 修改每页显示条数
@@ -156,7 +178,7 @@ const changeCurrent = (num) => {
 
 // 数据行单元格的合并
 const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (columnIndex === 1 || columnIndex === 7) {
+  if (columnIndex === 1 || columnIndex === 7    ) {
     // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
     if (
         rowIndex > 0 &&

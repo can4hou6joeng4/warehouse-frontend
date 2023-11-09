@@ -73,7 +73,7 @@
     <el-table-column prop="workRegion" label="关联工区" width="120"/>
     <el-table-column label="合同状态" width="120">
       <template #default="props">
-        <span :class="{red:props.row.contractState ==='0'}">
+        <span :class="{red:props.row.contractState ==='0' || props.row.contractState ==='1'}">
           {{ 
             props.row.contractState === '0' ? '未审核'
                 : props.row.contractState === '1' ? '被驳回'
@@ -315,8 +315,8 @@ const completeTask = (contract) =>{
   console.log(flow)
   post("/contract/contract-again", flow).then(result => {
     console.log(result)
-    if(result.message === "完成任务"){
-      tip.success(result.message)
+    if(result.message === "启动流程成功"){
+      tip.success("再次提交审核成功")
     }else {
       tip.warning(result.message)
     }

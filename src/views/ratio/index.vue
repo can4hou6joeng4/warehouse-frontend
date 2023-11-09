@@ -126,7 +126,7 @@ getProductList();
 const materialList = ref();
 // 获取所有仓库
 const getMaterialList= () => {
-  get("/product-material/material-list").then(result => {
+  get("/material/material-list").then(result => {
     materialList.value = result.data;
   });
 }

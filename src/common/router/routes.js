@@ -166,7 +166,7 @@ const routes = [
                 path: '/controller/index',
                 name: 'controllerList',
                 component: () => import('@/views/controller/index.vue'),
-                meta: {nav: ['控制中心', '控制面板']}
+                meta: {nav: ['工作台', '工作面板']}
             },
             {
                 path: '/summary/out',

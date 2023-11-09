@@ -73,7 +73,7 @@ const route = useRoute(); // 获取路由信息
 // 分页模糊查询数据
 const params = reactive({
   startTime:'',
-  pageSize: 5,
+  pageSize: 8,
   pageNum: 1,
   totalNum: 0
 })
@@ -112,6 +112,8 @@ const getSummaryPageList = () => {
       moneySum.value+=item.money
     })
     params.startTime = ''
+
+    params.totalNum = summaryPageList.value.length
 
   });
   getSupplyList()

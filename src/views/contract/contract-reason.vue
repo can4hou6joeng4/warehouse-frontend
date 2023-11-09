@@ -65,6 +65,7 @@ const define = () => {
     if(result.message === "退回成功"){
       emit('ok');
       tip.success(result.message)
+      visible.value = false
     }else {
       tip.warning(result.message)
     }

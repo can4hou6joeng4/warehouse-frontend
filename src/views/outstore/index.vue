@@ -218,7 +218,7 @@ const completeOutStoreTask = () => {
   if(route.query.contractId) {
     let flow = {}
     flow.contractId = route.query.contractId
-    post("/activiti/complete-task", flow).then(result => {
+    post("/outstore/complete-task", flow).then(result => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)

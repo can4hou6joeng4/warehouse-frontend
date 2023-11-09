@@ -53,9 +53,9 @@
     <el-table-column type="index" width="50" fixed="left"/>
     <el-table-column prop="storeName" label="仓库名" width="130" />
     <el-table-column prop="materialName" label="材料名" width="130" />
-    <el-table-column prop="buyNum" label="预计采购数量" sortable />
-    <el-table-column prop="factBuyNum" label="实际采购数量" sortable />
-    <el-table-column prop="buyUser" label="采购人" sortable />
+    <el-table-column prop="buyNum" label="预计采购数量" width="130" />
+    <el-table-column prop="factBuyNum" label="实际采购数量" width="130" />
+    <el-table-column prop="buyUser" label="采购人" width="110" />
     <el-table-column prop="buyTime" label="采购时间" width="110" />
     <el-table-column prop="phone" label="采购人电话" width="130" />
     <el-table-column prop="supplyName" label="供应商" width="130"/>
