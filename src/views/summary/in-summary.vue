@@ -33,7 +33,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod">
+  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod" id="elTable">
     <el-table-column label="序号" type="index" width="60"></el-table-column>
     <el-table-column prop="supplyName" label="供应商名称" width="170"/>
     <el-table-column prop="unitName" label="单位"  width="80" />
@@ -64,7 +64,7 @@
 
 <script setup>
 import {reactive, ref} from 'vue';
-import {export2excel, get} from "@/common";
+import {eltable2excel, export2excel, get} from "@/common";
 import {useRoute} from 'vue-router';
 import {dateTransform, getDay} from "@/common/date";
 
@@ -125,26 +125,7 @@ getSummaryPageList();
 
 // 导出数据
 const export2Table = () => {
-  get("/instore/exportTable", params).then(result => {
-    // 要导出的数据
-    const instoreList = result.data;
-    // 将isIn字段的0、1转化为是否
-    instoreList.reduce((pre, cur) => {
-      cur.isIn = cur.isIn==1?"已入库":"未入库";
-      return pre;
-    }, []);
-    const columns = [
-      {"title": "入库单ID", "key": "insId"},
-      {"title": "仓库名", "key": "storeName"},
-      {"title": "材料名", "key": "productName"},
-      {"title": "入库数量", "key": "inNum"},
-      {"title": "入库价格", "key": "inPrice"},
-      {"title": "入库状态", "key": "isIn"},
-      {"title": "创建人", "key": "userCode"},
-      {"title": "创建时间", "key": "createTime"},
-    ];
-    export2excel(columns, instoreList, "入库单列表");
-  });
+  eltable2excel("elTable")
 }
 
 // 修改每页显示条数

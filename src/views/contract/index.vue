@@ -57,7 +57,7 @@
   </div>
   <!-- 表格 -->
   <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
-            style="width: 100%; margin-top: 10px;" border stripe>
+            style="width: 100%; margin-top: 10px;" border stripe id="elTable">
 <!--    <el-table-column type="selection" width="55"/>-->
     <el-table-column label="合同图片" width="90">
       <template #default="props">
@@ -132,7 +132,7 @@
  </template>
 <script setup>
 import {reactive, ref} from "vue";
-import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post, tip} from "@/common";
+import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post, tip, eltable2excel} from "@/common";
 
 // 分页参数
 const params = reactive({
@@ -246,19 +246,7 @@ const changeCurrent = (num) => {
 
 // 导出数据
 const export2Table = () => {
-  get("/contract/exportTable", params).then(result => {
-    // 要导出的数据
-    const storeList = result.data;
-    const columns = [
-      {"title": "合同ID", "key": "contractId"},
-      {"title": "合同名称", "key": "contractName"},
-      {"title": "合同描述", "key": "contractDesc"},
-      {"title": "合同状态", "key": "contractState"},
-      {"title": "关联工区", "key": "associatedArea"},
-      {"title": "创建时间", "key": "createTime"},
-    ];
-    export2excel(columns, storeList, "合同信息表");
-  });
+  eltable2excel("elTable")
 }
 
 // 下载合同照片

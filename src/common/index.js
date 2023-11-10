@@ -11,7 +11,7 @@ export { debounce, debounceInstance1, debounceInstance2, debounceInstance3, thro
 export { sureLoading } from './sureLoading'
 export { default as ddo } from './ddo'
 export { dateFormat } from './date'
-export { export2excel } from './excel'
+export { export2excel, eltable2excel } from './excel'
 
 
 /*

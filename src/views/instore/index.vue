@@ -38,7 +38,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;">
+  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" id="elTable">
     <el-table-column prop="insId" label="入库单ID" fixed="left" width="100"/>
     <el-table-column prop="storeName" label="仓库名称" width="95"/>
     <el-table-column prop="materialName" label="材料名称"  width="130" />
@@ -83,7 +83,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import {get, put, tip, export2excel, post} from "@/common";
+import {get, put, tip, export2excel, post, eltable2excel} from "@/common";
 import { useRoute } from 'vue-router'
 import instoreUpdate from './instore-update.vue'
 import ContractUpdate from "@/views/contract/contract-update.vue";
@@ -141,26 +141,7 @@ getStoreList();
 
 // 导出数据
 const export2Table = () => {
-  get("/instore/exportTable", params).then(result => {
-    // 要导出的数据
-    const instoreList = result.data;
-    // 将isIn字段的0、1转化为是否
-    instoreList.reduce((pre, cur) => {
-      cur.isIn = cur.isIn==1?"已入库":"未入库";
-      return pre;
-    }, []);
-    const columns = [
-      {"title": "入库单ID", "key": "insId"},
-      {"title": "仓库名", "key": "storeName"},
-      {"title": "材料名", "key": "productName"},
-      {"title": "入库数量", "key": "inNum"},
-      {"title": "入库价格", "key": "inPrice"},
-      {"title": "入库状态", "key": "isIn"},
-      {"title": "创建人", "key": "userCode"},
-      {"title": "创建时间", "key": "createTime"},
-    ];
-    export2excel(columns, instoreList, "入库单列表");
-  });
+  eltable2excel("elTable")
 }
 
 // 确定入库

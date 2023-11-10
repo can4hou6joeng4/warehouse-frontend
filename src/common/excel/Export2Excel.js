@@ -1,5 +1,5 @@
 
-import 'file-saver'
+import FileSaver from 'file-saver'
 import './Blob'
 import XLSX from 'xlsx/dist/xlsx.core.min'
 
@@ -198,4 +198,51 @@ export function export_json_to_excel(header, data, filename, autoWidth=true, boo
   saveAs(new Blob([s2ab(wbout)], {
     type: "application/octet-stream"
   }), `${filename}.${bookType}`);
+}
+
+export function eltable_to_excel(id, fileName){
+  let excelName = fileName || '导出表格.xlsx';
+  var xlsxParam = { raw: true };
+  let tables = document.getElementById(id);
+
+  if (!tables) return;
+
+// Clone the table
+  tables = document.getElementById(id).cloneNode(true);
+
+// Remove the last column
+  let rows = tables.querySelectorAll('tr');
+  for (let i = 0; i < rows.length; i++) {
+    let cells = rows[i].querySelectorAll('td, th');
+    if (cells.length > 0) {
+      cells[cells.length - 1].remove(); // Remove the last cell
+    }
+  }
+
+// Remove fixed columns, if any
+  if (tables.querySelector('.el-table__fixed') !== null) {
+    tables.removeChild(tables.querySelector('.el-table__fixed'));
+  }
+
+// Convert the modified table to a workbook
+  let table_book = XLSX.utils.table_to_book(tables, xlsxParam);
+
+// Write the workbook to an array
+  var table_write = XLSX.write(table_book, {
+    bookType: "xlsx",
+    bookSST: true,
+    type: "array"
+  });
+
+  try {
+    // Save the array as an Excel file
+    FileSaver.saveAs(
+        new Blob([table_write], { type: "application/octet-stream" }),
+        excelName
+    );
+  } catch (e) {
+    console.log(e, table_write);
+  }
+
+  return table_write;
 }

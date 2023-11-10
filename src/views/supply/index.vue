@@ -41,7 +41,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="supplyPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+  <el-table :data="supplyPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe id="elTable">
     <el-table-column type="index" width="50" />
     <el-table-column prop="supplyId" label="供应商ID" sortable />
     <el-table-column prop="supplyName" label="供应商名称" sortable />
@@ -85,7 +85,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH } from "@/common";
+import {get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH, eltable2excel} from "@/common";
 import { useRouter } from "vue-router";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -117,20 +117,7 @@ getSupplyPageList();
 
 // 导出数据
 const export2Table = () => {
-  get("/supply/exportTable", params).then(result => {
-    // 要导出的数据
-    const storeList = result.data;
-    const columns = [
-      {"title": "供应商ID", "key": "supplyId"},
-      {"title": "供应商编号", "key": "supplyNum"},
-      {"title": "供应商名称", "key": "supplyName"},
-      {"title": "地址", "key": "address"},
-      {"title": "联系人", "key": "concat"},
-      {"title": "电话", "key": "phone"},
-      {"title": "供应商介绍", "key": "supplyIntroduce"},
-    ];
-    export2excel(columns, storeList, "供应商信息表");
-  });
+  eltable2excel("elTable")
 }
 
 

@@ -46,7 +46,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table ref="multipleTableRef" :data="commodityPageList" @selection-change="handleSelectionChange" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+  <el-table ref="multipleTableRef" :data="commodityPageList" @selection-change="handleSelectionChange" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe id="elTable">
     <el-table-column type="selection" width="55" />
 <!--    <el-table-column label="材料图片">-->
 <!--      <template #default="props">-->
@@ -96,7 +96,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import {get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH, post} from "@/common";
+import {get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH, post, eltable2excel} from "@/common";
 import {useRoute, useRouter} from "vue-router";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -183,31 +183,7 @@ const handleSelectionChange = (val) => {
 
 // 导出数据
 const export2Table = () => {
-  get("/product/exportTable", params).then(result => {
-    // 要导出的数据
-    const productList = result.data;
-    // 将upDownState字段的0、1转化为是否上架
-    productList.reduce((pre, cur) => {
-      cur.upDownState = cur.upDownState==0?"未上架":"已上架";
-      return pre;
-    }, []);
-    const columns = [
-      {"title": "材料ID", "key": "productId"},
-      {"title": "材料名称", "key": "productName"},
-      // {"title": "品牌", "key": "brandName"},
-      // {"title": "类型", "key": "typeName"},
-      {"title": "供应商", "key": "supplyName"},
-      // {"title": "产地", "key": "placeName"},
-      {"title": "仓库", "key": "storeName"},
-      {"title": "库存", "key": "productInvent"},
-      {"title": "上/架", "key": "upDownState"},
-      {"title": "售价", "key": "salePrice"},
-      {"title": "单位", "key": "unitName"},
-      {"title": "采购产日期", "key": "productDate"},
-      // {"title": "保质期", "key": "suppDate"},
-    ];
-    export2excel(columns, productList, "材料信息表");
-  });
+  eltable2excel("elTable")
 }
 
 // 完成采购任务

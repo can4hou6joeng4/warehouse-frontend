@@ -86,7 +86,7 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
 import { useRouter } from 'vue-router'
-import { get, put, del, tip, export2excel } from "@/common";
+import {get, put, del, tip, export2excel, eltable2excel} from "@/common";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
 const router = useRouter(); // 获取路由器
@@ -115,20 +115,7 @@ getRoleList();
 
 // 导出数据
 const export2Table = () => {
-  get("/role/exportTable", params).then(result => {
-    // 要导出的数据
-    const roleList = result.data;
-    const columns = [
-      {"title": "角色ID", "key": "roleId"},
-      {"title": "角色名", "key": "roleName"},
-      {"title": "角色描述", "key": "roleDesc"},
-      {"title": "角色代码", "key": "roleCode"},
-      {"title": "用户状态", "key": "roleState"},
-      {"title": "创建人", "key": "getCode"},
-      {"title": "创建时间", "key": "createTime"}
-    ];
-    export2excel(columns, roleList, "角色信息表");
-  });
+  eltable2excel("elTable")
 }
 
 // 添加角色

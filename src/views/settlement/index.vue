@@ -1,19 +1,34 @@
 <template>
 <!--  按合同结算-->
+  <el-form inline class="searchForm" v-if="showSearchForm">
+    <el-form-item label="所属合同：" prop="contractId">
+      <el-select placeholder="请选择合同" v-model="params.contractId" clearable >
+        <el-option v-for="contract of contractList" :label="contract.contractName" :value="contract.contractId" :key="contract.contractId"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="selectList">
+        <el-icon>
+          <svg t="1646977561352" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3057" width="200" height="200"><path d="M986.304 871.424L747.328 630.4c-2.816-2.752-5.888-4.928-8.768-7.232 40.32-62.464 63.936-136.832 63.936-216.96 0-220.16-176.96-398.592-395.392-398.592C188.8 7.616 11.712 186.048 11.712 406.208s177.088 398.592 395.392 398.592a391.232 391.232 0 0 0 215.36-64.576c2.24 3.072 4.352 6.08 7.04 8.832l239.04 241.024a82.688 82.688 0 0 0 117.76 0 84.48 84.48 0 0 0 0-118.656m-579.2-192.512c-149.12 0-270.528-122.368-270.528-272.704 0-150.4 121.344-272.768 270.528-272.768 149.12 0 270.528 122.432 270.528 272.768 0 150.4-121.408 272.704-270.528 272.704" p-id="3058"></path></svg>
+        </el-icon>
+        &nbsp;查&nbsp;&nbsp;询
+      </el-button>
+    </el-form-item>
+  </el-form>
   
-  <el-button type="primary" @click="completeSettlementTask">结算完成</el-button>
+  <el-button type="primary" @click="completeSettlementTask" v-if="showTask">结算完成</el-button>
+
 
   <!-- 出库单表格 -->
-  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" height="250px" table-layout="auto" border stripe>
+  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" height="250px" border stripe>
     <el-table-column prop="outsId" label="出库单ID" width="130"/>
-    <el-table-column prop="contractName" label="所属合同"/>
-    <el-table-column prop="workRegion" label="工区名称"/>
-    <el-table-column prop="productName" label="产品名称"/>
-    <el-table-column prop="outNum" label="出库数量"/>
-    <el-table-column prop="salePrice" label="单价"/>
-    <el-table-column prop="salePriceSum" label="金额"/>
-    <el-table-column prop="userCode" label="创建人"/>
-    <el-table-column prop="createTime" label="创建时间"/>
+    <el-table-column prop="contractName" label="所属合同" width="155"/>
+    <el-table-column prop="workRegion" label="工区名称" width="155"/>
+    <el-table-column prop="productName" label="产品名称" width="155"/>
+    <el-table-column prop="outNum" label="出库数量" width="155"/>
+    <el-table-column prop="salePrice" label="单价" width="155"/>
+    <el-table-column prop="salePriceSum" label="金额" width="155"/>
+    <el-table-column prop="remarks" label="备注" width="155"/>    
   </el-table>
   <div>
     <span>出库总金额：{{outStoreSum}}</span>
@@ -25,13 +40,13 @@
   <!-- 入库单表格 -->
   <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;" height="250px" border stripe>
     <el-table-column prop="insId" label="入库单ID" width="130"/>
-    <el-table-column prop="contractName" label="所属合同" />
-    <el-table-column prop="supplyName" label="供应商" />
-    <el-table-column prop="materialName" label="材料名称" />
-    <el-table-column prop="inNum" label="公司数量" />
-    <el-table-column prop="price" label="单价" />
-    <el-table-column prop="priceSum" label="金额" />
-    <el-table-column prop="remarks" label="备注" />
+    <el-table-column prop="contractName" label="所属合同" width="155"/>
+    <el-table-column prop="supplyName" label="供应商" width="155"/>
+    <el-table-column prop="materialName" label="材料名称" width="155"/>
+    <el-table-column prop="inNum" label="公司数量" width="155"/>
+    <el-table-column prop="price" label="单价" width="155"/>
+    <el-table-column prop="priceSum" label="金额" width="155"/>
+    <el-table-column prop="remarks" label="备注" width="155"/>
   </el-table>
   <div>
     <span>入库总金额：{{inStoreSum}}</span>
@@ -56,8 +71,9 @@
 <script setup>
 import {nextTick, onMounted, reactive, ref} from 'vue';
 import {get, put, tip, export2excel, post} from "@/common";
-import { useRoute } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
+import {selectedOption} from "bpmn-js-properties-panel/lib/Utils";
 
 const route = useRoute(); // 获取路由信息
 
@@ -76,19 +92,21 @@ const params = reactive({
 
 // 页面初始化
 onMounted(() => {
-  console.log("初始化")
   if (route.query.contractId){
-    console.log(route.query.contractId)
     params.contractId = route.query.contractId
-    getOutstorePageList()
-    getInstorePageList()
+    showTask.value = true
+    showSearchForm.value = false
   }
+  getOutstorePageList()
+  getInstorePageList()
+  getContractList()
 });
 
 const outStoreSum = ref(0);
 // 出库单的表格数据
 const outstorePageList = ref();
 const getOutstorePageList = () => {
+  outStoreSum.value = 0
   // 后台获取查询结果
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
@@ -104,6 +122,8 @@ const inStoreSum = ref(0);
 const instorePageList = ref()
 // 入库单的表格数据
 const getInstorePageList = () => {
+  inStoreSum.value = 0
+
   // 后台获取查询结果
   get("/instore/instore-page-list", params).then(result => {
     instorePageList.value = result.data.resultList;
@@ -115,6 +135,25 @@ const getInstorePageList = () => {
   });
 }
 
+// 获取所有合同
+const contractList = ref();
+const getContractList= () => {
+  get("/contract/contract-all").then(result => {
+    contractList.value = result.data;
+  });
+}
+
+// 结算完成的可见性
+const showTask = ref(false)
+const showSearchForm = ref(true)
+
+const selectList = () =>{
+  getOutstorePageList()
+  getInstorePageList()
+}
+
+const router = useRouter(); // 获取路由器
+
 // 完成结算任务
 const completeSettlementTask = () => {
   if(route.query.contractId) {
@@ -124,6 +163,7 @@ const completeSettlementTask = () => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)
+        router.push({ path: "/task/index" });
       }else {
         tip.warning(result.message)
       }

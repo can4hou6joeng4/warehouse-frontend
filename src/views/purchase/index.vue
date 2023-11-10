@@ -49,7 +49,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="purchasePageList" style="width: 100%;margin-top: 10px;" size="large" border stripe>
+  <el-table :data="purchasePageList" style="width: 100%;margin-top: 10px;" size="large" border stripe id="elTable">
     <el-table-column type="index" width="50" fixed="left"/>
     <el-table-column prop="storeName" label="仓库名" width="130" />
     <el-table-column prop="materialName" label="材料名" width="130" />
@@ -103,7 +103,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router'
-import { get, post, del, tip, export2excel } from "@/common";
+import {get, post, del, tip, export2excel, eltable2excel} from "@/common";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
 const route = useRoute(); // 获取路由信息
@@ -155,26 +155,7 @@ getStoreList();
 
 // 导出数据
 const export2Table = () => {
-  get("/purchase/exportTable", params).then(result => {
-    // 要导出的数据
-    const purchaseList = result.data;
-    // 将isIn字段的0、1转化为是否
-    purchaseList.reduce((pre, cur) => {
-      cur.isIn = cur.isIn==1?"已入库":"未入库";
-      return pre;
-    }, []);
-    const columns = [
-      {"title": "仓库名", "key": "storeName"},
-      {"title": "材料名", "key": "productName"},
-      {"title": "预计采购数量", "key": "buyNum"},
-      {"title": "实际采购数量", "key": "factBuyNum"},
-      {"title": "采购人", "key": "buyUser"},
-      {"title": "采购时间", "key": "buyTime"},
-      {"title": "采购人电话", "key": "phone"},
-      {"title": "入库状态", "key": "isIn"}
-    ];
-    export2excel(columns, purchaseList, "采购单列表");
-  });
+  eltable2excel("elTable")
 }
 
 // 跳向修改采购单

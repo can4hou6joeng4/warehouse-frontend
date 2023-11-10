@@ -54,7 +54,7 @@
       </div>
     </div>
     <!-- 表格 -->
-    <el-table :data="userList" ref="multipleTableRef" @selection-change="handleSelectionChange" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+    <el-table :data="userList" ref="multipleTableRef" @selection-change="handleSelectionChange" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe id="elTable">
       <el-table-column type="selection" width="55" />
       <el-table-column prop="userId" label="用户ID" sortable />
       <el-table-column prop="userCode" label="用户名" sortable />
@@ -103,7 +103,7 @@
 <script setup>
 import { reactive, ref, computed } from 'vue';
 import { useRouter } from 'vue-router'
-import { get, put, del, tip, export2excel } from "@/common";
+import {get, put, del, tip, export2excel, eltable2excel} from "@/common";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
 const router = useRouter(); // 获取路由器
@@ -156,20 +156,9 @@ const handleSelectionChange = (val) => {
 }
 
 // 导出数据
+// 导出数据
 const export2Table = () => {
-  get("/user/exportTable", params).then(result => {
-    // 要导出的数据
-    const userList = result.data;
-    const columns = [
-      {"title": "用户ID", "key": "userId"},
-      {"title": "用户名", "key": "userCode"},
-      {"title": "昵称", "key": "userName"},
-      {"title": "用户状态", "key": "userState"},
-      {"title": "创建人", "key": "getCode"},
-      {"title": "创建时间", "key": "createTime"},
-    ];
-    export2excel(columns, userList, "员工信息表");
-  });
+  eltable2excel("elTable")
 }
 
 // 删除用户提交

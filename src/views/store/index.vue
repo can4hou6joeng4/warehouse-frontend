@@ -41,7 +41,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="storePageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+  <el-table :data="storePageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe id="elTable">
     <el-table-column type="index" width="50" />
     <el-table-column prop="storeId" label="仓库ID" sortable />
     <el-table-column prop="storeName" label="仓库名称" sortable />
@@ -79,7 +79,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH } from "@/common";
+import {get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH, eltable2excel} from "@/common";
 import { useRouter } from "vue-router";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -110,21 +110,8 @@ getStorePageList();
 
 // 导出数据
 const export2Table = () => {
-  get("/store/exportTable", params).then(result => {
-    // 要导出的数据
-    const storeList = result.data;
-    const columns = [
-      {"title": "仓库ID", "key": "storeId"},
-      {"title": "仓库名称", "key": "storeName"},
-      {"title": "仓库编号", "key": "storeNum"},
-      {"title": "仓库地址", "key": "storeAddress"},
-      {"title": "联系人", "key": "concat"},
-      {"title": "电话", "key": "phone"},
-    ];
-    export2excel(columns, storeList, "仓库信息表");
-  });
+  eltable2excel("elTable")
 }
-
 
 // 跳向添加仓库
 import storeAdd from "./store-add.vue";

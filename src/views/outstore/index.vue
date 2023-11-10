@@ -46,7 +46,7 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" border stripe>
+  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" table-layout="auto" border stripe id="elTable">
     <el-table-column prop="outsId" label="出库单ID" width="130"/>
     <el-table-column prop="storeName" label="仓库名称" width="130"/>
     <el-table-column prop="productName" label="产品名称" width="130"/>
@@ -94,7 +94,7 @@
 
 <script setup>
 import { reactive, ref } from 'vue';
-import {get, put, tip, export2excel, post} from "@/common";
+import {get, put, tip, export2excel, post, eltable2excel} from "@/common";
 import { useRoute } from 'vue-router'
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -149,29 +149,8 @@ getStoreList();
 
 // 导出数据
 const export2Table = () => {
-  get("/outstore/exportTable", params).then(result => {
-    // 要导出的数据
-    const instoreList = result.data;
-    // 将isIn字段的0、1转化为是否
-    instoreList.reduce((pre, cur) => {
-      cur.isIn = cur.isOut==1?"已出库":"未出库";
-      return pre;
-    }, []);
-    const columns = [
-      {"title": "出库单ID", "key": "outsId"},
-      {"title": "仓库名称", "key": "storeName"},
-      {"title": "材料名称", "key": "productName"},
-      {"title": "理货员", "key": "tallyCode"},
-      {"title": "出库数量", "key": "outNum"},
-      {"title": "出库价格", "key": "outPrice"},
-      {"title": "出库状态", "key": "isOut"},
-      {"title": "创建人", "key": "userCode"},
-      {"title": "创建时间", "key": "createTime"},
-    ];
-    export2excel(columns, instoreList, "出库单列表");
-  });
+  eltable2excel("elTable")
 }
-
 // 确定入库
 const confirmOutstore = (outstore) => {
   console.log(outstore)
