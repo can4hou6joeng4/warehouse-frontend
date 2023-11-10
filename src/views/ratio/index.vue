@@ -187,23 +187,23 @@ const deleteById = (id) => {
 }
 
 // 批量删除
-const deleteCommodityList = () => {
-  if(multipleSelection.value.length){
-    // 取出所有选中的id
-    const productIds = multipleSelection.value.reduce((prev, cur) =>{
-      prev.push(cur.productId);
-      return prev;
-    }, []);
-
-    del(`/product/product-list-delete`, productIds, { title: "提示", message: "您确定删除选中材料吗？" }).then(result => {
-      tip.success(result.message);
-      // 重新查询
-      getPageList();
-    });
-  }else{
-    tip.error("请选择需要删除的行！");
-  }
-}
+// const deleteCommodityList = () => {
+//   if(multipleSelection.value.length){
+//     // 取出所有选中的id
+//     const productIds = multipleSelection.value.reduce((prev, cur) =>{
+//       prev.push(cur.productId);
+//       return prev;
+//     }, []);
+//
+//     del(`/product/product-list-delete`, productIds, { title: "提示", message: "您确定删除选中材料吗？" }).then(result => {
+//       tip.success(result.message);
+//       // 重新查询
+//       getPageList();
+//     });
+//   }else{
+//     tip.error("请选择需要删除的行！");
+//   }
+// }
 
 // 修改每页显示条数
 const changeSize = (size) => {

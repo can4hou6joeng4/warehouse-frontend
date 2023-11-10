@@ -77,9 +77,6 @@ const params = reactive({
 
 const value2 = ref('')
 
-const multipleTableRef = ref();
-
-
 const shortcuts = [
   {
     text: '最近一周',
