@@ -111,7 +111,7 @@ const login = () => {
         setLocalToken(result.data);
         tip.success("登录成功！");
         // 通过路由导航到home页面
-        router.push({ path: "/home" });
+        router.push({ path: "/controller/index" });
       });
     }
   });
