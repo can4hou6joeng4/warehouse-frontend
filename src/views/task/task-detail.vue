@@ -31,15 +31,6 @@ const open = (task) => {
       activities.value[i].color = "blue"
     }
   }
-  // if(task.flag !== "已结束"){
-  //   for()
-  // }
-
-
-  // console.log(activities)
-  // for (let prop in task){
-  //   console.log(prop)
-  // }
 };
 
 defineExpose({ open });

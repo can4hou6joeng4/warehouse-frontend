@@ -130,7 +130,7 @@ const getOutstorePageList = () => {
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
     outstorePageList.value.forEach(function (item, index){
-      item.salePriceSum = item.salePrice * item.outNum
+      item.salePriceSum = (item.salePrice * item.outNum).toFixed(2)
     })
     params.totalNum = result.data.totalNum;
   });

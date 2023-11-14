@@ -114,8 +114,7 @@ const getInstorePageList = () => {
   get("/instore/instore-page-list", params).then(result => {
     instorePageList.value = result.data.resultList;
     instorePageList.value.forEach(function (item, index){
-      console.log(item)
-      item.priceSum = item.price * item.inNum
+      item.priceSum = (item.price * item.inNum).toFixed(2)
       if(item.freight == null){
         item.freightSum = 0
       }else{

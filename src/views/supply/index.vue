@@ -1,5 +1,5 @@
 <template>
-  <!-- 仓库列表 -->
+  <!-- 供应商列表 -->
   <div>
     <el-form inline class="searchForm">
       <el-form-item>
@@ -73,10 +73,10 @@
       @current-change="changeCurrent"
   />
 
-  <!-- 添加仓库对话框 -->
+  <!-- 添加供应商对话框 -->
   <supply-add ref="supplyAddRef" @ok="getSupplyPageList"></supply-add>
 
-  <!-- 修改仓库对话框 -->
+  <!-- 修改供应商对话框 -->
   <supply-update ref="supplyUpdateRef" @ok="getSupplyPageList"></supply-update>
 
   <supply-detail ref="supplyDetailRef"></supply-detail>
