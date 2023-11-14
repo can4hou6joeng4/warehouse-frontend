@@ -92,10 +92,10 @@ const open = (purchase) => {
     purchaseUpdate[prop] = purchase[prop];
   }
   visible.value = true;
-  console.log(purchaseUpdate.isIn)
   if (purchaseUpdate.isIn == "2"){
     showSelectSupply.value = false
   }
+  getSupplyList(purchaseUpdate.materialId);
 };
 
 const purchaseUpdateForm = ref();

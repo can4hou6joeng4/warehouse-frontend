@@ -61,7 +61,7 @@
       <template #default="props">
         <el-link type="primary" @click.prevent="openRatioUpdate(props.row)">修改</el-link>
         <el-link type="primary" @click.prevent="deleteById(props.row.id)">删除</el-link>
-        <el-link type="primary" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
+<!--        <el-link type="primary" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>-->
       </template>
     </el-table-column>
   </el-table>

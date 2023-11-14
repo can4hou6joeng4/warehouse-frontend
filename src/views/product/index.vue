@@ -33,15 +33,14 @@
         </el-icon>
         &nbsp;导出数据
       </el-button>
-      <el-button type="primary" @click="transferCommodity">调货</el-button>
-      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">
-        <el-option @click="deleteCommodityList">
-          <span style="float: left;">
-            <el-icon><delete /></el-icon>
-          </span>
-          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>
-        </el-option>
-      </el-select>
+<!--      <el-select placeholder="批量操作" style="width: 110px;margin-left: 12px; position: relative; top: 2px;">-->
+<!--        <el-option @click="deleteCommodityList">-->
+<!--          <span style="float: left;">-->
+<!--            <el-icon><delete /></el-icon>-->
+<!--          </span>-->
+<!--          <span style="padding-left: 6px; position: relative; top: -2px;">删除</span>-->
+<!--        </el-option>-->
+<!--      </el-select>-->
     </div>
   </div>
 
@@ -58,7 +57,6 @@
       <template #default="props">
         <el-link type="primary" @click.prevent="openProductUpdate(props.row)">修改</el-link>
         <el-link type="primary" @click.prevent="deleteProduct(props.row.productId)">删除</el-link>
-        <el-link type="primary" @click.prevent="openOutstoreAdd(props.row)">出库</el-link>
       </template>
     </el-table-column>
   </el-table>

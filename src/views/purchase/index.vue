@@ -206,7 +206,8 @@ const againPurchaseTask = () => {
       console.log(result)
       if(result.message === "执行成功"){
         tip.success(result.message)
-        router.push({path:"/purchase/index"})
+        // router.push({path:"/purchase/index"})
+        getPurchasePageList()
       }else {
         tip.warning(result.message)
       }

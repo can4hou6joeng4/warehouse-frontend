@@ -3,16 +3,16 @@
   <el-dialog v-model="visible" title="合同详情" width="25%">
     <el-form :model="contractDetail" label-position="top">
       <el-form-item label="生产产品：" prop="productName">
-        <el-input v-model="contractDetail.productName" autocomplete="off"/>
+        <el-input v-model="contractDetail.productName" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="生产数量：" prop="productNum">
-        <el-input v-model="contractDetail.productNum" autocomplete="off"/>
+        <el-input v-model="contractDetail.productNum" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="工期开始时间：" prop="startTime">
-        <el-input v-model="contractDetail.startTime" autocomplete="off"/>
+        <el-input v-model="contractDetail.startTime" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="工期结束时间：" prop="endTime">
-        <el-input v-model="contractDetail.endTime" autocomplete="off"/>
+        <el-input v-model="contractDetail.endTime" autocomplete="off" disabled/>
       </el-form-item>
       <el-form-item label="材料比例：">
         <el-tag

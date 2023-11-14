@@ -21,7 +21,7 @@
           采购审核</el-link>
         <el-link type="primary" v-if="props.row.task === '采购创建'" @click.prevent="toCommodity(props.row)" style="margin-right: 8px">
           前往采购</el-link>
-        <el-link type="primary" v-if="props.row.task === '采购完成'" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
+        <el-link type="primary" v-if="props.row.task === '采购检查'" @click.prevent="toPurchase(props.row)" style="margin-right: 8px">
           检查采购</el-link>
         <el-link type="primary" v-if="props.row.task === '入库确认'" @click.prevent="toInStore(props.row)" style="margin-right: 8px">
           前往入库</el-link>
