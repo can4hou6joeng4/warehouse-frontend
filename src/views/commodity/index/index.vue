@@ -166,7 +166,7 @@ const getUnitList = () => {
 getUnitList();
 
 // 复选框的操作
-// const multipleTableRef = ref();
+const multipleTableRef = ref();
 const multipleSelection = ref([]);
 // const toggleSelection = (rows) => {
 //   if (rows) {

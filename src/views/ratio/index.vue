@@ -143,6 +143,8 @@ const getPageList = () => {
 }
 getPageList();
 
+const multipleTableRef = ref();
+
 
 // 导出数据
 const export2Table = () => {
