@@ -33,7 +33,8 @@ export default ({ command, mode }) => {
         //如果访问地址以"/api"开头,则自动代理到变量VITE_WAREHOUSE_CONTEXT_PATH所表示的
 		//服务端地址http://localhost:9999/warehouse
         '/api': {
-          target: env.VITE_WAREHOUSE_CONTEXT_PATH,
+          //target: env.VITE_WAREHOUSE_CONTEXT_PATH,
+          target: 'http://175.178.234.102:9999/warehouse/',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, '')
         }

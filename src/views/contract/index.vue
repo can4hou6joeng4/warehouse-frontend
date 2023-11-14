@@ -41,7 +41,7 @@
         </el-icon>
         &nbsp;添加合同
       </el-button>
-      
+
       <el-button type="warning" @click="export2Table">
         <el-icon>
           <svg t="1647313957290" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -58,13 +58,13 @@
   <!-- 表格 -->
   <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
             style="width: 100%; margin-top: 10px;" border stripe id="elTable">
-<!--    <el-table-column type="selection" width="55"/>-->
+    <!--    <el-table-column type="selection" width="55"/>-->
     <el-table-column label="合同图片" width="90">
       <template #default="props">
-        <el-image style="width: 60px; height: 60px" :src="props.row.files" fit="fill" />
+        <el-image style="width: 60px; height: 60px" :src="props.row.files" fit="fill"/>
       </template>
     </el-table-column>
-    <el-table-column prop="contractId" label="合同ID" />
+    <el-table-column prop="contractId" label="合同ID"/>
     <el-table-column prop="contractName" label="合同名" width="120"/>
     <el-table-column prop="productName" label="产品名称" width="120"/>
     <el-table-column prop="productNum" label="生产数量" width="120"/>
@@ -74,10 +74,10 @@
     <el-table-column label="合同状态" width="120">
       <template #default="props">
         <span :class="{red:props.row.contractState ==='0' || props.row.contractState ==='1'}">
-          {{ 
+          {{
             props.row.contractState === '0' ? '未审核'
                 : props.row.contractState === '1' ? '被驳回'
-                    : props.row.contractState === '2' ? '待结算' 
+                    : props.row.contractState === '2' ? '待结算'
                         : props.row.contractState === '3' ? '结算中'
                             : props.row.contractState === '4' ? '已结算'
                                 : '其他'
@@ -95,14 +95,24 @@
     <el-table-column prop="createTime" label="创建时间" width="100"/>
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
-        <el-link type="primary" v-if="props.row.contractState === '0' || props.row.contractState === '1'" @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改</el-link>
+        <el-link type="primary" v-if="props.row.contractState === '0' || props.row.contractState === '1'"
+                 @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改
+        </el-link>
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
         <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
-        <el-link type="primary" @click="agree(props.row)" v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true" style="margin-right: 8px">通过</el-link>
-        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)" v-if="props.row.contractState === '0' && props.row.contractId != ''  && showExamine==true" style="margin-right: 8px">退回</el-link>
-        <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)" style="margin-right: 8px">
-          再次提交审核</el-link>
-        </template>
+        <el-link type="primary" @click="agree(props.row)"
+                 v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true"
+                 style="margin-right: 8px">通过
+        </el-link>
+        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"
+                 v-if="props.row.contractState === '0' && props.row.contractId != ''  && showExamine==true"
+                 style="margin-right: 8px">退回
+        </el-link>
+        <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)"
+                 style="margin-right: 8px">
+          再次提交审核
+        </el-link>
+      </template>
     </el-table-column>
   </el-table>
   <!-- 分页 -->
@@ -126,10 +136,10 @@
 
   <!-- 查看合同详细信息 -->
   <contract-detail ref="contractDetailRef"></contract-detail>
-  
-<!--  合同驳回原因-->
+
+  <!--  合同驳回原因-->
   <contract-reason ref="contractReasonRef" @ok="getContractList"></contract-reason>
- </template>
+</template>
 <script setup>
 import {reactive, ref} from "vue";
 import {export2excel, get, WAREHOUSE_CONTEXT_PATH, post, tip, eltable2excel} from "@/common";
@@ -144,6 +154,7 @@ const params = reactive({
   pageNum: 1,
   totalNum: 0
 })
+const multipleTableRef = ref();
 
 // 图片回显路径
 const imageUrl = ref('');
@@ -155,7 +166,7 @@ const contractList = ref();
 const route = useRoute();
 
 const changeFileName = (list) => {
-  list.forEach(function(item) {
+  list.forEach(function (item) {
     let parts = item.files.split('/'); // 先按"/"切割路径
     let file = parts.pop()
     console.log(parts)
@@ -164,7 +175,7 @@ const changeFileName = (list) => {
     let filename = part2.pop(); // 弹出数组的最后一个元素（文件名）
 
 
-    item.files = WAREHOUSE_CONTEXT_PATH+'/contract/download-image/'+filename
+    item.files = WAREHOUSE_CONTEXT_PATH + '/contract/download-image/' + filename
   });
 }
 
@@ -173,29 +184,28 @@ const showExamine = ref(true)
 
 // 获取查询结果
 const getContractList = () => {
-  if(route.query.contractId){
+  if (route.query.contractId) {
     params.contractId = parseInt(route.query.contractId)
-    get("/contract/contract-list",params).then(result => {
+    get("/contract/contract-list", params).then(result => {
       console.log(result.data)
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
       changeFileName(contractList.value)
     });
-  }else{
-    get("/contract/contract-list",params).then(result => {
+  } else {
+    get("/contract/contract-list", params).then(result => {
       console.log(result.data)
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
       changeFileName(contractList.value)
     });
   }
-  if (localStorage.getItem("userRole") !== "supper_manage"){
+  if (localStorage.getItem("userRole") !== "supper_manage") {
     showExamine.value = false
   }
   console.log(showExamine.value)
 }
 getContractList();
-
 
 
 // 复选框的操作
@@ -207,6 +217,7 @@ const handleSelectionChange = (val) => {
 
 // 添加合同
 import ContractAdd from "./contract-add.vue";
+
 const contractAddRef = ref();
 const openContractAdd = () => {
   contractAddRef.value.open();
@@ -214,19 +225,21 @@ const openContractAdd = () => {
 
 // 修改合同
 import ContractUpdate from "./contract-update.vue";
+
 const contractUpdateRef = ref();
-const openContractUpdate = (contract) =>{
+const openContractUpdate = (contract) => {
   contractUpdateRef.value.open(contract);
 }
 
 // 查看合同详情
 import ContractDetail from "@/views/contract/contract-detail.vue";
 import {useRoute} from "vue-router";
+
 const contractDetailRef = ref();
-const openContractDetail = (contract) =>{
+const openContractDetail = (contract) => {
   let contractRow = contractList.value.find(item => item.contractId === contract.contractId)
   console.log(contractRow)
-  contractDetailRef.value.open(contractRow, );
+  contractDetailRef.value.open(contractRow,);
 }
 
 // 修改每页显示条数
@@ -266,15 +279,15 @@ const downloadFiles = (contract) => {
 // 通过合同审核
 const agree = (contract) => {
   console.log(contract.contractId)
-  
+
   let flow = {}
   flow.contractId = contract.contractId
   console.log(flow)
   post("/contract/contract-agree", flow).then(result => {
     console.log(result)
-    if(result.message === "完成任务"){
+    if (result.message === "完成任务") {
       tip.success(result.message)
-    }else {
+    } else {
       tip.warning(result.message)
     }
     getContractList()
@@ -283,10 +296,11 @@ const agree = (contract) => {
 
 // 合同驳回原因
 import ContractReason from './contract-reason.vue'
+
 const contractReasonRef = ref()
-const reject = (contractId,ifPurchase) => {
+const reject = (contractId, ifPurchase) => {
   let data = {
-    contractId:contractId,
+    contractId: contractId,
     ifPurchase: ifPurchase
   }
   contractReasonRef.value.open(data);
@@ -294,16 +308,16 @@ const reject = (contractId,ifPurchase) => {
 }
 
 // 再次提交审核
-const completeTask = (contract) =>{
+const completeTask = (contract) => {
   let flow = {}
   flow.contractId = contract.contractId
   flow.ifPurchase = contract.ifPurchase
   console.log(flow)
   post("/contract/contract-again", flow).then(result => {
     console.log(result)
-    if(result.message === "启动流程成功"){
+    if (result.message === "启动流程成功") {
       tip.success("再次提交审核成功")
-    }else {
+    } else {
       tip.warning(result.message)
     }
     getContractList()
@@ -311,7 +325,6 @@ const completeTask = (contract) =>{
 }
 
 
-
-const inlineFile =ref(WAREHOUSE_CONTEXT_PATH+'/contract/inline-image/');
+const inlineFile = ref(WAREHOUSE_CONTEXT_PATH + '/contract/inline-image/');
 </script>
 

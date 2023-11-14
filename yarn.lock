@@ -256,16 +256,16 @@ bluebird@^3.7.2:
   resolved "https://registry.npm.taobao.org/bluebird/download/bluebird-3.7.2.tgz?cache=0&sync_timestamp=1602657218976&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fbluebird%2Fdownload%2Fbluebird-3.7.2.tgz"
   integrity sha1-nyKcFb4nJFT/qXOs4NvueaGww28=
 
-bpmn-js-properties-panel@^0.38.5:
-  version "0.37.2"
-  resolved "https://registry.npmmirror.com/bpmn-js-properties-panel/-/bpmn-js-properties-panel-0.37.2.tgz#3b06052ecd33cef6a40a76e0ae3132b84bdd7b89"
-  integrity sha512-M5pZMfT/g1jkGEhfoA/w1UNx3gPu13GYoNJ+vsszR3fLy0n64XAOmYnWnUDvLVsvjakukkIGPwWF5tYQif/cdA==
+bpmn-js-properties-panel@^0.37.2:
+  version "0.37.6"
+  resolved "https://registry.npmmirror.com/bpmn-js-properties-panel/-/bpmn-js-properties-panel-0.37.6.tgz#b09598915c956911e46c771e4a6078332a1a9fe4"
+  integrity sha512-1rP9r6ItL1gKqXezXnpr9eVsQtdufH6TNqxUs11Q68CtxeBAs0l1wEHw2f01i9ceHHxItmrZUTndqnASi89EYA==
   dependencies:
     "@bpmn-io/extract-process-variables" "^0.3.0"
     ids "^1.0.0"
     inherits "^2.0.1"
-    lodash "^4.17.15"
-    min-dom "^3.1.1"
+    lodash "^4.17.20"
+    min-dom "^3.1.3"
     scroll-tabs "^1.0.1"
     selection-update "^0.1.2"
 
@@ -569,7 +569,7 @@ lodash@^3.0.0:
   resolved "https://registry.npmmirror.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
   integrity sha512-9mDDwqVIma6OZX79ZlDACZl8sBm0TEnkf99zV3iMA4GzkIT/9hiqP5mY0HoT1iNLCrKc/R1HByV+yJfRWVJryQ==
 
-lodash@^4.17.15, lodash@^4.17.21:
+lodash@^4.17.20, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -610,7 +610,7 @@ min-dash@^3.0.0, min-dash@^3.1.0, min-dash@^3.5.0, min-dash@^3.5.2, min-dash@^3.
   resolved "https://registry.npmmirror.com/min-dash/-/min-dash-3.8.1.tgz#09a8bd8a041d65eec4732042cde9cb24a6e84b0d"
   integrity sha512-evumdlmIlg9mbRVPbC4F5FuRhNmcMS5pvuBUbqb1G9v09Ro0ImPEgz5n3khir83lFok1inKqVDjnKEg3GpDxQg==
 
-min-dom@^3.1.0, min-dom@^3.1.1, min-dom@^3.1.2, min-dom@^3.1.3:
+min-dom@^3.1.0, min-dom@^3.1.2, min-dom@^3.1.3:
   version "3.2.1"
   resolved "https://registry.npmmirror.com/min-dom/-/min-dom-3.2.1.tgz#c272a814397d8bfe97edd12670e7ac34123c043f"
   integrity sha512-v6YCmnDzxk4rRJntWTUiwggLupPw/8ZSRqUq0PDaBwVZEO/wYzCH4SKVBV+KkEvf3u0XaWHly5JEosPtqRATZA==
