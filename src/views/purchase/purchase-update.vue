@@ -17,7 +17,7 @@
       <el-form-item label="实际采购数量：" prop="factBuyNum">
         <el-input v-model="purchaseUpdate.factBuyNum" controls-position="right" />
       </el-form-item>
-      <el-form-item label="供应商：">
+      <el-form-item label="供应商：" v-if="showSelectSupply">
         <el-select v-model="purchaseUpdate.supplyId" clearable @change="handleSelectSupplyChange">
           <el-option v-for="supply of supplyList" :label="supply.supplyName" :value="supply.supplyId" :key="supply.supplyId"></el-option>
         </el-select>
@@ -81,6 +81,9 @@ const getSupplyList= (materialId) => {
   });
 }
 
+// 供应商选项的可见性
+const showSelectSupply = ref(true)
+
 // 该对话框打开，进行数据初始化
 const open = (purchase) => {
   purchaseUpdate.factBuyNum = ''
@@ -89,7 +92,10 @@ const open = (purchase) => {
     purchaseUpdate[prop] = purchase[prop];
   }
   visible.value = true;
-  getSupplyList(purchaseUpdate.materialId)
+  console.log(purchaseUpdate.isIn)
+  if (purchaseUpdate.isIn == "2"){
+    showSelectSupply.value = false
+  }
 };
 
 const purchaseUpdateForm = ref();

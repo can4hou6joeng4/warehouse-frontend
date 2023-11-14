@@ -221,13 +221,15 @@ const completePurchaseTask = () => {
   if(route.query.contractId) {
     let flow = {}
     flow.contractId = route.query.contractId
+
+    
     post("/activiti/complete-task", flow).then(result => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)
         router.push({path:"/purchase/index"})
       }else {
-        tip.warning(result.message)
+        tip.warning(result.message) 
       }
     })
   }else{

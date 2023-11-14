@@ -73,7 +73,6 @@ const getMaterialList= () => {
     materialList.value = result.data;
     for(let i in materialList.value){
       materialList.value[i].percentage = (materialList.value[i].materialNum/500) * 100
-      console.log(materialList.value[i].percentage)
       if (materialList.value[i].percentage>=50){
         materialList.value[i].status = "success"
       }else if(materialList.value[i].percentage>=20 && materialList.value[i].percentage<50){
@@ -83,8 +82,6 @@ const getMaterialList= () => {
       }
     }
     materialList.value.sort((a, b) => a.percentage - b.percentage);
-
-    console.log(materialList.value)
   });
 }
 
@@ -98,7 +95,6 @@ const formatProgressText=(percentage) =>{
 
 // 初始化函数
 onMounted(() =>{
-  console.log("控制中心")
   showTask.value = false
 
   get("/activiti/activiti-page-list", {}).then(result => {
@@ -114,7 +110,7 @@ onMounted(() =>{
 
   getMaterialList();
 
-  console.log(materialList.value)
+  console.log(localStorage.getItem("userRole"))
 })
 
 // 任务列表可见性

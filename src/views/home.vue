@@ -128,6 +128,7 @@ const currUser = ref({});
 const getCurrentUser = () => {
   get("/curr-user").then(result => {
     currUser.value = result.data;
+    localStorage.setItem("userRole", currUser.value.userRole)
   });
 }
 getCurrentUser();
