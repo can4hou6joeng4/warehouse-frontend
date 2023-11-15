@@ -29,15 +29,8 @@
                 :on-change="handleAvatarChange"
                 :before-upload="beforeAvatarUpload"
             >
-              <div v-if="imageList && imageList.length > 0" class="image-box">
-                <img v-for="(url, index) in imageList" :src="url" :key="index" class="avatar" />
-              </div>
               <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
             </el-upload>
-
-            <!--            <el-dialog v-model="dialogVisible">-->
-<!--              <img w-full :src="imageUrl" alt="Preview Image" />-->
-<!--            </el-dialog>-->
           </el-form-item>
         </el-col>
         <el-col :span="10" style="margin-left: 30px">
@@ -193,7 +186,7 @@ const handleAvatarChange = (uploadFile) => {
   reader.onload = () => {
     // 将转化的url赋值给文件
     imageUrls.value.push(reader.result);
-    imageList.value = [...new Set(imageUrls.value)];
+    // imageList.value = [...new Set(imageUrls.value)];
   };
   if(uploadFile.response != null){
     if (contractAdd.files == null || contractAdd.files == ""){
