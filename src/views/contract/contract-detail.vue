@@ -35,11 +35,25 @@
       <el-form-item label="需要数量：">
         <el-input v-model="needNum" autocomplete="off"/>
       </el-form-item>
+      <el-form-item label="合同照片：">
+        <div class="demo-image__preview">
+          <el-image
+              style="width: 100px; height: 100px"
+              :src="imageList[0]"
+              :zoom-rate="1.2"
+              :max-scale="7"
+              :min-scale="0.2"
+              :preview-src-list="imageList"
+              :initial-index="4"
+              fit="cover"
+          />
+        </div>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="close">取消</el-button>
-        <el-button type="primary" @click="updateContract">确定</el-button>
+        <el-button type="primary" @click="close">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -61,9 +75,11 @@ const imageUrl = ref('');
 // 表格列表
 const ratioDetails= ref({materialId:'',materialName:''});
 
+// 图片列表
+const imageList = ref([])
+
 // 该对话框打开并初始化
 const open = (contractRow) => {
-  console.log(contractRow)
   for(let prop in contractRow){
     contractDetail[prop] = contractRow[prop];
   }
@@ -73,11 +89,20 @@ const open = (contractRow) => {
   get(`/product-material/ratio/${contractRow.productId}`).then(result => {
     ratioDetails.value = result.data;
   });
+  
+  imageList.value = []
+  let resultList = []
+  resultList = contractDetail.files.split(",");
+  
+  resultList.forEach(function(item) {
+    imageList.value.push(WAREHOUSE_CONTEXT_PATH + '/contract/inline-image/' + item)
+  });  
 };
 
 // 关闭
 const close = () =>{
   visible.value = false
+  imageList.value = []
 }
 
 // 生产所需要的量
@@ -104,5 +129,15 @@ defineExpose({ open });
   font-size: 12px;
   margin-top: 10px;
   margin-left: 10px;
+}
+.demo-image__error .image-slot {
+  font-size: 30px;
+}
+.demo-image__error .image-slot .el-icon {
+  font-size: 30px;
+}
+.demo-image__error .el-image {
+  width: 100%;
+  height: 200px;
 }
 </style>

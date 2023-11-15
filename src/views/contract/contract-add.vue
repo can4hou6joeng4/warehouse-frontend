@@ -25,13 +25,19 @@
             <el-upload
                 class="avatar-uploader"
                 :action="WAREHOUSE_CONTEXT_PATH + '/contract/img-upload'"
-                :show-file-list="false"
+                :multiple="true"
                 :on-change="handleAvatarChange"
                 :before-upload="beforeAvatarUpload"
             >
-              <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-              <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+              <div v-if="imageList && imageList.length > 0" class="image-box">
+                <img v-for="(url, index) in imageList" :src="url" :key="index" class="avatar" />
+              </div>
+              <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
             </el-upload>
+
+            <!--            <el-dialog v-model="dialogVisible">-->
+<!--              <img w-full :src="imageUrl" alt="Preview Image" />-->
+<!--            </el-dialog>-->
           </el-form-item>
         </el-col>
         <el-col :span="10" style="margin-left: 30px">
@@ -50,7 +56,7 @@
                 class="mx-1"
             >
               <div>原材料: {{ tag.materialName }}</div>
-              占比: {{ tag.ratio }}            
+              占比: {{ tag.ratio }}
             </el-tag>
           </el-form-item>
           <el-form-item label="原材料：" v-if="showRatio">
@@ -89,8 +95,7 @@ import { Plus } from '@element-plus/icons-vue'
 
 const visible = ref(false); // 该页面的可见性
 
-// 图片回显路径
-const imageUrl = ref('');
+
 
 // 添加用户对象
 const contractAdd = reactive({
@@ -101,7 +106,8 @@ const contractAdd = reactive({
   productId:'',
   materialId: '',
   productNum: '',
-  ifPurchase:''
+  ifPurchase:'',
+  files:''
 });
 
 // 关闭
@@ -113,6 +119,7 @@ const close = () => {
   visible.value = false;
   showRatio.value = false;
   contractAdd.productId = "";
+  imageList.value = [];
 }
 
 const rules = reactive({
@@ -173,6 +180,9 @@ const getProductList= () => {
 }
 getProductList();
 
+// 图片回显路径
+const imageUrls = ref([]);
+let imageList = ref([])
 // 添加文件时的回显
 const handleAvatarChange = (uploadFile) => {
   const reader = new FileReader();
@@ -182,9 +192,17 @@ const handleAvatarChange = (uploadFile) => {
   // 读取文件的回调函数
   reader.onload = () => {
     // 将转化的url赋值给文件
-    imageUrl.value = reader.result;
-    contractAdd.files = image.name;
+    imageUrls.value.push(reader.result);
+    imageList.value = [...new Set(imageUrls.value)];
   };
+  if(uploadFile.response != null){
+    if (contractAdd.files == null || contractAdd.files == ""){
+      contractAdd.files += uploadFile.response.message
+    }else{
+      contractAdd.files += "," + uploadFile.response.message
+    }
+  }
+  console.log(contractAdd.files)
 }
 
 // 上传之前做简单验证
@@ -245,5 +263,8 @@ defineExpose({open});
   font-size: 12px;
   margin-top: 10px;
   margin-left: 10px;
+}
+.avatar{
+  float: left;
 }
 </style>

@@ -58,12 +58,6 @@
   <!-- 表格 -->
   <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
             style="width: 100%; margin-top: 10px;" border stripe id="elTable">
-    <!--    <el-table-column type="selection" width="55"/>-->
-    <el-table-column label="合同图片" width="90">
-      <template #default="props">
-        <el-image style="width: 60px; height: 60px" :src="props.row.files" fit="fill"/>
-      </template>
-    </el-table-column>
     <el-table-column prop="contractId" label="合同ID"/>
     <el-table-column prop="contractName" label="合同名" width="120"/>
     <el-table-column prop="productName" label="产品名称" width="120"/>
@@ -169,7 +163,7 @@ const changeFileName = (list) => {
   list.forEach(function (item) {
     let parts = item.files.split('/'); // 先按"/"切割路径
     let file = parts.pop()
-    console.log(parts)
+
     let part2 = file.split('\\')
 
     let filename = part2.pop(); // 弹出数组的最后一个元素（文件名）
@@ -190,14 +184,14 @@ const getContractList = () => {
       console.log(result.data)
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
-      changeFileName(contractList.value)
+      // changeFileName(contractList.value)
     });
   } else {
     get("/contract/contract-list", params).then(result => {
       console.log(result.data)
       contractList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
-      changeFileName(contractList.value)
+      // changeFileName(contractList.value)
     });
   }
   if (localStorage.getItem("userRole") !== "supper_manage") {
@@ -262,18 +256,35 @@ const export2Table = () => {
 
 // 下载合同照片
 const downloadFiles = (contract) => {
-  console.log(contract.files);
+  console.log(contract.contractId)
+  // 构建带参数的 URL
+  const url = WAREHOUSE_CONTEXT_PATH+`/contract/download-images/`+contract.contractId;
 
-  // 创建一个链接元素
-  const link = document.createElement('a');
-  link.href = contract.files;
-  link.target = '_blank';
+  fetch(url)
+      .then((response) => {
+        // 将二进制数据转换成 blob
+        return response.blob();
+      })
+      .then((blob) => {
+        // 创建一个用于下载的 URL
+        const downloadUrl = window.URL.createObjectURL(new Blob([blob]));
 
-  // 设置链接的下载属性
-  link.download = 'example.jpg'; // 替换为要保存的文件名
+        // 创建一个隐藏的 <a> 元素
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', 'images.zip');
 
-  // 触发点击链接的操作，浏览器会自动下载
-  link.click();
+        // 将 <a> 元素添加到页面上以触发下载
+        document.body.appendChild(link);
+        link.click();
+
+        // 清理 URL 和 <a> 元素
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 }
 
 // 通过合同审核
