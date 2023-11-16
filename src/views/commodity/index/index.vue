@@ -195,7 +195,7 @@ const completePurchaseTask = () => {
       console.log(result)
       if(result.message == "完成任务"){
         tip.success(result.message)
-        router.push({path:"/commodity/index"})
+        router.push({ path: "/controller/index" });
       }else {
         tip.warning(result.message)
       }

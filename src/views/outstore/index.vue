@@ -130,7 +130,7 @@ const getOutstorePageList = () => {
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
     outstorePageList.value.forEach(function (item, index){
-      item.salePriceSum = (item.salePrice * item.outNum).toFixed(2)
+      item.salePriceSum = item.salePrice * item.outNum
     })
     params.totalNum = result.data.totalNum;
   });
@@ -157,6 +157,7 @@ const confirmOutstore = (outstore) => {
   put('/outstore/outstore-confirm', outstore).then(res => {
     tip.success(res.message);
     getOutstorePageList();
+    router.push({ path: "/controller/index" });
   });
 }
 

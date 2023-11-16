@@ -289,8 +289,6 @@ const downloadFiles = (contract) => {
 
 // 通过合同审核
 const agree = (contract) => {
-  console.log(contract.contractId)
-
   let flow = {}
   flow.contractId = contract.contractId
   console.log(flow)
@@ -298,6 +296,7 @@ const agree = (contract) => {
     console.log(result)
     if (result.message === "完成任务") {
       tip.success(result.message)
+      router.push({ path: "/controller/index" });
     } else {
       tip.warning(result.message)
     }

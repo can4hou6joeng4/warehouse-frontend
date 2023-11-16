@@ -163,7 +163,7 @@ const completeSettlementTask = () => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)
-        router.push({ path: "/task/index" });
+        router.push({ path: "/controller/index" });
       }else {
         tip.warning(result.message)
       }

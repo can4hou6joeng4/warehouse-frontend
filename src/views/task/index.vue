@@ -57,8 +57,6 @@ const router = useRouter(); // 获取路由器
 const flowPageList = ref([]);
 const hisFlowPageList = ref([]); // 历史任务列表
 
-const taskStatus = ref(false);
-
 const showHisTask = ref(true)
 
 onMounted(() => {
@@ -75,7 +73,6 @@ onMounted(() => {
       tip.success("当前无任务需要处理")
     }
   });
-
   init()
 
 })
@@ -117,7 +114,6 @@ function init(){
         item.task = "任务已结束"
         item.assignee = "任务已结束"
         hisFlowPageList.value.push(item)
-        // data.splice(data.indexOf(item),1) // bug
       }else{
         flowPageList.value.push(item)
       }
@@ -133,7 +129,6 @@ const openTaskDetail = (task) =>{
 }
 
 const openContractDetail = (task) =>{
-  // contractRef.value.open(task.value.contractId)
   router.push({path: "/contract/index", query: {"contractId": task.contractId}})
 
 }
@@ -165,7 +160,6 @@ import PurchaseDetail from "@/views/purchase/purchase-detail.vue";
 // 跳转去采购详情，用于审核采购
 const purchaseDetailRef = ref()
 const toPurchaseDetail = (task) =>{
-  // router.push({path: "/commodity/index", query: {"contractId": "109"}})
   purchaseDetailRef.value.open(task.contractId)
 }
 

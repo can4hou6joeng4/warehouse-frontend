@@ -206,8 +206,8 @@ const againPurchaseTask = () => {
       console.log(result)
       if(result.message === "执行成功"){
         tip.success(result.message)
-        // router.push({path:"/purchase/index"})
         getPurchasePageList()
+        router.push({ path: "/controller/index" });
       }else {
         tip.warning(result.message)
       }
@@ -228,7 +228,7 @@ const completePurchaseTask = () => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)
-        router.push({path:"/purchase/index"})
+        router.push({ path: "/controller/index" });
       }else {
         tip.warning(result.message) 
       }

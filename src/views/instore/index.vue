@@ -114,7 +114,7 @@ const getInstorePageList = () => {
   get("/instore/instore-page-list", params).then(result => {
     instorePageList.value = result.data.resultList;
     instorePageList.value.forEach(function (item, index){
-      item.priceSum = (item.price * item.inNum).toFixed(2)
+      item.priceSum = item.price * item.inNum
       if(item.freight == null){
         item.freightSum = 0
       }else{
@@ -179,6 +179,7 @@ const completeInStoreTask = () => {
       console.log(result)
       if(result.message === "完成任务"){
         tip.success(result.message)
+        router.push({ path: "/controller/index" });
       }else {
         tip.warning(result.message)
       }
