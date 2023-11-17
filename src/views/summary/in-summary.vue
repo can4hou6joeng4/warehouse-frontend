@@ -67,7 +67,7 @@ import {reactive, ref} from 'vue';
 import {eltable2excel, export2excel, get} from "@/common";
 import {useRoute} from 'vue-router';
 import {dateTransform, getDay} from "@/common/date";
-
+import Decimal from "decimal.js"
 const route = useRoute(); // 获取路由信息
 
 // 分页模糊查询数据
@@ -109,7 +109,10 @@ const getSummaryPageList = () => {
     summaryPageList.value = result.data.resultList
     summaryPageList.value.forEach(function (item) {
       item.remarks = dateTransform(item.earliestCreateTime) +'-'+ getDay(item.latestCreateTime) + "入料" +item.total + "车"
-      moneySum.value+=item.money
+      let money = new Decimal(item.money)
+      let sum = new Decimal(moneySum.value)
+      sum = sum.plus(money)
+      moneySum.value = sum.toString()
     })
     params.startTime = ''
 

@@ -74,6 +74,7 @@ import {get, put, tip, export2excel, post} from "@/common";
 import {useRoute, useRouter} from 'vue-router'
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 import {selectedOption} from "bpmn-js-properties-panel/lib/Utils";
+import {Decimal} from "decimal.js"
 
 const route = useRoute(); // 获取路由信息
 
@@ -99,7 +100,6 @@ onMounted(() => {
   }
   getOutstorePageList()
   getInstorePageList()
-  // getContractList()
 });
 
 const outStoreSum = ref(0);
@@ -111,8 +111,11 @@ const getOutstorePageList = () => {
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
     outstorePageList.value.forEach(function (item, index){
-      // item.salePriceSum = item.salePrice * item.outNum
-      outStoreSum.value += item.salePriceSum
+      // let money = new Decimal
+      let money = new Decimal(item.salePriceSum)
+      let sum = new Decimal(outStoreSum.value)
+      sum = sum.plus(money)
+      outStoreSum.value = sum.toString()
     })
   });
 }
@@ -128,9 +131,10 @@ const getInstorePageList = () => {
   get("/instore/instore-page-list", params).then(result => {
     instorePageList.value = result.data.resultList;
     instorePageList.value.forEach(function (item, index){
-      console.log(item)
-      // item.priceSum = item.price * item.inNum
-      inStoreSum.value += item.priceSum
+      let money = new Decimal(item.priceSum)
+      let sum = new Decimal(inStoreSum.value)
+      sum = sum.plus(money) 
+      inStoreSum.value = sum.toString()
     })
   });
 }
