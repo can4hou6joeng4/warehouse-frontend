@@ -99,7 +99,7 @@ onMounted(() => {
   }
   getOutstorePageList()
   getInstorePageList()
-  getContractList()
+  // getContractList()
 });
 
 const outStoreSum = ref(0);
@@ -111,7 +111,7 @@ const getOutstorePageList = () => {
   get("/outstore/outstore-page-list", params).then(result => {
     outstorePageList.value = result.data.resultList;
     outstorePageList.value.forEach(function (item, index){
-      item.salePriceSum = item.salePrice * item.outNum
+      // item.salePriceSum = item.salePrice * item.outNum
       outStoreSum.value += item.salePriceSum
     })
   });
@@ -129,7 +129,7 @@ const getInstorePageList = () => {
     instorePageList.value = result.data.resultList;
     instorePageList.value.forEach(function (item, index){
       console.log(item)
-      item.priceSum = item.price * item.inNum
+      // item.priceSum = item.price * item.inNum
       inStoreSum.value += item.priceSum
     })
   });

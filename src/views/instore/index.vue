@@ -84,7 +84,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import {get, put, tip, export2excel, post, eltable2excel} from "@/common";
-import { useRoute } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import instoreUpdate from './instore-update.vue'
 import ContractUpdate from "@/views/contract/contract-update.vue";
 
@@ -114,7 +114,6 @@ const getInstorePageList = () => {
   get("/instore/instore-page-list", params).then(result => {
     instorePageList.value = result.data.resultList;
     instorePageList.value.forEach(function (item, index){
-      item.priceSum = item.price * item.inNum
       if(item.freight == null){
         item.freightSum = 0
       }else{
@@ -169,6 +168,8 @@ const changeCurrent = (num) => {
   // 重新查询
   getInstorePageList();
 }
+
+const router = useRouter(); // 获取路由器
 
 // 完成入库任务
 const completeInStoreTask = () => {

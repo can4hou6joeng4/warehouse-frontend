@@ -50,9 +50,9 @@
 
   <!-- 表格 -->
   <el-table :data="purchasePageList" style="width: 100%;margin-top: 10px;" size="large" border stripe id="elTable">
-    <el-table-column type="index" width="50" fixed="left"/>
+<!--    <el-table-column type="index" width="50"/>-->
+    <el-table-column prop="materialName" label="材料名" width="130" fixed="left"/>
     <el-table-column prop="storeName" label="仓库名" width="130" />
-    <el-table-column prop="materialName" label="材料名" width="130" />
     <el-table-column prop="buyNum" label="预计采购数量" width="130" />
     <el-table-column prop="factBuyNum" label="实际采购数量" width="130" />
     <el-table-column prop="buyUser" label="采购人" width="110" />

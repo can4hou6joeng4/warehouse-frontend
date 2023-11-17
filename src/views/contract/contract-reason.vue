@@ -25,7 +25,9 @@
 <script setup>
 import {ref, reactive} from 'vue'
 import {post, tip, WAREHOUSE_CONTEXT_PATH, get} from "@/common";
-import { Plus } from '@element-plus/icons-vue'
+import {useRouter} from "vue-router";
+
+const router = useRouter(); // 获取路由器
 
 const visible = ref(false); // 该页面的可见性
 
@@ -57,15 +59,14 @@ const reason = ref()
 const emit = defineEmits(["ok"]);
 
 const define = () => {
-  console.log(reason)
   data.value.reason = reason.value
 
   post("/contract/contract-reject", data.value).then(result => {
-    console.log(result)
     if(result.message === "退回成功"){
-      emit('ok');
       tip.success(result.message)
       visible.value = false
+      router.push({ path: "/controller/index" });
+
     }else {
       tip.warning(result.message)
     }

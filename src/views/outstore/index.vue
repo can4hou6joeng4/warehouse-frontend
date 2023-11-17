@@ -95,7 +95,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import {get, put, tip, export2excel, post, eltable2excel} from "@/common";
-import { useRoute } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
 const route = useRoute(); // 获取路由信息
@@ -151,13 +151,12 @@ getStoreList();
 const export2Table = () => {
   eltable2excel("elTable")
 }
-// 确定入库
+// 确定出库
 const confirmOutstore = (outstore) => {
   console.log(outstore)
   put('/outstore/outstore-confirm', outstore).then(res => {
     tip.success(res.message);
     getOutstorePageList();
-    router.push({ path: "/controller/index" });
   });
 }
 
@@ -193,15 +192,17 @@ const changeCurrent = (num) => {
   getOutstorePageList();
 }
 
+const router = useRouter(); // 获取路由器
+
 // 完成出库任务
 const completeOutStoreTask = () => {
   if(route.query.contractId) {
     let flow = {}
     flow.contractId = route.query.contractId
     post("/outstore/complete-task", flow).then(result => {
-      console.log(result)
-      if(result.message === "完成任务"){
+      if(result.message == "完成任务"){
         tip.success(result.message)
+        router.push({ path: "/controller/index" });
       }else {
         tip.warning(result.message)
       }

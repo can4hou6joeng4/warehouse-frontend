@@ -132,7 +132,7 @@
   <contract-detail ref="contractDetailRef"></contract-detail>
 
   <!--  合同驳回原因-->
-  <contract-reason ref="contractReasonRef" @ok="getContractList"></contract-reason>
+  <contract-reason ref="contractReasonRef"></contract-reason>
 </template>
 <script setup>
 import {reactive, ref} from "vue";
@@ -152,6 +152,9 @@ const multipleTableRef = ref();
 
 // 图片回显路径
 const imageUrl = ref('');
+
+const router = useRouter(); // 获取路由器
+
 
 // 表格数据
 const contractList = ref();
@@ -227,7 +230,7 @@ const openContractUpdate = (contract) => {
 
 // 查看合同详情
 import ContractDetail from "@/views/contract/contract-detail.vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 
 const contractDetailRef = ref();
 const openContractDetail = (contract) => {
@@ -327,6 +330,8 @@ const completeTask = (contract) => {
     console.log(result)
     if (result.message === "启动流程成功") {
       tip.success("再次提交审核成功")
+      router.push({ path: "/controller/index" });
+
     } else {
       tip.warning(result.message)
     }
