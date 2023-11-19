@@ -46,9 +46,7 @@
   >
     <task ref="taskListRef"></task>
   </el-drawer>
-
-
-
+  
   <task-detail ref="taskDetailRef"></task-detail>
 
 </template>

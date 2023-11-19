@@ -151,8 +151,6 @@ const supplyPhone = ref()
 const handleSelectSupplyChange = () => {
   supplyConcat.value = supplyList.value.find(item => item.supplyId === purchaseAdd.supplyId).concat
   supplyPhone.value = supplyList.value.find(item => item.supplyId === purchaseAdd.supplyId).phone
-  console.log(supplyConcat)
-  console.log(supplyPhone)
 }
 </script>
 

@@ -17,6 +17,11 @@
       <el-form-item label="电话：" prop="phone">
         <el-input v-model="supplyAdd.phone" />
       </el-form-item>
+      <el-form-item label="负责账号：">
+        <el-select v-model="supplyAdd.userId" style="width: 80%;">
+          <el-option v-for="user of userList" :label="user.userName" :value="user.userId" :key="user.userId"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="供应商介绍：" prop="supplyIntroduce">
         <el-input v-model="supplyAdd.supplyIntroduce"  type="textarea" :rows="5"/>
       </el-form-item>
@@ -95,6 +100,15 @@ const addSupply = () => {
     }
   });
 }
+
+// 获得所有产品
+const userList = ref();
+const getUserList= () => {
+  get("/user/user-all").then(result => {
+    userList.value = result.data;
+  });
+}
+getUserList();
 
 defineExpose({ open });
 </script>

@@ -170,15 +170,27 @@ const routes = [
             },
             {
                 path: '/summary/out',
-                name: 'outSummarList',
+                name: 'outSummaryList',
                 component: () => import('@/views/summary/out-summary.vue'),
                 meta: {nav: ['汇总管理', '项目结算情况汇总表']}
             },
             {
                 path: '/summary/in',
-                name: 'inSummarList',
+                name: 'inSummaryList',
                 component: () => import('@/views/summary/in-summary.vue'),
                 meta: {nav: ['汇总管理', '供应商结算应付汇总表']}
+            },
+            {
+                path: '/provide/index',
+                name: 'provideList',
+                component: () => import('@/views/provide/index.vue'),
+                meta: {nav: ['供应商管理', '供应商材料']}
+            },
+            {
+                path: '/inspect/index',
+                name: 'inspectList',
+                component: () => import('@/views/inspect/index.vue'),
+                meta: {nav: ['检验管理', '检验列表']}
             },
         ]
     },

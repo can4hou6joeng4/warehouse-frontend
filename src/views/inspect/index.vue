@@ -1,21 +1,19 @@
 <template>
-  <!-- 仓库列表 -->
+  <!-- 供应商关联材料页面 -->
   <div>
     <el-form inline class="searchForm">
       <el-form-item>
-        <el-input v-model="params.supplyName" placeholder="供应商名称" style="width: 120px;"  clearable></el-input>
+        <el-input v-model="params.materialName" placeholder="材料名称" style="width: 120px;"  clearable></el-input>
+      </el-form-item>
+      <el-form-item label="检验状态:" style="margin-left: 20px;">
+        <el-select v-model="params.inspectionResult" placeholder="检验状态" style="width: 120px;" clearable>
+          <el-option label="未审核" value="0"></el-option>
+          <el-option label="未通过" value="1"></el-option>
+          <el-option label="已通过" value="2"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="params.address" placeholder="供应商地址" style="width: 120px;"  clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="params.concat" placeholder="联系人" style="width: 120px;"  clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="params.phone" placeholder="电话" style="width: 120px;"  clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="getSupplyPageList">
+        <el-button type="primary" @click="getProvidePageList">
           <el-icon>
             <svg t="1646977561352" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3057" width="200" height="200"><path d="M986.304 871.424L747.328 630.4c-2.816-2.752-5.888-4.928-8.768-7.232 40.32-62.464 63.936-136.832 63.936-216.96 0-220.16-176.96-398.592-395.392-398.592C188.8 7.616 11.712 186.048 11.712 406.208s177.088 398.592 395.392 398.592a391.232 391.232 0 0 0 215.36-64.576c2.24 3.072 4.352 6.08 7.04 8.832l239.04 241.024a82.688 82.688 0 0 0 117.76 0 84.48 84.48 0 0 0 0-118.656m-579.2-192.512c-149.12 0-270.528-122.368-270.528-272.704 0-150.4 121.344-272.768 270.528-272.768 149.12 0 270.528 122.432 270.528 272.768 0 150.4-121.408 272.704-270.528 272.704" p-id="3058"></path></svg>
           </el-icon>
@@ -24,11 +22,11 @@
       </el-form-item>
     </el-form>
     <div>
-      <el-button type="primary" @click="openSupplyAdd()">
+      <el-button type="primary" @click="openProvideAdd()">
         <el-icon>
           <svg t="1646977404025" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2197" width="200" height="200"><path d="M925.696 384q19.456 0 37.376 7.68t30.72 20.48 20.48 30.72 7.68 37.376q0 20.48-7.68 37.888t-20.48 30.208-30.72 20.48-37.376 7.68l-287.744 0 0 287.744q0 20.48-7.68 37.888t-20.48 30.208-30.72 20.48-37.376 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-37.888l0-287.744-287.744 0q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-37.888q0-19.456 7.68-37.376t20.48-30.72 30.208-20.48 37.888-7.68l287.744 0 0-287.744q0-19.456 7.68-37.376t20.48-30.72 30.208-20.48 37.888-7.68q39.936 0 68.096 28.16t28.16 68.096l0 287.744 287.744 0z" p-id="2198"></path></svg>
         </el-icon>
-        &nbsp;添加仓库
+        &nbsp;添加
       </el-button>
       <!-- 导出数据 -->
       <el-button type="warning" @click="export2Table">
@@ -41,22 +39,38 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="supplyPageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
+  <el-table :data="providePageList" style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column type="index" width="50" />
-    <el-table-column prop="supplyId" label="供应商ID" sortable />
+    <el-table-column prop="materialName" label="材料名称" sortable />
     <el-table-column prop="supplyName" label="供应商名称" sortable />
-    <el-table-column prop="concat" label="供应商联系人" sortable />
-    <el-table-column prop="phone" label="供应商联系电话" sortable />
-    <el-table-column prop="address" label="供应商地址" sortable />
-    <el-table-column label="供应商介绍">
+    <el-table-column label="审核状态" width="120">
       <template #default="props">
-        <el-link type="primary" @click.prevent="openSupplyDetail(props.row)" style="margin-right: 8px">查看详情</el-link>
+        <span :class="{red:props.row.inspectionResult ==='0' || props.row.inspectionResult ==='1'}">
+          {{
+            props.row.inspectionResult === '0' ? '未审核'
+                : props.row.inspectionResult === '1' ? '审核未通过'
+                    : props.row.inspectionResult === '2' ? '审核通过'
+                      : '其他'
+          }}
+        </span>
+      </template>
+    </el-table-column>    
+    <el-table-column label="相关附件">
+      <template #default="props">
+        <el-link type="primary" @click="openProvideDateil(props.row)" style="margin-right: 8px">查看详情</el-link>
       </template>
     </el-table-column>
     <el-table-column label="操作">
       <template #default="props">
-        <el-button type="primary" title="修改" :icon="Edit" circle @click="openSupplyUpdate(props.row)" />
-        <el-button type="danger" title="删除" :icon="Delete" circle @click="deleteSupply(props.row.supplyId)" />
+        <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
+        <el-link type="primary" @click="agree(props.row.id)"
+                 v-if="props.row.inspectionResult === '0' && props.row.inspectionResult != '1'"
+                 style="margin-right: 8px">通过
+        </el-link>
+        <el-link type="primary" @click="reject(props.row.id)"
+                 v-if="props.row.inspectionResult === '0' && props.row.inspectionResult != '1'"
+                 style="margin-right: 8px">退回
+        </el-link>
       </template>
     </el-table-column>
   </el-table>
@@ -72,20 +86,14 @@
       @size-change="changeSize"
       @current-change="changeCurrent"
   />
-
-  <!-- 添加仓库对话框 -->
-  <supply-add ref="supplyAddRef" @ok="getSupplyPageList"></supply-add>
-
-  <!-- 修改仓库对话框 -->
-  <supply-update ref="supplyUpdateRef" @ok="getSupplyPageList"></supply-update>
-
-  <supply-detail ref="supplyDetailRef"></supply-detail>
-
+  
+  <provide-detail ref="provideDetailRef"></provide-detail>
+  
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue';
-import { get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH } from "@/common";
+import {get, put, del, tip, export2excel, WAREHOUSE_CONTEXT_PATH, post} from "@/common";
 import { useRouter } from "vue-router";
 import { Search, Edit, Check, Message, Star, Delete } from '@element-plus/icons-vue'
 
@@ -93,27 +101,24 @@ const router = useRouter(); // 获取路由器
 
 // 分页模糊查询数据
 const params = reactive({
-  supplyName: '',
-  address: '',
-  concat: '',
-  phone: '',
+  materialName: '',
+  inspectionResult: '',
   pageSize: 5,
   pageNum: 1,
   totalNum: 0
 })
 
 // 表格数据
-const supplyPageList = ref();
-
+const providePageList = ref();
 // 获取分页模糊查询结果
-const getSupplyPageList = () => {
+const getProvidePageList = () => {
   console.log(params)
-  get("/supply/supply-page-list", params).then(result => {
-    supplyPageList.value = result.data.resultList;
+  get("/inspect/inspect-page-list", params).then(result => {
+    providePageList.value = result.data.resultList;
     params.totalNum = result.data.totalNum;
   });
 }
-getSupplyPageList();
+getProvidePageList();
 
 // 导出数据
 const export2Table = () => {
@@ -134,51 +139,88 @@ const export2Table = () => {
 }
 
 
-// 跳向添加供应商
-import supplyAdd from "./supply-add.vue";
-const supplyAddRef = ref();
-const openSupplyAdd = () => {
-  supplyAddRef.value.open();
-};
-
-
-// 跳向修改供应商
-import supplyUpdate from "./supply-update.vue";
-import TaskDetail from "@/views/task/task-detail.vue";
-import SupplyDetail from "@/views/supply/supply-detail.vue";
-const supplyUpdateRef = ref();
-const openSupplyUpdate = (supply) => {
-  supplyUpdateRef.value.open(supply);
-};
-
-
-// 删除供应商
-const deleteSupply = (supplyId) => {
-  del(`/supply/supply-delete/${supplyId}`, null, { title: "提示", message: "您确定删除该供应商吗？" }).then(result => {
-    tip.success(result.message);
-    // 重新查询
-    getSupplyPageList();
-  });
-}
 
 // 修改每页显示条数
 const changeSize = (size) => {
   params.pageSize = size;
   // 重新查询
-  getSupplyPageList();
+  getProvidePageList();
 }
 // 修改当前页码
 const changeCurrent = (num) => {
   params.pageNum = num;
   // 重新查询
-  getSupplyPageList();
+  getProvidePageList();
 }
 
-const supplyDetailRef = ref();
-const openSupplyDetail = (supply) =>{
-  supplyDetailRef.value.open(supply);
+const reject = (id) => {
+  console.log(id)
+  let data = {
+    id: id
+  }
+  post("/inspect/inspect-reject", data).then(result => {
+    if(result.message === "退回成功"){
+      tip.success(result.message)
+      getProvidePageList()
+    }else {
+      tip.warning(result.message)
+    }
+  })
 }
 
+const agree = (id) => {
+  console.log(id)
+  let data = {
+    id: id
+  }
+  post("/inspect/inspect-agree", data).then(result => {
+    if(result.message === "操作成功"){
+      tip.success(result.message)
+      getProvidePageList()
+    }else {
+      tip.warning(result.message)
+    }
+  })
+}
+
+// 添加
+import ProvideDetail from "../provide/provide-detail.vue";
+const provideDetailRef = ref();
+const openProvideDateil = (provide) => {
+  provideDetailRef.value.open(provide);
+};
+
+// 下载合同照片
+const downloadFiles = (provide) => {
+  // 构建带参数的 URL
+  const url = WAREHOUSE_CONTEXT_PATH+`/inspect/download-images/`+provide.id;
+
+  fetch(url)
+      .then((response) => {
+        // 将二进制数据转换成 blob
+        return response.blob();
+      })
+      .then((blob) => {
+        // 创建一个用于下载的 URL
+        const downloadUrl = window.URL.createObjectURL(new Blob([blob]));
+
+        // 创建一个隐藏的 <a> 元素
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', 'images.zip');
+
+        // 将 <a> 元素添加到页面上以触发下载
+        document.body.appendChild(link);
+        link.click();
+
+        // 清理 URL 和 <a> 元素
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+}
 </script>
 
 <style scoped>

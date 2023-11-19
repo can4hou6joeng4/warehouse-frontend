@@ -113,9 +113,6 @@ const open = (contract) => {
   get(`/product-material/ratio/${contractUpdate.productId}`).then(result => {
     ratioDetails.value = result.data;
   });
-  // userUpdate.userId = user.userId;
-  // userUpdate.userCode = user.userCode;
-  // userUpdate.userName = user.userName;
   visible.value = true;
 };
 

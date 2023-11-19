@@ -87,7 +87,7 @@ import {get, put, tip, export2excel, post, eltable2excel} from "@/common";
 import {useRoute, useRouter} from 'vue-router'
 import instoreUpdate from './instore-update.vue'
 import ContractUpdate from "@/views/contract/contract-update.vue";
-
+import Decimal from "decimal.js"
 const route = useRoute(); // 获取路由信息
 
 // 分页模糊查询数据
@@ -117,7 +117,10 @@ const getInstorePageList = () => {
       if(item.freight == null){
         item.freightSum = 0
       }else{
-        item.freightSum = item.freight * item.inNum
+        let freight = new Decimal(item.freight)
+        let inNum = new Decimal(item.inNum)
+        let sum = freight.times(inNum).toString();
+        item.freightSum = sum
       }
     })
     
