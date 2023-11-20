@@ -64,13 +64,6 @@ const routes = [
                 component: () => import('@/views/commodity/index/index.vue'),
                 meta: {nav: ['材料管理', '材料列表']}
             },
-            // 材料分类
-            {
-                path: '/commodity/category',
-                name: 'commodityCategory',
-                component: () => import('@/views/commodity/category/index.vue'),
-                meta: {nav: ['材料管理', '材料分类']}
-            },
             // 采购列表
             {
                 path: '/purchase/index',

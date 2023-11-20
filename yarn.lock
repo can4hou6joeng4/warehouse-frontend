@@ -34,18 +34,6 @@
   resolved "https://registry.npmmirror.com/@popperjs/core/-/core-2.11.2.tgz"
   integrity sha512-92FRmppjjqz29VMJ2dn+xdyXZBrMlE42AV6Kq6BwjWV7CNUW1hs2FtxSNLQE+gJhaZ6AAmYuO9y8dshhcBl7vA==
 
-"@types/lodash-es@*":
-  version "4.17.11"
-  resolved "https://registry.npmmirror.com/@types/lodash-es/-/lodash-es-4.17.11.tgz"
-  integrity sha512-eCw8FYAWHt2DDl77s+AMLLzPn310LKohruumpucZI4oOFJkIgnlaJcy23OKMJxx4r9PeTF13Gv6w+jqjWQaYUg==
-  dependencies:
-    "@types/lodash" "*"
-
-"@types/lodash@*":
-  version "4.14.201"
-  resolved "https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.201.tgz"
-  integrity sha512-y9euML0cim1JrykNxADLfaG0FgD1g/yTHwUs/Jg9ZIU7WKj2/4IW9Lbb1WZbvck78W/lfGXFfe+u2EGfIJXdLQ==
-
 "@types/node@^17.0.22":
   version "17.0.22"
   resolved "https://registry.npmmirror.com/@types/node/-/node-17.0.22.tgz"
@@ -74,7 +62,7 @@
     "@vue/compiler-core" "3.3.8"
     "@vue/shared" "3.3.8"
 
-"@vue/compiler-sfc@^3.0.8", "@vue/compiler-sfc@^3.2.2", "@vue/compiler-sfc@3.3.8":
+"@vue/compiler-sfc@3.3.8", "@vue/compiler-sfc@^3.2.2":
   version "3.3.8"
   resolved "https://registry.npmmirror.com/@vue/compiler-sfc/-/compiler-sfc-3.3.8.tgz"
   integrity sha512-WMzbUrlTjfYF8joyT84HfwwXo+8WPALuPxhy+BZ6R4Aafls+jDBnSz8PDz60uFhuqFbl3HxRfxvDzrUf3THwpA==
@@ -198,7 +186,7 @@ bpmn-js-properties-panel@^0.37.2:
     scroll-tabs "^1.0.1"
     selection-update "^0.1.2"
 
-"bpmn-js@^3.x || ^4.x || ^5.x || ^6.x || ^7.x", bpmn-js@^7.5.0:
+bpmn-js@^7.5.0:
   version "7.5.0"
   resolved "https://registry.npmmirror.com/bpmn-js/-/bpmn-js-7.5.0.tgz"
   integrity sha512-0ANaE6Bikg1GmkcvO7RK0MQPX+EKYKBc+q7OWk39/16NcCdNZ/4UiRcCr9n0u1VUCIDsSU/jJ79TIZFnV5CNjw==
@@ -232,7 +220,7 @@ bpmn-moddle@^7.0.4:
     moddle "^5.0.2"
     moddle-xml "^9.0.6"
 
-camunda-bpmn-moddle@^4.5.0, camunda-bpmn-moddle@^4.x:
+camunda-bpmn-moddle@^4.5.0:
   version "4.5.0"
   resolved "https://registry.npmmirror.com/camunda-bpmn-moddle/-/camunda-bpmn-moddle-4.5.0.tgz"
   integrity sha512-g3d2ZaCac52WIXP3kwmYrBEkhm0nnXcWYNj5STDkmiWpDTKUzTj4ZIt38IRpci1Uj3a/rZACvXLnQj8xKFyp/w==
@@ -294,7 +282,7 @@ diagram-js-direct-editing@^1.6.1:
     min-dash "^3.5.2"
     min-dom "^3.1.3"
 
-diagram-js@*, diagram-js@^6.8.2:
+diagram-js@^6.8.2:
   version "6.8.2"
   resolved "https://registry.npmmirror.com/diagram-js/-/diagram-js-6.8.2.tgz"
   integrity sha512-5EKYHjW2mmGsn9/jSenSkm8cScK5sO9eETBRQNIIzgZjxBDJn6eX964L2d7/vrAW9SeuijGUsztL9+NUinSsNg==
@@ -379,6 +367,11 @@ frac@~1.1.2:
   resolved "https://registry.npmmirror.com/frac/-/frac-1.1.2.tgz"
   integrity sha512-w/XBfkibaTl3YDqASwfDUqkna4Z2p9cFSr1aHDt0WoMTECnRfBOv2WArlZILlqgWlmdIlALXGpM2AOhEk5W3IA==
 
+fsevents@~2.3.1, fsevents@~2.3.2:
+  version "2.3.3"
+  resolved "https://registry.npmmirror.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
+  integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+
 function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.nlark.com/function-bind/download/function-bind-1.1.1.tgz"
@@ -418,7 +411,7 @@ is-core-module@^2.2.0:
   dependencies:
     has "^1.0.3"
 
-lodash-es@*, lodash-es@^4.17.21:
+lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmmirror.com/lodash-es/-/lodash-es-4.17.21.tgz"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
@@ -428,15 +421,15 @@ lodash-unified@^1.0.2:
   resolved "https://registry.npmmirror.com/lodash-unified/-/lodash-unified-1.0.2.tgz"
   integrity sha512-OGbEy+1P+UT26CYi4opY4gebD8cWRDxAT6MAObIVQMiqYdxZr1g3QHWCToVsm31x2NkLS4K3+MC2qInaRMa39g==
 
-lodash@*, lodash@^4.17.20, lodash@^4.17.21:
-  version "4.17.21"
-  resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz"
-  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
-
 lodash@^3.0.0:
   version "3.10.1"
   resolved "https://registry.npmmirror.com/lodash/-/lodash-3.10.1.tgz"
   integrity sha512-9mDDwqVIma6OZX79ZlDACZl8sBm0TEnkf99zV3iMA4GzkIT/9hiqP5mY0HoT1iNLCrKc/R1HByV+yJfRWVJryQ==
+
+lodash@^4.17.20, lodash@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmmirror.com/lodash/-/lodash-4.17.21.tgz"
+  integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
 
 magic-string@^0.30.5:
   version "0.30.5"
@@ -553,12 +546,7 @@ printj@~1.2.2:
   resolved "https://registry.npmmirror.com/printj/-/printj-1.2.3.tgz"
   integrity sha512-sanczS6xOJOg7IKDvi4sGOUOe7c1tsEzjwlLFH/zgwx/uyImVM9/rgBkc8AfiQa/Vg54nRd8mkm9yI7WV/O+WA==
 
-printj@~1.3.0:
-  version "1.3.1"
-  resolved "https://registry.npmmirror.com/printj/-/printj-1.3.1.tgz"
-  integrity sha512-GA3TdL8szPK4AQ2YnOe/b+Y1jUFwmmGMMK/qbY7VcE3Z7FU8JstbKiKRzO6CIiAKPhTO8m01NoQ0V5f3jc4OGg==
-
-printj@~1.3.1:
+printj@~1.3.0, printj@~1.3.1:
   version "1.3.1"
   resolved "https://registry.npmmirror.com/printj/-/printj-1.3.1.tgz"
   integrity sha512-GA3TdL8szPK4AQ2YnOe/b+Y1jUFwmmGMMK/qbY7VcE3Z7FU8JstbKiKRzO6CIiAKPhTO8m01NoQ0V5f3jc4OGg==
@@ -665,7 +653,7 @@ vue-router@4.0.11:
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.14"
 
-"vue@^2.6.0 || ^3.2.0", vue@^3.0.0, "vue@^3.0.0-0 || ^2.6.0", vue@^3.2.0, vue@^3.2.31, vue@3.3.8:
+vue@^3.2.31:
   version "3.3.8"
   resolved "https://registry.npmmirror.com/vue/-/vue-3.3.8.tgz"
   integrity sha512-5VSX/3DabBikOXMsxzlW8JyfeLKlG9mzqnWgLQLty88vdZL7ZJgrdgBOmrArwxiLtmS+lNNpPcBYqrhE6TQW5w==
