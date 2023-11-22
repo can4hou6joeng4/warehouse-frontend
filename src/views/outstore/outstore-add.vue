@@ -24,7 +24,7 @@
         <el-input v-model="outstoreAdd.productNum" disabled/>
       </el-form-item>
       <el-form-item label="客户：" prop="custom">
-        <el-input v-model="outstoreAdd.custom" />
+        <el-input v-model="outstoreAdd.custom" disabled/>
       </el-form-item>
       <el-form-item label="出库数量/单位：吨：" prop="outNum">
         <el-input v-model="outstoreAdd.outNum" />
@@ -66,7 +66,7 @@ const outstoreAdd = reactive({
   workRegion:'',
   salePrice:'',
   custom: '',
-  salePriceSum:''
+  salePriceSum:'',
 });
 
 // 所有仓库
@@ -96,6 +96,13 @@ const getContractList= (id) => {
       outstoreAdd.workRegion = contractList.value.find(item => item.contractId === parseInt(id)).workRegion
       outstoreAdd.productId = contractList.value.find(item => item.contractId === parseInt(id)).productId
       outstoreAdd.productNum = contractList.value.find(item => item.contractId === parseInt(id)).productNum
+      let customerId = contractList.value.find(item => item.contractId === parseInt(id)).customerId
+      console.log(contractList.value.find(item => item.contractId === parseInt(id)))
+      if (customerId == '' || customerId == null){
+        outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).otherCustomer
+      }else{
+        outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).customerName
+      }
     }
   });
 }

@@ -10,6 +10,14 @@
           <el-form-item label="关联工区：" prop="workRegion">
             <el-input v-model="contractAdd.workRegion" autocomplete="off"/>
           </el-form-item>
+          <el-form-item label="合同客户：">
+            <el-select v-model="contractAdd.customerId" style="width: 80%;" clearable @change="handleSelectChangeCustomer">
+              <el-option v-for="customer of customerList" :label="customer.customerName" :value="customer.customerId" :key="customer.customerId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="其他客户：" v-if="showOtherCustomer">
+            <el-input v-model="contractAdd.otherCustomer" autocomplete="off"/>
+          </el-form-item>
           <el-form-item label="合同工期">
             <el-date-picker
                 v-model="contractAdd.date"
@@ -96,6 +104,8 @@ const contractAdd = reactive({
   contractDesc: '',
   contractState: '',
   workRegion: '',
+  customerId:'',
+  otherCustomer: '',
   productId:'',
   materialId: '',
   productNum: '',
@@ -109,6 +119,9 @@ const close = () => {
   contractAdd.contractDesc = '';
   contractAdd.contractState = '';
   contractAdd.workRegion = '';
+  contractAdd.productNum = '';
+  contractAdd.customerId = '';
+  contractAdd.otherCustomer='';
   visible.value = false;
   showRatio.value = false;
   contractAdd.productId = "";
@@ -173,6 +186,24 @@ const getProductList= () => {
 }
 getProductList();
 
+// 填写其他客户的可见性
+const showOtherCustomer = ref(false)
+// 获得所有客户
+const customerList = ref();
+const getCustomerList= () => {
+  get("/customer/customer-list").then(result => {
+    customerList.value = result.data;
+    customerList.value.push({"customerId":-1,"customerName":"其他"})
+  });
+}
+getCustomerList();
+// 客户选择发生变化
+const handleSelectChangeCustomer = () => {
+  showOtherCustomer.value = false
+  if(contractAdd.customerId==-1){
+    showOtherCustomer.value = true
+  }
+}
 // 图片回显路径
 const imageUrls = ref([]);
 let imageList = ref([])
@@ -186,7 +217,6 @@ const handleAvatarChange = (uploadFile) => {
   reader.onload = () => {
     // 将转化的url赋值给文件
     imageUrls.value.push(reader.result);
-    // imageList.value = [...new Set(imageUrls.value)];
   };
   if(uploadFile.response != null){
     if (contractAdd.files == null || contractAdd.files == ""){
@@ -195,24 +225,23 @@ const handleAvatarChange = (uploadFile) => {
       contractAdd.files += "," + uploadFile.response.message
     }
   }
-  console.log(contractAdd.files)
 }
 
 // 上传之前做简单验证
 const beforeAvatarUpload = (rawFile) => {
-  if (rawFile.type !== 'image/jpg'
-      && rawFile.type !== 'image/jpeg'
-      && rawFile.type !== 'image/png'
-      && rawFile.type !== 'image/gif'
-      && rawFile.type !== 'image/svg'
-      && rawFile.type !== 'image/webp'
-  ) {
-    tip.error('只能上传图片格式!');
-    return false
-  } else if (rawFile.size / 1024 / 1024 > 5) {
-    tip.error('上传文件不能大于5MB!');
-    return false
-  }
+  // if (rawFile.type !== 'image/jpg'
+  //     && rawFile.type !== 'image/jpeg'
+  //     && rawFile.type !== 'image/png'
+  //     && rawFile.type !== 'image/gif'
+  //     && rawFile.type !== 'image/svg'
+  //     && rawFile.type !== 'image/webp'
+  // ) {
+  //   tip.error('只能上传图片格式!');
+  //   return false
+  // } else if (rawFile.size / 1024 / 1024 > 5) {
+  //   tip.error('上传文件不能大于5MB!');
+  //   return false
+  // }
   return true;
 }
 

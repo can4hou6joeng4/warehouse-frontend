@@ -65,6 +65,7 @@
     <el-table-column prop="startTime" label="工期开始时间" width="120"/>
     <el-table-column prop="endTime" label="工期结束时间" width="120"/>
     <el-table-column prop="workRegion" label="关联工区" width="120"/>
+    <el-table-column prop="custom" label="合同客户" width="120"/>
     <el-table-column label="合同状态" width="120">
       <template #default="props">
         <span :class="{red:props.row.contractState ==='0' || props.row.contractState ==='1'}">
@@ -89,7 +90,8 @@
     <el-table-column prop="createTime" label="创建时间" width="100"/>
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
-        <el-link type="primary" v-if="props.row.contractState === '0' || props.row.contractState === '1'"
+<!--        v-if="props.row.contractState === '0' || props.row.contractState === '1'"-->
+        <el-link type="primary" 
                  @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改
         </el-link>
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
@@ -181,27 +183,31 @@ const showExamine = ref(true)
 
 // 获取查询结果
 const getContractList = () => {
+  // 这里的区分合同id存不存在是因为需要从任务界面跳转过来能够直接看到目前任务绑定的合同 
   if (route.query.contractId) {
     params.contractId = parseInt(route.query.contractId)
-    get("/contract/contract-list", params).then(result => {
-      console.log(result.data)
-      contractList.value = result.data.resultList;
-      params.totalNum = result.data.totalNum;
-      // changeFileName(contractList.value)
-    });
+    getAll();
   } else {
-    get("/contract/contract-list", params).then(result => {
-      console.log(result.data)
-      contractList.value = result.data.resultList;
-      params.totalNum = result.data.totalNum;
-      // changeFileName(contractList.value)
-    });
+    getAll();
   }
   if (localStorage.getItem("userRole") !== "supper_manage") {
     showExamine.value = false
   }
-  console.log(showExamine.value)
 }
+const getAll = () =>{
+  get("/contract/contract-list", params).then(result => {
+    contractList.value = result.data.resultList;
+    params.totalNum = result.data.totalNum;
+    contractList.value.forEach(function(item,index){
+      if(item.customerId == null){
+        item.custom = item.otherCustomer
+      }else{
+        item.custom = item.customerName
+      }
+    })
+  });
+}
+
 getContractList();
 
 
@@ -235,7 +241,6 @@ import {useRoute, useRouter} from "vue-router";
 const contractDetailRef = ref();
 const openContractDetail = (contract) => {
   let contractRow = contractList.value.find(item => item.contractId === contract.contractId)
-  console.log(contractRow)
   contractDetailRef.value.open(contractRow,);
 }
 
@@ -259,7 +264,6 @@ const export2Table = () => {
 
 // 下载合同照片
 const downloadFiles = (contract) => {
-  console.log(contract.contractId)
   // 构建带参数的 URL
   const url = WAREHOUSE_CONTEXT_PATH+`/contract/download-images/`+contract.contractId;
 
@@ -275,7 +279,7 @@ const downloadFiles = (contract) => {
         // 创建一个隐藏的 <a> 元素
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.setAttribute('download', 'images.zip');
+        link.setAttribute('download', '附件.zip');
 
         // 将 <a> 元素添加到页面上以触发下载
         document.body.appendChild(link);

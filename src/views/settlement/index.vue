@@ -20,7 +20,7 @@
 
 
   <!-- 出库单表格 -->
-  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" height="250px" border stripe>
+  <el-table :data="outstorePageList" style="width: 100%;margin-top: 10px;" height="250px" border stripe :span-method="outstoreSpanMethod">
     <el-table-column prop="outsId" label="出库单ID" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="155"/>
     <el-table-column prop="workRegion" label="工区名称" width="155"/>
@@ -28,7 +28,9 @@
     <el-table-column prop="outNum" label="出库数量" width="155"/>
     <el-table-column prop="salePrice" label="单价" width="155"/>
     <el-table-column prop="salePriceSum" label="金额" width="155"/>
-    <el-table-column prop="remarks" label="备注" width="155"/>    
+    <el-table-column prop="remarks" label="备注" width="155"/>
+    <el-table-column prop="outStoreSum" label="总金额/元" width="155"/>
+
   </el-table>
   <div>
     <span>出库总金额：{{outStoreSum}}</span>
@@ -38,19 +40,23 @@
 
 
   <!-- 入库单表格 -->
-  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;" height="250px" border stripe>
+  <el-table :data="instorePageList" style="width: 100%;margin-top: 10px;" height="250px" border stripe :span-method="instoreSpanMethod">
     <el-table-column prop="insId" label="入库单ID" width="130"/>
     <el-table-column prop="contractName" label="所属合同" width="155"/>
     <el-table-column prop="supplyName" label="供应商" width="155"/>
     <el-table-column prop="materialName" label="材料名称" width="155"/>
     <el-table-column prop="inNum" label="公司数量" width="155"/>
     <el-table-column prop="price" label="单价" width="155"/>
-    <el-table-column prop="priceSum" label="金额" width="155"/>
+    <el-table-column prop="priceSum" label="金额/元" width="155"/>
     <el-table-column prop="remarks" label="备注" width="155"/>
+    <el-table-column prop="inStoreSum" label="总金额/元" width="155"/>
+<!--    <el-table-column prop="inStoreSum" label="入库总金额" width="120" :summary="sumColumn">-->
+<!--      <template slot-scope="{ $index }">{{ sumColumn($index) }}</template>-->
+<!--    </el-table-column>-->
   </el-table>
-  <div>
-    <span>入库总金额：{{inStoreSum}}</span>
-  </div>
+<!--  <div>-->
+<!--    <span>入库总金额：{{inStoreSum}}</span>-->
+<!--  </div>-->
 
   <!--  &lt;!&ndash; 分页 &ndash;&gt;-->
 <!--  <el-pagination-->
@@ -117,6 +123,9 @@ const getOutstorePageList = () => {
       sum = sum.plus(money)
       outStoreSum.value = sum.toString()
     })
+    outstorePageList.value.forEach(function (item, index){
+      item.outStoreSum = outStoreSum.value
+    })
   });
 }
 
@@ -135,6 +144,9 @@ const getInstorePageList = () => {
       let sum = new Decimal(inStoreSum.value)
       sum = sum.plus(money) 
       inStoreSum.value = sum.toString()
+    })
+    instorePageList.value.forEach(function (item, index){
+      item.inStoreSum = inStoreSum.value
     })
   });
 }
@@ -176,6 +188,75 @@ const completeSettlementTask = () => {
     tip.error("暂无合同需要入库")
   }
 }
+
+const sumColumn = (index) =>{
+  console.log(inStoreSum.value)
+  return inStoreSum.value;
+}
+
+const outstoreSpanMethod = function ({ row, rowIndex, columnIndex }) {
+  if (columnIndex === 8 ) {
+    // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
+    if (
+        rowIndex > 0 &&
+        row.outStoreSum === outstorePageList.value[rowIndex - 1].outStoreSum
+    ) {
+      // 当前行的 supplyName 和 totalAmount 与上一行相同
+      return {
+        rowspan: 0,
+        colspan: 0,
+      };
+    } else {
+      // 当前行的 supplyName 和 totalAmount 与上一行不同，需要合并
+      let rowspan = 1;
+      for (let i = rowIndex + 1; i < outstorePageList.value.length; i++) {
+        if (
+            row.outStoreSum === outstorePageList.value[i].outStoreSum 
+        ) {
+          rowspan++;
+        } else {
+          break;
+        }   
+      }
+      return {
+        rowspan,
+        colspan: 1,
+      };
+    }
+  }
+};
+
+const instoreSpanMethod = function ({ row, rowIndex, columnIndex }) {
+  if (columnIndex === 8 ) {
+    // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
+    if (
+        rowIndex > 0 &&
+        row.inStoreSum === instorePageList.value[rowIndex - 1].inStoreSum
+    ) {
+      // 当前行的 supplyName 和 totalAmount 与上一行相同
+      return {
+        rowspan: 0,
+        colspan: 0,
+      };
+    } else {
+      // 当前行的 supplyName 和 totalAmount 与上一行不同，需要合并
+      let rowspan = 1;
+      for (let i = rowIndex + 1; i < instorePageList.value.length; i++) {
+        if (
+            row.inStoreSum === instorePageList.value[i].inStoreSum
+        ) {
+          rowspan++;
+        } else {
+          break;
+        }
+      }
+      return {
+        rowspan,
+        colspan: 1,
+      };
+    }
+  }
+};
 </script>
 
 <style scoped>

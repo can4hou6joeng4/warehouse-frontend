@@ -38,8 +38,8 @@
     <el-table-column prop="productName" label="费用名称" width="170"/>
     <el-table-column prop="outNum" label="数量"  width="95" />
     <el-table-column prop="salePrice" label="单价"  width="80" />
-    <el-table-column prop="money" label="金额"  width="95" />
-    <el-table-column prop="totalAmount" label="结算金额"  width="95" />
+    <el-table-column prop="money" label="金额/元"  width="95" />
+    <el-table-column prop="totalAmount" label="结算金额/元"  width="95" />
     <el-table-column prop="remarks" label="备注"/>
   </el-table>
   <div>
@@ -141,7 +141,7 @@ const changeCurrent = (num) => {
 
 // 数据行单元格的合并
 const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (columnIndex === 1 || columnIndex === 7    ) {
+  if (columnIndex === 1 || columnIndex === 7 ) {
     // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
     if (
         rowIndex > 0 &&

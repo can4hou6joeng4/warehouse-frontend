@@ -10,10 +10,18 @@
           <el-form-item label="关联工区：" prop="workRegion">
             <el-input v-model="contractUpdate.workRegion" autocomplete="off"/>
           </el-form-item>
+          <el-form-item label="合同客户：">
+            <el-select v-model="contractUpdate.customerId" style="width: 80%;" clearable @change="handleSelectChangeCustomer">
+              <el-option v-for="customer of customerList" :label="customer.customerName" :value="customer.customerId" :key="customer.customerId"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="其他客户：" v-if="showOtherCustomer">
+            <el-input v-model="contractUpdate.otherCustomer" autocomplete="off"/>
+          </el-form-item>
           <el-form-item label="合同工期">
             <el-date-picker
                 v-model="contractUpdate.date"
-                type="datetimerange"
+                type="daterange"
                 unlink-panels
                 range-separator="To"
                 start-placeholder="开始日期"
@@ -96,6 +104,8 @@ const contractUpdate = reactive({
   productId:'',
   materialId: '',
   productNum: '',
+  customerId:'',
+  otherCustomer:'',
   ifPurchase:''
 });
 
@@ -104,17 +114,38 @@ const contractUpdate = reactive({
 // 图片回显路径
 const imageUrl = ref('');
 
+// 所有客户
+const customerList = ref();
+
 // 该对话框打开并初始化
 const open = (contract) => {
   for(let prop in contract){
-    console.log(contract[prop])
     contractUpdate[prop] = contract[prop];
   }
   get(`/product-material/ratio/${contractUpdate.productId}`).then(result => {
     ratioDetails.value = result.data;
   });
+  get("/customer/customer-list").then(result => {
+    customerList.value = result.data;
+    customerList.value.push({"customerId":-1,"customerName":"其他"})
+  });
+  console.log(contractUpdate.customerId)
+  if(contractUpdate.customerId == '' || contractUpdate.customerId == null){
+    showOtherCustomer.value = true
+    contractUpdate.customerId=-1
+  }
   visible.value = true;
 };
+
+// 填写其他客户的可见性
+const showOtherCustomer = ref(false)
+// 选择客户时
+const handleSelectChangeCustomer = () => {
+  showOtherCustomer.value = false
+  if(contractUpdate.customerId==-1){
+    showOtherCustomer.value = true
+  }
+}
 
 const contractUpdateRef = ref();
 // 定义
@@ -123,6 +154,10 @@ const emit = defineEmits(["ok"]);
 const updateContract = () => {
   contractUpdateRef.value.validate(valid => {
     if(valid){
+      if (contractUpdate.customerId == -1){
+        contractUpdate.customerId = ''
+      }
+      console.log(contractUpdate.otherCustomer)
       put('/contract/updateContract', contractUpdate).then(result => {
         emit('ok');
         tip.success(result.message);
