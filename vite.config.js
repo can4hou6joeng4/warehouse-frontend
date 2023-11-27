@@ -34,7 +34,7 @@ export default ({ command, mode }) => {
 		//服务端地址http://localhost:9999/warehouse
         '/api': {
           //target: env.VITE_WAREHOUSE_CONTEXT_PATH,
-          target: env.VITE_WAREHOUSE_CONTEXT_PATH,
+          target: 'http://175.178.234.102:9999/warehouse/',
           changeOrigin: true,
           rewrite: path => path.replace(/^\/api/, '')
         }
