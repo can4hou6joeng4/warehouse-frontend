@@ -25,17 +25,14 @@
     <el-table-column prop="contractName" label="所属合同" width="155"/>
     <el-table-column prop="workRegion" label="工区名称" width="155"/>
     <el-table-column prop="productName" label="产品名称" width="155"/>
-    <el-table-column prop="outNum" label="出库数量" width="155"/>
+    <el-table-column prop="outNum" label="公司数量" width="155"/>
+    <el-table-column prop="unitName" label="单位" width="155"/>
     <el-table-column prop="salePrice" label="单价" width="155"/>
-    <el-table-column prop="salePriceSum" label="金额" width="155"/>
+    <el-table-column prop="salePriceSum" label="金额/元" width="155"/>
     <el-table-column prop="remarks" label="备注" width="155"/>
-    <el-table-column prop="outStoreSum" label="总金额/元" width="155"/>
-
+    <el-table-column prop="outStoreSum" label="总金额/元" width="155" fixed="right"/>
   </el-table>
-  <div>
-    <span>出库总金额：{{outStoreSum}}</span>
-  </div>
-
+    
   <el-divider></el-divider>
 
 
@@ -46,10 +43,11 @@
     <el-table-column prop="supplyName" label="供应商" width="155"/>
     <el-table-column prop="materialName" label="材料名称" width="155"/>
     <el-table-column prop="inNum" label="公司数量" width="155"/>
+    <el-table-column prop="unitName" label="单位" width="155"/>
     <el-table-column prop="price" label="单价" width="155"/>
     <el-table-column prop="priceSum" label="金额/元" width="155"/>
     <el-table-column prop="remarks" label="备注" width="155"/>
-    <el-table-column prop="inStoreSum" label="总金额/元" width="155"/>
+    <el-table-column prop="inStoreSum" label="总金额/元" width="155" fixed="right"/>
 <!--    <el-table-column prop="inStoreSum" label="入库总金额" width="120" :summary="sumColumn">-->
 <!--      <template slot-scope="{ $index }">{{ sumColumn($index) }}</template>-->
 <!--    </el-table-column>-->
@@ -158,6 +156,7 @@ const getContractList= () => {
     contractList.value = result.data;
   });
 }
+getContractList()
 
 // 结算完成的可见性
 const showTask = ref(false)
@@ -195,7 +194,7 @@ const sumColumn = (index) =>{
 }
 
 const outstoreSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (columnIndex === 8 ) {
+  if (columnIndex === 9 ) {
     // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
     if (
         rowIndex > 0 &&
@@ -227,7 +226,7 @@ const outstoreSpanMethod = function ({ row, rowIndex, columnIndex }) {
 };
 
 const instoreSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (columnIndex === 8 ) {
+  if (columnIndex === 9 ) {
     // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
     if (
         rowIndex > 0 &&

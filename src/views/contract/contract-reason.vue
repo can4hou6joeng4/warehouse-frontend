@@ -5,12 +5,12 @@
       <el-form-item label="退回原因：" prop="reason">
         <el-input v-model="reason" autocomplete="off"/>
       </el-form-item>
-      <el-form-item label="是否需要采购：">
-        <el-select v-model="data.ifPurchase" autocomplete="off">
-          <el-option label="无需采购" value="0"></el-option>
-          <el-option label="需要采购" value="1"></el-option>
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="是否需要采购：">-->
+<!--        <el-select v-model="data.ifPurchase" autocomplete="off">-->
+<!--          <el-option label="无需采购" value="0"></el-option>-->
+<!--          <el-option label="需要采购" value="1"></el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
     </el-form>
  
     <template #footer>

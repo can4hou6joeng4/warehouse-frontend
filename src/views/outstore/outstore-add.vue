@@ -26,10 +26,10 @@
       <el-form-item label="客户：" prop="custom">
         <el-input v-model="outstoreAdd.custom" disabled/>
       </el-form-item>
-      <el-form-item label="出库数量/单位：吨：" prop="outNum">
+      <el-form-item label="出库数量：" prop="outNum">
         <el-input v-model="outstoreAdd.outNum" />
       </el-form-item>
-      <el-form-item label="销售单价/单位：吨：" prop="salePrice">
+      <el-form-item label="销售单价：" prop="salePrice">
         <el-input v-model="outstoreAdd.salePrice" />
       </el-form-item>
       <el-form-item label="车牌号：" prop="carNumber">

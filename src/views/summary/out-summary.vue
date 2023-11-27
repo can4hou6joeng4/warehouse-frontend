@@ -31,15 +31,15 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod" id="elTable">
+  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod" id="elTable" show-summary :summary-method="getSummaries">
     <el-table-column label="序号" type="index" width="60"></el-table-column>
     <el-table-column prop="workRegion" label="项目名称" width="170"/>
-    <el-table-column prop="unit" label="单位"  width="80" />
     <el-table-column prop="productName" label="费用名称" width="170"/>
     <el-table-column prop="outNum" label="数量"  width="95" />
+    <el-table-column prop="unitName" label="单位"  width="80" />
     <el-table-column prop="salePrice" label="单价"  width="80" />
     <el-table-column prop="money" label="金额/元"  width="95" />
-    <el-table-column prop="totalAmount" label="结算金额/元"  width="95" />
+    <el-table-column prop="totalAmount" label="结算金额/元"  width="170" />
     <el-table-column prop="remarks" label="备注"/>
   </el-table>
   <div>
@@ -101,18 +101,17 @@ const getSummaryPageList = () => {
   moneySum.value = 0
   // 后台获取查询结果
   get("/outstore/outstore-summary-page-list", params).then(result => {
+    params.totalNum = result.data.totalNum;
     summaryPageList.value = result.data.resultList
     summaryPageList.value.forEach(function (item) {
+      console.log(item.money)
       item.remarks = dateTransform(item.earliestCreateTime) +'-'+ getDay(item.latestCreateTime) + "出料施工" +item.total + "车"
       let money = new Decimal(item.money)
       let sum = new Decimal(moneySum.value)
       sum = sum.plus(money)
       moneySum.value = sum.toString()      
-      item.unit = "元/吨"
     })
     params.startTime = ''
-    
-    params.totalNum = summaryPageList.value.length
   });
   getSupplyList()
 }
@@ -123,7 +122,8 @@ getSummaryPageList();
 
 // 导出数据
 const export2Table = () => {
-  eltable2excel("elTable")
+  // eltable2excel("elTable")
+  console.log(params)
 }
 
 // 修改每页显示条数
@@ -141,12 +141,13 @@ const changeCurrent = (num) => {
 
 // 数据行单元格的合并
 const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (columnIndex === 1 || columnIndex === 7 ) {
+  if (columnIndex === 1 || columnIndex === 7 || columnIndex === 5) {
     // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
     if (
         rowIndex > 0 &&
         row.supplyName === summaryPageList.value[rowIndex - 1].supplyName &&
-        row.totalAmount === summaryPageList.value[rowIndex - 1].totalAmount
+        row.totalAmount === summaryPageList.value[rowIndex - 1].totalAmount &&
+        row.salePrice === summaryPageList.value[rowIndex - 1].salePrice
     ) {
       // 当前行的 supplyName 和 totalAmount 与上一行相同
       return {
@@ -159,7 +160,8 @@ const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
       for (let i = rowIndex + 1; i < summaryPageList.value.length; i++) {
         if (
             row.supplyName === summaryPageList.value[i].supplyName &&
-            row.totalAmount === summaryPageList.value[i].totalAmount
+            row.totalAmount === summaryPageList.value[i].totalAmount &&
+            row.salePrice === summaryPageList.value[i].salePrice
         ) {
           rowspan++;
         } else {
@@ -172,6 +174,27 @@ const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
       };
     }
   }
+};
+
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
+
+  columns.forEach((column, index) => {
+    if (column.property === 'totalAmount') {
+      const values = data.map((item) => Number(item[column.property]));
+      if (!values.every((value) => Number.isNaN(value))) {
+        const sum = moneySum.value;
+        sums[index] = `总金额: ${sum} 元`; // Assuming the values are currency, rounding to 2 decimal places
+      } else {
+        sums[index] = 'N/A';
+      }
+    } else {
+      sums[index] = '';
+    }
+  });
+
+  return sums;
 };
 
 </script>

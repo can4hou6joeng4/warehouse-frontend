@@ -33,20 +33,20 @@
   </div>
 
   <!-- 表格 -->
-  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;overflow-x: scroll;" :span-method="objectSpanMethod" id="elTable">
+  <el-table :data="summaryPageList" style="width: 100%;margin-top: 10px;" :span-method="objectSpanMethod" show-summary  :summary-method="getSummaries" id="elTable">
     <el-table-column label="序号" type="index" width="60"></el-table-column>
     <el-table-column prop="supplyName" label="供应商名称" width="170"/>
     <el-table-column prop="unitName" label="单位"  width="80" />
     <el-table-column prop="materialName" label="费用名称" width="170"/>
     <el-table-column prop="inNum" label="数量"  width="95" />
-    <el-table-column prop="price" label="单价"  width="80" />
-    <el-table-column prop="money" label="金额"  width="95" />
-    <el-table-column prop="totalAmount" label="结算金额"  width="95" />
+    <el-table-column prop="price" label="单价/元"  width="80" />
+    <el-table-column prop="money" label="金额/元"  width="95" />
+    <el-table-column prop="totalAmount" label="结算金额/元"  width="170" />
     <el-table-column prop="remarks" label="备注"/>
   </el-table>
-  <div>
-    <span>{{selectTime}}  材料入库总金额：{{moneySum}}</span>
-  </div>
+<!--  <div>-->
+<!--    <span>{{selectTime}}  材料入库总金额：{{moneySum}}</span>-->
+<!--  </div>-->
   <!-- 分页 -->
   <el-pagination
       background
@@ -64,7 +64,7 @@
 
 <script setup>
 import {reactive, ref} from 'vue';
-import {eltable2excel, export2excel, get} from "@/common";
+import {eltable2excel, export2excel, get, WAREHOUSE_CONTEXT_PATH} from "@/common";
 import {useRoute} from 'vue-router';
 import {dateTransform, getDay} from "@/common/date";
 import Decimal from "decimal.js"
@@ -105,7 +105,7 @@ const getSummaryPageList = () => {
   // console.log(params)
   // 后台获取查询结果
   get("/instore/instore-summary-page-list", params).then(result => {
-    // params.totalNum = result.data.totalNum;
+    params.totalNum = result.data.totalNum;
     summaryPageList.value = result.data.resultList
     summaryPageList.value.forEach(function (item) {
       item.remarks = dateTransform(item.earliestCreateTime) +'-'+ getDay(item.latestCreateTime) + "入料" +item.total + "车"
@@ -114,21 +114,43 @@ const getSummaryPageList = () => {
       sum = sum.plus(money)
       moneySum.value = sum.toString()
     })
+    
     params.startTime = ''
-
-    params.totalNum = summaryPageList.value.length
-
   });
   getSupplyList()
 }
 getSummaryPageList();
 
-
-
-
 // 导出数据
 const export2Table = () => {
-  eltable2excel("elTable")
+  // 构建带参数的 URL
+  const url = WAREHOUSE_CONTEXT_PATH+`/summary/download`;
+
+  fetch(url)
+      .then((response) => {
+        // 将二进制数据转换成 blob
+        return response.blob();
+      })
+      .then((blob) => {
+        // 创建一个用于下载的 URL
+        const downloadUrl = window.URL.createObjectURL(new Blob([blob]));
+
+        // 创建一个隐藏的 <a> 元素
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', 'generated_excel.xlsx'); // 修改文件名为你想要的名称
+
+        // 将 <a> 元素添加到页面上以触发下载
+        document.body.appendChild(link);
+        link.click();
+
+        // 清理 URL 和 <a> 元素
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 }
 
 // 修改每页显示条数
@@ -146,7 +168,7 @@ const changeCurrent = (num) => {
 
 // 数据行单元格的合并
 const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (columnIndex === 1 || columnIndex === 7) {
+  if (columnIndex === 1 || columnIndex === 7 || columnIndex === 9) {
     // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
     if (
         rowIndex > 0 &&
@@ -177,6 +199,27 @@ const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
       };
     }
   }
+};
+
+const getSummaries = (param) => {
+  const { columns, data } = param;
+  const sums = [];
+
+  columns.forEach((column, index) => {
+    if (column.property === 'totalAmount') {
+      const values = data.map((item) => Number(item[column.property]));
+      if (!values.every((value) => Number.isNaN(value))) {
+        const sum = moneySum.value;
+        sums[index] = `总金额: ${sum} 元`; // Assuming the values are currency, rounding to 2 decimal places
+      } else {
+        sums[index] = 'N/A';
+      }
+    } else {
+      sums[index] = '';
+    }
+  });
+
+  return sums;
 };
 
 </script>

@@ -98,9 +98,14 @@ const open = (commodity, contractId) => {
   for(let prop in commodity){
     purchaseAdd[prop] = commodity[prop];
   }
+  console.log(purchaseAdd.needNum)
   purchaseAdd['contractId']=contractId
   getSupplyList(purchaseAdd.materialId)
-  getNeedMaterialNum(purchaseAdd.materialId, purchaseAdd.contractId)
+  if(purchaseAdd.needNum == null){
+    getNeedMaterialNum(purchaseAdd.materialId, purchaseAdd.contractId)
+  }else{
+    needNum.value = purchaseAdd.needNum;
+  }
 };
 
 const purchaseAddForm = ref();
@@ -135,10 +140,10 @@ const getNeedMaterialNum= (materialId, contractId) => {
   let data={}
   data.materialId = materialId
   data.contractId = contractId
-  get(`/contract/material-num`, data).then(result => {
-    console.log(result)
-    // supplyList.value = result.data;
-    needNum.value = result.data.materialNum;
+    get(`/contract/material-num`, data).then(result => {
+      if (result.data.materialNum != null){
+        needNum.value = result.data.materialNum;
+      }
   });
 }
 
