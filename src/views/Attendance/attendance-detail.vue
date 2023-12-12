@@ -1,6 +1,6 @@
 <template>
   <!-- 查看员工考勤详细信息框 -->
-  <el-dialog v-model="visible" title="当前员工考勤信息" width="25%">
+  <el-dialog v-model="visible" title="当前员工考勤信息" width="35%">
     <el-form ref="attendanceDetilRef" :model="attendanceDetil" :rules="rules" label-position="top">
       <el-form-item label="员工姓名：" prop="userName">
         <el-input v-model="attendanceDetil.userName" autocomplete="off" disabled/>
@@ -10,6 +10,20 @@
       </el-form-item>
       <el-form-item label="缺勤天数：" prop="absenceDays">
         <el-input v-model="attendanceDetil.absenceDays" autocomplete="off" disabled/>
+      </el-form-item>
+      
+      <el-form-item>
+        <el-calendar>
+          <template #dateCell="{ data }">
+            <div :class="data.isSelected ? 'is-selected' : ''">
+              {{ data.day.split('-').slice(1).join('-') }}
+              
+            </div>
+            <div v-for="item in currentDate">
+              <p v-if="data.day == item.date">{{item.status}}</p>
+            </div>
+          </template>
+        </el-calendar>
       </el-form-item>
       <el-form-item label="今月缺勤日期：" prop="absenceMonthDays">
         <el-input v-model="attendanceDetil.absenceMonthDays" autocomplete="off" type="textarea"
@@ -40,6 +54,7 @@ const attendanceDetil = reactive({
   absenceMonthDays: '',
 });
 
+const currentDate = ref([])
 
 // 该对话框打开并初始化
 const open = (attendance) => {
@@ -52,6 +67,7 @@ const open = (attendance) => {
   get("/checkin/check-date", data).then(result => {
     console.log(result)
     let dateList = ""
+    currentDate.value = result.data
     for (let p in result.data){
       if(result.data[p].status=="缺勤"){
         console.log(result.data[p].date)
@@ -75,5 +91,20 @@ defineExpose({open});
   width: 100px;
   height: 100px;
   display: block;
+}
+.is-selected {
+  color: #1989fa;
+}
+
+::v-deep .el-calendar-table:not(.is-range) td.next {
+  display: none;
+}
+
+::v-deep .el-calendar-table:not(.is-range) td.prev {
+  visibility: hidden;
+}
+
+::v-deep .el-calendar__button-group {
+  display: none;
 }
 </style>

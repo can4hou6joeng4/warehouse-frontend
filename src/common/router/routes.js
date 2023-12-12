@@ -185,6 +185,18 @@ const routes = [
                 component: () => import('@/views/inspect/index.vue'),
                 meta: {nav: ['检验管理', '检验列表']}
             },
+            {
+                path: '/salary/index',
+                name: 'inspectList',
+                component: () => import('@/views/salary/index.vue'),
+                meta: {nav: ['工资管理', '工资列表']}
+            },
+            {
+                path: '/customer/index',
+                name: 'customerList',
+                component: () => import('@/views/customer/index.vue'),
+                meta: {nav: ['客户管理', '客户列表']}
+            },
         ]
     },
     {
