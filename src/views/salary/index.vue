@@ -3,6 +3,11 @@
   <el-divider></el-divider> -->
   <div>
     <el-form inline class="searchForm">
+      <el-form-item>
+        <el-select v-model="params.workRegion" style="width: 120px;" clearable>
+          <el-option v-for="workRegion of workRegionList" :label="workRegion.regionName" :value="workRegion.id" :key="workRegion.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="员工名:">
         <el-input v-model="params.realName" style="width: 120px;" clearable></el-input>
       </el-form-item>
@@ -33,8 +38,8 @@
   <el-table :data="salaryList" ref="multipleTableRef"
             style="width: 100%; margin-top: 10px;" table-layout="auto" border stripe>
     <el-table-column label="序号" type="index" width="60"></el-table-column>
-    <el-table-column prop="realName" label="姓名"/>
-    <el-table-column prop="bankCard" label="银行卡号"/>
+    <el-table-column prop="realName" label="姓名" width="90"/>
+    <el-table-column prop="bankCard" label="银行卡号" width="130"/>
     <el-table-column prop="bank" label="开户行"/>
     <el-table-column prop="workType" label="工种"/>
     <el-table-column prop="monthDays" label="计薪天数"/>
@@ -45,7 +50,7 @@
     <el-table-column prop="payableSalary" label="应发工资"/>
     <el-table-column prop="withhold" label="其他扣款"/>
     <el-table-column prop="netSalary" label="实发工资"/>
-    <el-table-column prop="remark" label="备注"/>
+    <el-table-column prop="remark" label="备注" width="200"/>
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
         <el-link type="primary" @click.prevent="openSalaryUpdate(props.row)" style="margin-right: 8px" v-if="props.row.status == '0'">修改
@@ -205,6 +210,16 @@ const salaryUpdateRef = ref();
 const openSalaryUpdate = (salary) => {
   salaryUpdateRef.value.open(salary);
 };
+
+// 获得所有工区
+const workRegionList = ref();
+// 获取所有仓库
+const getWorkRegionList = () => {
+  get("/workregion/workregion-list").then(result => {
+    workRegionList.value = result.data;
+  });
+}
+getWorkRegionList();
 
 
 </script>
