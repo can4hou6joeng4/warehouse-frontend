@@ -16,7 +16,8 @@
         <el-link type="primary" @click.prevent="openTaskDetail(props.row)" style="margin-right: 8px">查看详情</el-link>
         <el-link type="primary" @click.prevent="completeTask(props.row)" style="margin-right: 8px" v-if="props.row.task !== '任务已结束'">
           完成任务</el-link>
-        <el-link type="primary" @click.prevent="openContractDetail(props.row)" style="margin-right: 8px">查看合同</el-link>
+        <el-link type="primary" @click.prevent="openContractDetail(props.row)" v-if="Role == 'station_master' || Role=='supper_manage'" style="margin-right: 8px">
+          查看合同</el-link>
         <el-link type="primary" v-if="props.row.task === '采购审批'" @click.prevent="toPurchaseDetail(props.row)" style="margin-right: 8px">
           采购审核</el-link>
         <el-link type="primary" v-if="props.row.task === '采购创建'" @click.prevent="toCommodity(props.row)" style="margin-right: 8px">
@@ -59,7 +60,11 @@ const hisFlowPageList = ref([]); // 历史任务列表
 
 const showHisTask = ref(true)
 
+const Role = ref();
+
 onMounted(() => {
+  Role.value = localStorage.getItem("userRole")
+  
   get("/activiti/have-task", {}).then(result => {
     if(result.message === "有还未审核的合同"){
       tip.warning("有还未审核的合同")

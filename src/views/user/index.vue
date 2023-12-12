@@ -75,6 +75,7 @@
     <el-table-column type="selection" width="55"/>
     <el-table-column prop="userId" label="用户ID" sortable/>
     <el-table-column prop="userCode" label="用户名" sortable/>
+    <el-table-column prop="realName" label="真实姓名" sortable/>
     <el-table-column prop="userName" label="昵称" sortable/>
     <el-table-column label="用户状态" sortable>
       <template #default="props">

@@ -91,7 +91,8 @@
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
 <!--        v-if="props.row.contractState === '0' || props.row.contractState === '1'"-->
-        <el-link type="primary" 
+        <el-link type="primary"
+                 v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true"
                  @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改
         </el-link>
         <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
