@@ -130,7 +130,6 @@ const getCommodityPageList = () => {
     params.contractId = parseInt(route.query.contractId);
     showPurchase.value = true
     get("/material/material-page-list-contractId", params).then(result => {
-      console.log(result)
       commodityPageList.value = result.data.resultList;
       params.totalNum = result.data.totalNum;
     });

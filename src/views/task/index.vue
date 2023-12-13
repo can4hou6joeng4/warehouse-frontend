@@ -46,6 +46,7 @@
   <task-detail ref="taskDetailRef"></task-detail>
   
   <purchase-detail ref="purchaseDetailRef" @ok="init"></purchase-detail>
+  <purchase-in-detail ref="purchaseInDetailRef" @ok="init"></purchase-in-detail>
 </template>
 
 <script setup>
@@ -164,8 +165,23 @@ const toCommodity = (task) =>{
 import PurchaseDetail from "@/views/purchase/purchase-detail.vue";
 // 跳转去采购详情，用于审核采购
 const purchaseDetailRef = ref()
+import PurchaseInDetail from "@/views/purchase/purchase-in-detail.vue"
+const purchaseInDetailRef = ref()
+
 const toPurchaseDetail = (task) =>{
-  purchaseDetailRef.value.open(task.contractId)
+  console.log(task.contractId)
+  let da = {}
+  da.contractId = task.contractId
+  get("/contract/contract-id", da).then(result => {
+    console.log(result.data)
+    if(result.data.ifPurchase == '2'){
+      console.log("仅采购")
+      purchaseInDetailRef.value.open(result.data.contractId)
+    }else{
+      purchaseDetailRef.value.open(result.data.contractId)
+    }
+  })  
+  // purchaseDetailRef.value.open(task.contractId)
 }
 
 // 前往入库
