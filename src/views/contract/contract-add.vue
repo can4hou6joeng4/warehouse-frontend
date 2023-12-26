@@ -6,10 +6,13 @@
         <contract-sale :customer="customerList" :products="productList" :if-purchase='"0"' @ok="close"></contract-sale>
       </el-tab-pane>
       <el-tab-pane label="采购合同" name="purchase">
-        <contract-purchase :customer="customerList" @ok="close"></contract-purchase>
+        <contract-purchase :customer="customerList" :if-purchase='"2"' @ok="close"></contract-purchase>
       </el-tab-pane>
       <el-tab-pane label="销售并采购" name="saleAndPurchase">
         <contract-sale :customer="customerList" :products="productList" :if-purchase='"1"' @ok="close"></contract-sale>
+      </el-tab-pane>
+      <el-tab-pane label="工程合同" name="engineering">
+        <contract-engineering :customer="customerList" :if-purchase='"3"' @ok="close"></contract-engineering>
       </el-tab-pane>
     </el-tabs>  
   </el-dialog>
@@ -18,9 +21,9 @@
 <script setup>
 import {ref, reactive} from 'vue'
 import {post, tip, WAREHOUSE_CONTEXT_PATH, get} from "@/common";
-import { Plus } from '@element-plus/icons-vue'
 import contractSale from './contract-sale.vue'
 import contractPurchase from './contract-purchase.vue'
+import contractEngineering from './engineering/add.vue'
 
 const visible = ref(false); // 该页面的可见性
 

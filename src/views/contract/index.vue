@@ -14,6 +14,14 @@
           <el-option label="已结算" value="3"></el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="合同类型:" style="margin-left: 20px;">
+        <el-select v-model="params.ifPurchase" placeholder="合同状态" style="width: 120px;" clearable>
+          <el-option label="未审核" value="0"></el-option>
+          <el-option label="待结算" value="1"></el-option>
+          <el-option label="结算中" value="2"></el-option>
+          <el-option label="工程合同" value="3"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item style="margin-left: 30px;">
         <el-button type="primary" @click="getContractList" style="margin-left: 10px;">
           <el-icon>
@@ -55,19 +63,21 @@
       </el-button>
     </div>
   </div>
-  <!-- 表格 -->
-  <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
-            style="width: 100%; margin-top: 10px;" border stripe id="elTable">
-    <el-table-column prop="contractId" label="合同ID"/>
-    <el-table-column prop="contractName" label="合同名" width="120"/>
-    <el-table-column prop="productName" label="产品名称" width="120"/>
-    <el-table-column prop="productNum" label="生产数量" width="120"/>
-    <el-table-column prop="startTime" label="工期开始时间" width="120"/>
-    <el-table-column prop="endTime" label="工期结束时间" width="120"/>
-    <el-table-column prop="workRegion" label="关联工区" width="120"/>
-    <el-table-column prop="custom" label="合同客户" width="120"/>
-    <el-table-column label="合同状态" width="120">
-      <template #default="props">
+  
+  <div>
+    <!-- 表格 -->
+    <el-table :data="contractList" ref="multipleTableRef" @selection-change="handleSelectionChange"
+              style="width: 100%; margin-top: 10px;" border stripe id="elTable" v-if="!showEngineering">
+      <el-table-column prop="contractId" label="合同ID"/>
+      <el-table-column prop="contractName" label="合同名" width="120"/>
+      <el-table-column prop="productName" label="产品名称" width="120"/>
+      <el-table-column prop="productNum" label="生产数量" width="120"/>
+      <el-table-column prop="startTime" label="工期开始时间" width="120"/>
+      <el-table-column prop="endTime" label="工期结束时间" width="120"/>
+      <el-table-column prop="workRegion" label="关联工区" width="120"/>
+      <el-table-column prop="custom" label="合同客户" width="120"/>
+      <el-table-column label="合同状态" width="120">
+        <template #default="props"> 
         <span :class="{red:props.row.contractState ==='0' || props.row.contractState ==='1'}">
           {{
             props.row.contractState === '0' ? '未审核'
@@ -78,52 +88,58 @@
                                 : '其他'
           }}
         </span>
-      </template>
-    </el-table-column>
-    <el-table-column label="是否需要采购" width="120">
-      <template #default="props">
+        </template>
+      </el-table-column>
+      <el-table-column label="是否需要采购" width="120">
+        <template #default="props">
         <span :class="{red:props.row.ifPurchase=='1'}">{{
             props.row.ifPurchase == "1" ? "需要采购" : "无需采购"
           }}</span>
-      </template>
-    </el-table-column>
-    <el-table-column prop="createTime" label="创建时间" width="100"/>
-    <el-table-column label="操作" fixed="right" width="240">
-      <template #default="props">
-<!--        v-if="props.row.contractState === '0' || props.row.contractState === '1'"-->
-        <el-link type="primary"
-                 v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true"
-                 @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改
-        </el-link>
-        <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
-        <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
-        <el-link type="primary" @click="agree(props.row)"
-                 v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true"
-                 style="margin-right: 8px">通过
-        </el-link>
-        <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"
-                 v-if="props.row.contractState === '0' && props.row.contractId != ''  && showExamine==true"
-                 style="margin-right: 8px">退回
-        </el-link>
-        <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)"
-                 style="margin-right: 8px">
-          再次提交审核
-        </el-link>
-      </template>
-    </el-table-column>
-  </el-table>
-  <!-- 分页 -->
-  <el-pagination
-      background
-      :total="params.totalNum"
-      :page-sizes="[5, 10, 15, 20, 25, 30]"
-      v-model:page-size="params.pageSize"
-      v-model:currentPage="params.pageNum"
-      layout="total, sizes, prev, pager, next, jumper"
-      style="margin-top: 20px;"
-      @size-change="changeSize"
-      @current-change="changeCurrent"
-  />
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" label="创建时间" width="100"/>
+      <el-table-column label="操作" fixed="right" width="240">
+        <template #default="props">
+          <!--        v-if="props.row.contractState ===   '0' || props.row.contractState === '1'"-->
+          <el-link type="primary"
+                   v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true"
+                   @click.prevent="openContractUpdate(props.row)" style="margin-right: 8px">修改
+          </el-link>
+          <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
+          <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
+          <el-link type="primary" @click="agree(props.row)"
+                   v-if="props.row.contractState === '0' && props.row.contractId != '' && showExamine==true"
+                   style="margin-right: 8px">通过
+          </el-link>
+          <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"
+                   v-if="props.row.contractState === '0' && props.row.contractId != ''  && showExamine==true"
+                   style="margin-right: 8px">退回
+          </el-link>
+          <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)"
+                   style="margin-right: 8px">
+            再次提交审核
+          </el-link>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- 分页 -->
+    <el-pagination
+        background
+        :total="params.totalNum"
+        :page-sizes="[5, 10, 15, 20, 25, 30]"
+        v-model:page-size="params.pageSize"
+        v-model:currentPage="params.pageNum"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="margin-top: 20px;"
+        @size-change="changeSize"
+        @current-change="changeCurrent"
+        v-if="!showEngineering"
+    />
+    
+    <engineering v-if="showEngineering" :paramsData="params"></engineering>
+  </div>
+
 
   <!-- 添加合同对话框 -->
   <contract-add ref="contractAddRef" @ok="getContractList"></contract-add>
@@ -147,6 +163,7 @@ const params = reactive({
   contractName: '',
   contractDesc: '',
   contractState: '',
+  ifPurchase: '',
   associatedArea: '',
   pageSize: 5,
   pageNum: 1,
@@ -157,40 +174,33 @@ const multipleTableRef = ref();
 // 图片回显路径
 const imageUrl = ref('');
 
-const router = useRouter(); // 获取路由器
-
+// 获取路由器
+const router = useRouter();
+// 获取路由信息
+const route = useRoute();
 
 // 表格数据
 const contractList = ref();
 
-// 获取路由信息
-const route = useRoute();
-
-const changeFileName = (list) => {
-  list.forEach(function (item) {
-    let parts = item.files.split('/'); // 先按"/"切割路径
-    let file = parts.pop()
-
-    let part2 = file.split('\\')
-
-    let filename = part2.pop(); // 弹出数组的最后一个元素（文件名）
-
-
-    item.files = WAREHOUSE_CONTEXT_PATH + '/contract/download-image/' + filename
-  });
-}
-
 // 审核可见性
 const showExamine = ref(true)
 
+// 工程合同的显示状态
+const showEngineering = ref(false)
+
 // 获取查询结果
 const getContractList = () => {
-  // 这里的区分合同id存不存在是因为需要从任务界面跳转过来能够直接看到目前任务绑定的合同 
-  if (route.query.contractId) {
-    params.contractId = parseInt(route.query.contractId)
-    getAll();
-  } else {
-    getAll();
+  // 这里的区分合同id存不存在是因为需要从任务界面跳转过来能够直接看到目前任务绑定的合同
+  if(params.ifPurchase == "3" ){
+    showEngineering.value = true
+  }else{
+    if (route.query.contractId) {
+      params.contractId = parseInt(route.query.contractId)
+      getAll();
+    } else {
+      getAll();
+    }
+    showEngineering.value = false
   }
   if (localStorage.getItem("userRole") !== "supper_manage") {
     showExamine.value = false
@@ -239,7 +249,6 @@ const openContractUpdate = (contract) => {
 // 查看合同详情
 import ContractDetail from "@/views/contract/contract-detail.vue";
 import {useRoute, useRouter} from "vue-router";
-
 const contractDetailRef = ref();
 const openContractDetail = (contract) => {
   let contractRow = contractList.value.find(item => item.contractId === contract.contractId)
@@ -264,7 +273,7 @@ const export2Table = () => {
   eltable2excel("elTable")
 }
 
-// 下载合同照片
+// 下载合同附件
 const downloadFiles = (contract) => {
   // 构建带参数的 URL
   const url = WAREHOUSE_CONTEXT_PATH+`/contract/download-images/`+contract.contractId;
@@ -313,9 +322,8 @@ const agree = (contract) => {
   })
 }
 
-// 合同驳回原因
+// 合同驳回
 import ContractReason from './contract-reason.vue'
-
 const contractReasonRef = ref()
 const reject = (contractId, ifPurchase) => {
   let data = {
@@ -345,6 +353,13 @@ const completeTask = (contract) => {
   })
 }
 
+
+
+import engineering from "./engineering/index.vue"
+const engineeringRef = ref()
+const openEngineering = () => {
+  console.log("打开工程合同")
+}
 
 const inlineFile = ref(WAREHOUSE_CONTEXT_PATH + '/contract/inline-image/');
 </script>

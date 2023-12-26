@@ -175,7 +175,7 @@ const addContract = () => {
       });
     }
   });
-}
+} 
 
 // 日期格式化函数
 function formatDate(dateStr) {

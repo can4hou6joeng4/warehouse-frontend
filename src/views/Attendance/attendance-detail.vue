@@ -21,6 +21,7 @@
             </div>
             <div v-for="item in currentDate">
               <p v-if="data.day == item.date">{{item.status}}</p>
+              <p v-if="data.day == item.date">{{item.address}}</p>
             </div>
           </template>
         </el-calendar>

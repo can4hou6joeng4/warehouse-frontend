@@ -31,7 +31,7 @@
           <el-form-item label="合同照片：" prop="imgs">
             <el-upload
                 class="avatar-uploader"
-                :action="WAREHOUSE_CONTEXT_PATH + '/contract/img-upload'"
+                :action="WAREHOUSE_CONTEXT_PATH + '/file/upload-contract-annex'"
                 :multiple="true"
                 :on-change="handleAvatarChange"
                 :before-upload="beforeAvatarUpload"
