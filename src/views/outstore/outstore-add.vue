@@ -89,7 +89,9 @@ const getProductList = () => {
 // 获取所有合同
 const contractList = ref();
 const getContractList= (id) => {
-  get("/contract/contract-all").then(result => {
+  let da = {}
+  da.contractId = id
+  get("/contract/contract-id",da).then(result => {
     contractList.value = result.data;
     if(id!=null){
       outstoreAdd.contractId = contractList.value.find(item => item.contractId === parseInt(id)).contractId
@@ -104,7 +106,7 @@ const getContractList= (id) => {
         outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).customerName
       }
     }
-  });
+  }); 
 }
 
 // 出库数量不能大于库存

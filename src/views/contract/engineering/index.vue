@@ -60,7 +60,7 @@
 </template>
 
 <script setup>
-import {onMounted} from "vue";
+import {onMounted, ref} from "vue";
 import {get} from "@/common";
 
 const props = defineProps({
