@@ -141,9 +141,9 @@ getOutstorePageList();
 const storeList = ref();
 // 获取所有仓库
 const getStoreList = () => {
-  get("/outstore/store-list").then(result => {
-    storeList.value = result.data;
-  });
+  // get("/outstore/store-list").then(result => {
+  //   storeList.value = result.data;
+  // });
 }
 getStoreList();
 

@@ -149,9 +149,7 @@ function formatDate(dateStr) {
 }
 
 const sureSalary = (salary) => {
-  console.log(salary)
   salary.status = '1'
-  console.log(salary)
   post("/salary/salary-update", salary).then(result => {
     getSalaryList()
   });

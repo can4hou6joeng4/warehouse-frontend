@@ -24,7 +24,8 @@
         <el-input v-model="outstoreAdd.productNum" disabled/>
       </el-form-item>
       <el-form-item label="客户：" prop="custom">
-        <el-input v-model="outstoreAdd.custom" disabled/>
+        <el-input v-model="outstoreAdd.custom" v-if="outstoreAdd.custom != null" disabled/>
+        <el-input v-model="outstoreAdd.otherCustomer" v-if="outstoreAdd.custom == null" disabled/>
       </el-form-item>
       <el-form-item label="出库数量：" prop="outNum">
         <el-input v-model="outstoreAdd.outNum" />
@@ -54,7 +55,7 @@ import {useRoute} from "vue-router";
 const visible = ref(false);
 
 // 添加出库单对象
-const outstoreAdd = reactive({
+const outstoreAdd = ref({
   productId: '',
   storeId: '',
   storeName: '',
@@ -80,8 +81,10 @@ const getStoreList = () => {
 
 // 获取所有产品
 const productList = ref();
-const getProductList = () => {
-  get("/product/product-list").then(result => {
+const getProductList = (id) => {
+  let da = {}
+  da.contractId = id
+  get("/product/product-list-id",da).then(result => {
     productList.value = result.data;
   });
 }
@@ -92,20 +95,22 @@ const getContractList= (id) => {
   let da = {}
   da.contractId = id
   get("/contract/contract-id",da).then(result => {
-    contractList.value = result.data;
-    if(id!=null){
-      outstoreAdd.contractId = contractList.value.find(item => item.contractId === parseInt(id)).contractId
-      outstoreAdd.workRegion = contractList.value.find(item => item.contractId === parseInt(id)).workRegion
-      outstoreAdd.productId = contractList.value.find(item => item.contractId === parseInt(id)).productId
-      outstoreAdd.productNum = contractList.value.find(item => item.contractId === parseInt(id)).productNum
-      let customerId = contractList.value.find(item => item.contractId === parseInt(id)).customerId
-      console.log(contractList.value.find(item => item.contractId === parseInt(id)))
-      if (customerId == '' || customerId == null){
-        outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).otherCustomer
-      }else{
-        outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).customerName
-      }
-    }
+    console.log(result)
+    outstoreAdd.value = result.data
+    // contractList.value = result.data;
+    // if(id!=null){
+    //   outstoreAdd.contractId = contractList.value.find(item => item.contractId === parseInt(id)).contractId
+    //   outstoreAdd.workRegion = contractList.value.find(item => item.contractId === parseInt(id)).workRegion
+    //   outstoreAdd.productId = contractList.value.find(item => item.contractId === parseInt(id)).productId
+    //   outstoreAdd.productNum = contractList.value.find(item => item.contractId === parseInt(id)).productNum
+    //   let customerId = contractList.value.find(item => item.contractId === parseInt(id)).customerId
+    //   console.log(contractList.value.find(item => item.contractId === parseInt(id)))
+    //   if (customerId == '' || customerId == null){
+    //     outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).otherCustomer
+    //   }else{
+    //     outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).customerName
+    //   }
+    // }
   }); 
 }
 
@@ -135,7 +140,7 @@ const close = () => {
 
   visible.value = false;
 }
-
+ 
 const route = useRoute(); // 获取路由信息
 
 // 该对话框打开，进行数据初始化
@@ -146,7 +151,7 @@ const open = (contractId) => {
   // }
   visible.value = true;
   getStoreList();
-  getProductList();
+  getProductList(contractId);
   getContractList(contractId)
 
 };
@@ -159,8 +164,8 @@ const addOutstore = () => {
   outstoreAddForm.value.validate((valid) => {
     if(valid){
       console.log(outstoreAdd)
-      post('/outstore/outstore-add', outstoreAdd).then(result => {
-        emit('ok', outstoreAdd.storeId);
+      post('/outstore/outstore-add', outstoreAdd.value).then(result => {
+        emit('ok', outstoreAdd.value.storeId);  
         tip.success(result.message);
       });
       visible.value = false; // 关闭对话框
@@ -181,4 +186,4 @@ defineExpose({ open });
 <style>
 
 
-</style>
+</style>  
