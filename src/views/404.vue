@@ -4,4 +4,4 @@
   >
     路由<span v-if="$route.query && $route.query.toPath" style="color:red;">&nbsp;{{$route.query.toPath}}&nbsp;</span>不存在！
   </div>
-</template>
+</template> 
