@@ -72,8 +72,8 @@
       <el-table-column prop="contractName" label="合同名" width="120"/>
       <el-table-column prop="productName" label="产品名称" width="120" v-if="!showEngineering"/>
       <el-table-column prop="productNum" label="生产数量" width="120"/>
-      <el-table-column prop="startTime" label="工期开始时间" width="120"/>
-      <el-table-column prop="endTime" label="工期结束时间" width="120"/>
+      <el-table-column prop="startTime" label="工期开始时间" width="120" v-if="!showEngineering"/>
+      <el-table-column prop="endTime" label="工期结束时间" width="120" v-if="!showEngineering"/>
       <el-table-column prop="workRegion" label="关联工区" width="120"/>
       <el-table-column prop="custom" label="合同客户" width="120"/>
       <el-table-column prop="signingAddress" label="签订地区" width="120" v-if="showEngineering"/>
