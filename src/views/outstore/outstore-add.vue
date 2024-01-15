@@ -3,7 +3,7 @@
   <el-dialog v-model="visible" title="添加出库单" width="400px" @close="close" destroy-on-close>
     <el-form ref="outstoreAddForm" :model="outstoreAdd" :rules="rules" label-position="top" label-width="120px">
       <el-form-item label="产品：" prop="storeId">
-        <el-select placeholder="请选择产品" v-model="outstoreAdd.productId" clearable>
+        <el-select placeholder="请选择产品" v-model="outstoreAdd.productId" clearable @change="changeProduct">
           <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
         </el-select>
       </el-form-item>
@@ -12,16 +12,17 @@
           <el-option v-for="store of storeList" :label="store.storeName" :value="store.storeId" :key="store.storeId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="所属合同：" prop="contractId">
-        <el-select placeholder="请选择合同" v-model="outstoreAdd.contractId" clearable @change="handleSelectContractChange">
-          <el-option v-for="contract of contractList" :label="contract.contractName" :value="contract.contractId" :key="contract.contractId"></el-option>
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="所属合同：" prop="contractId">-->
+<!--        <el-select placeholder="请选择合同" v-model="outstoreAdd.contractId" clearable @change="handleSelectContractChange">-->
+<!--          <el-option v-for="contract of contractList" :label="contract.contractName" :value="contract.contractId" :key="contract.contractId"></el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="关联工区：" prop="workRegion">
         <el-input v-model="outstoreAdd.workRegion" disabled/>
       </el-form-item>
       <el-form-item label="合同生产数量：" prop="custom">
         <el-input v-model="outstoreAdd.productNum" disabled/>
+        
       </el-form-item>
       <el-form-item label="客户：" prop="custom">
         <el-input v-model="outstoreAdd.custom" v-if="outstoreAdd.custom != null" disabled/>
@@ -97,20 +98,6 @@ const getContractList= (id) => {
   get("/contract/contract-id",da).then(result => {
     console.log(result)
     outstoreAdd.value = result.data
-    // contractList.value = result.data;
-    // if(id!=null){
-    //   outstoreAdd.contractId = contractList.value.find(item => item.contractId === parseInt(id)).contractId
-    //   outstoreAdd.workRegion = contractList.value.find(item => item.contractId === parseInt(id)).workRegion
-    //   outstoreAdd.productId = contractList.value.find(item => item.contractId === parseInt(id)).productId
-    //   outstoreAdd.productNum = contractList.value.find(item => item.contractId === parseInt(id)).productNum
-    //   let customerId = contractList.value.find(item => item.contractId === parseInt(id)).customerId
-    //   console.log(contractList.value.find(item => item.contractId === parseInt(id)))
-    //   if (customerId == '' || customerId == null){
-    //     outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).otherCustomer
-    //   }else{
-    //     outstoreAdd.custom = contractList.value.find(item => item.contractId === parseInt(id)).customerName
-    //   }
-    // }
   }); 
 }
 
@@ -180,6 +167,16 @@ const handleSelectContractChange = () =>{
   console.log(contractList.value)
 }
 
+const changeProduct = () => {
+  let id = productList.value.find(item => item.productId === outstoreAdd.value.productId).id
+  console.log(id)
+  let da = {}
+  da.id = id
+  get("/contract/contract-eginner-productNum",da).then(res => {
+    console.log(res.data[0].quantity)
+    outstoreAdd.value.productNum = res.data[0].quantity
+  })
+}
 defineExpose({ open });
 </script>
 

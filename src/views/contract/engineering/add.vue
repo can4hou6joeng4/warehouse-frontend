@@ -53,7 +53,7 @@
             </el-table>
           </el-form-item>
           <el-form-item label="生产数量：" prop="productNum">
-            <el-input v-model="contractAdd.productNum" autocomplete="off"/>
+            <el-input v-model="product.quantity" autocomplete="off" @change="changeQuantity"/>
           </el-form-item>
           <el-form-item label="使用原材料比例：" prop="productNum">
             <el-radio-group v-model="selectedRatio" class="ml-4" @change="ratioChanged">
@@ -61,11 +61,12 @@
               <el-radio label="2">手动输入比例</el-radio>
             </el-radio-group>
           </el-form-item>
-          <el-form-item v-for="item in ratioList">
-            <span>原材料: {{item.materialName}}</span>
-            <span>系统占比: {{item.ratio}}</span>
-            <el-input v-model="item.newRatio" autocomplete="off" placeholder="可输入自定义比例" style="width: 30%;float:right"/>
-            <span>在库数量: {{item.materialNum}}</span>
+          <el-form-item v-for="item in ratioList" style="width: 100%">
+            <span style="width: 100px;margin-left: 10px">原材料: {{item.materialName}}</span>
+            <span style="width: 120px">系统占比: {{item.ratio}}</span>
+            <el-input v-model="item.newRatio" autocomplete="off" placeholder="可输入自定义比例" style="width: 100px;float:right" v-if="showSureRatio" @change="changeRatio(item)"/>
+            <span style="width: 130px;margin-left: 10px">在库数量: {{item.materialNum}}</span>
+            <span style="width: 140px">合同所需数量: {{item.needNum}}</span>
           </el-form-item>
           <el-form-item v-if="showSureRatio">
             <el-button type="primary" @click="sureRatio">确认输入比例</el-button>
@@ -139,7 +140,7 @@ const beforeAvatarUpload = (rawFile) => {
   //     && rawFile.type !== 'image/webp'
   // ) {
   //   tip.error('只能上传图片格式!');
-  //   return false
+  //   return false 
   // } else if (rawFile.size / 1024 / 1024 > 5) {
   //   tip.error('上传文件不能大于5MB!');
   //   return false
@@ -267,15 +268,19 @@ const notMergedTable = (tableContent,json,col) => {
 // 比例列表
 const ratioList = ref([])
 const ratioLists = ref([]) // 自定义的比例列表
+const product = ref({})
 
 // 选中的行内容，用于查询该产品的原材料和比例
 const handleCurrentChange = (val) => {
   let productName = val.productName.replace(/\n/g, '')
-  contractAdd.value.productNum = val.quantity
+  product.value = val
+
   get(`/product-material/ratio-name/${productName}`, ).then(result => {
     ratioList.value = result.data
     for (let index in ratioList.value){
       ratioList.value[index].newRatio = ratioList.value[index].ratio
+      ratioList.value[index].needNum = ratioList.value[index].ratio * product.value.quantity
+      ratioList.value[index].needNum = parseFloat(ratioList.value[index].needNum).toFixed(2).toString()
     }
   });
 }
@@ -284,12 +289,10 @@ const contractAddForm = ref();
 
 // 添加合同
 const addContract = () => {
-  console.log(active.value)
   if(active.value == 1){
     submitContent.value="确认"
   }
   if (active.value >= 2){
-    console.log("请求")
     contractAddForm.value.validate(valid => {
       if (valid) {
         let contractEginnerList = []
@@ -301,14 +304,15 @@ const addContract = () => {
             contractEginnerList.push(tableList.value[i])
           }
         }
+        contractAdd.value.ifPurchase = "3"
         contractAdd.value.contractEginnerList = contractEginnerList
         contractAdd.value.ratioLists = ratioLists.value
-
         console.log(contractAdd.value)
-        // post('/activiti/start-instance', contractAdd.value).then(result => {
-        //   // tip.success(result.message);
-        //   // visible.value = false; // 关闭对话框
-        // });
+
+        post('/activiti/start-instance', contractAdd.value).then(result => {
+          tip.success(result.message);
+          visible.value = false; // 关闭对话框
+        });
       }
     });
   }
@@ -318,16 +322,24 @@ const addContract = () => {
 
 // 选择的比例
 const selectedRatio = ref('1')
+const showSureRatio = ref(false)
 const ratioChanged = () => {
   showSureRatio.value = !showSureRatio.value
+  if (showSureRatio.value==false){
+    for (let index in ratioList.value){
+      ratioList.value[index].newRatio = ratioList.value[index].ratio
+      ratioList.value[index].needNum = ratioList.value[index].ratio * product.value.quantity
+      console.log(ratioList.value[index].ratio * product.value.quantity)
+      ratioList.value[index].needNum = parseFloat(ratioList.value[index].needNum).toFixed(2).toString()
+    }
+  }
 }
-const showSureRatio = ref(false)
+
 const sureRatio = () => {
   ratioLists.value.push(ratioList.value)
 }
 
 const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  console.log(tableCol.value)
   if (tableCol.value>=8){
     if (columnIndex === 4 || columnIndex === 5 || columnIndex === 6) {
       // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
@@ -364,6 +376,18 @@ const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
     }
   }
 };
+
+const changeQuantity = () => {
+  for (let i in ratioList.value){
+    ratioList.value[i].needNum = ratioList.value[i].ratio * product.value.quantity
+    ratioList.value[i].needNum = parseFloat(ratioList.value[i].needNum).toFixed(2).toString()
+  }
+}
+
+const changeRatio = (ratio) => {
+  ratio.needNum = ratio.newRatio * product.value.quantity
+  ratio.needNum = parseFloat(ratio.needNum).toFixed(2).toString()
+}
 </script>
 
 <style scoped>
