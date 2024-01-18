@@ -2,6 +2,16 @@
   <el-dialog v-model="visible" title="修改" width="400px" @close="close" destroy-on-close>
     <el-form ref="salaryUpdateRef" :model="salaryUpdate" label-position="right" label-width="100px">
       <el-row>
+        <el-form-item label="计薪天数：" prop="monthDays">
+          <el-input v-model="salaryUpdate.monthDays" />
+        </el-form-item>
+      </el-row>
+      <el-row>
+        <el-form-item label="实出勤天数：" prop="checkinDays">
+          <el-input v-model="salaryUpdate.checkinDays" />
+        </el-form-item>
+      </el-row>
+      <el-row>
         <el-form-item label="其他工资：" prop="otherSalary">
           <el-input v-model="salaryUpdate.otherSalary" />
         </el-form-item>
