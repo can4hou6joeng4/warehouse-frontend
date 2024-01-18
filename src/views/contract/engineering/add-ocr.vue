@@ -7,26 +7,11 @@
     </el-steps>
     <el-form ref="contractAddForm" :model="contractAdd" label-position="top" style="width: 100%;">
       <el-row>
-        <el-col :span="12" v-show="active===0">
-          <el-form-item label="点击上传合同文件（doc）" prop="imgs" style="width: 130px;margin: auto;margin-top: 30px">
+        <el-col v-show="active===0">
+          <el-form-item label="点击上传合同文件" prop="imgs" style="width: 130px;margin: auto;margin-top: 30px">
             <el-upload
                 class="avatar-uploader"
-                :action="WAREHOUSE_CONTEXT_PATH + '/file/upload-contract-doc'"
-                :multiple="true"
-                :on-change="handleAvatarChange"
-                :on-success="(response, file, fileList) =>
-      handleDocAvatarSuccess(response, file, fileList, 0)"
-                :before-upload="beforeAvatarUpload"
-            >
-              <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
-            </el-upload>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12" v-show="active===0">
-          <el-form-item label="点击上传合同文件（pdf）" prop="imgs" style="width: 130px;margin: auto;margin-top: 30px">
-            <el-upload
-                class="avatar-uploader"
-                :action="WAREHOUSE_CONTEXT_PATH + '/file/upload-contract-pdf'"
+                :action="WAREHOUSE_CONTEXT_PATH + '/file/upload-contract-annex'"
                 :multiple="true"
                 :on-change="handleAvatarChange"
                 :on-success="(response, file, fileList) =>
@@ -170,64 +155,17 @@ const handleAvatarSuccess = (res, file, fileList, index) => {
   active.value +=1
 }
 
-const handleDocAvatarSuccess = (res, file, fileList, index) => {
-  content2DocList(res.data.textList)
-  content2DocTable(res.data.tableList)
-  active.value +=1
-}
-
-const content2DocTable = (contentList) =>{
-  let tableContent = {id:'',productName:''  ,unit:'',quantity:'',price:'',total:''}
-  const keys = Object.keys(tableContent);
-
-  for (let i =0;i<contentList.length/6;i++){
-    for (let index=0;index<6;index++){
-      tableContent[keys[index]] = contentList[i*6+index]
-    }
-    tableList.value.push(Object.assign({}, tableContent))
-  }
-  tableHeader.value = tableContent
-}
-
-const content2DocList = (content) => {
-  let list = []
-  let list2 = []
-  for (let i in content){
-    content[i] = content[i].replace(/\r/g, '')
-    content[i] = content[i].replace(/" "/g,"")
-    if (content[i] != ""){
-      list.push(content[i])
-    }
-  }
-  list2.push(list[0])
-  for (let i=0;i<list.length;i++){
-    let colonIndex = list[i].indexOf("：");
-
-    if (colonIndex !== -1) { // 如果找到冒号
-      // 获取冒号后面的字符串，并去除空格
-      let extractedText = list[i].substring(colonIndex + 1).trim();
-      list2.push(extractedText)
-    }
-  }
-  let j = 0
-
-  for(let i in contractAdd.value){
-    contractAdd.value[i] = list2[j]
-    j++;
-  }
-}
-
 // 接收的合同数据
-const content2List = (json) => {
-  // let json = JSON.parse(textList)
+const content2List = (textList) => {
+  let json = JSON.parse(textList)
   let content = [];
-  content.push(json[0])
+  content.push(json[0].words)
   for (let i=0;i<json.length;i++){
-    let colonIndex = json[i].indexOf("：");
+    let colonIndex = json[i].words.indexOf("：");
 
     if (colonIndex !== -1) { // 如果找到冒号
       // 获取冒号后面的字符串，并去除空格
-      let extractedText = json[i].substring(colonIndex + 1).trim();
+      let extractedText = json[i].words.substring(colonIndex + 1).trim();
       content.push(extractedText)
     }
   }
@@ -242,25 +180,89 @@ const content2List = (json) => {
 // 接收的表格数据
 const content2Table = (text) =>{
   let json = JSON.parse(text);
+  let col = 1; // 合同的表格一行的列数
+  for(let i =1;i<json[0].body.length;i++){
+    if(json[0].body[i].col_end==1){
+      break;
+    }
+    col++;
+  }
+
+  tableCol.value = col
+
+  let tableContent = {}
+  if (col<=6){
+    tableContent = {id:'',productName:'',specs:'',unit:'',price:'',remarks:''}
+    notMergedTable(tableContent,json,col)
+  }else{
+    tableContent = {id:'',productName:'',specs:'',unit:'',quantity:'',price:'',total:"",remarks:''}
+    mergedTable(tableContent, json[0].body, col)
+  }
+
+  tableHeader.value = tableContent
+}
+
+// 需要处理合并单元格
+const mergedTable = (tableContent,json,col) => {
+
   let contentList = []
-  for (let i =0;i<json.length;i++){
-    for (let j=0;j<json[i].data.length;j++){
-      for (let z=0;z<json[i].data[j].length;z++){
-        contentList.push(json[i].data[j][z].text)
+  // 遍历数据，补全缺失列
+  for (let i = 0; i < json.length-1; i++) {
+    let prevCol = json[i + 1]; // 下一列数据
+    let currentCol = json[i]; // 当前列数据
+    let prevColEnd = prevCol.col_end; // 下一列位置
+    let currentColStart = currentCol.col_end; // 当前列位置
+    let row = json[i].row_start // 当前行位置
+    // 计算缺失的列数
+    let missingCols = currentColStart - prevColEnd; // 与下一列的差值
+
+    if (missingCols!=-1 && missingCols!=7)
+    {
+      contentList.push(currentCol.words)
+      if(prevCol.row_start == row+1){
+        for (let i=1;i<=col-currentColStart;i++){
+          let fillCol = currentColStart+i
+          if (json.find(item => item.col_end === fillCol && item.row_start === row-1) != null){
+            contentList.push(json.find(item => item.col_end === fillCol && item.row_start === row-1).words)
+          }
+        }
+      }else{
+        for (let i=1;i<prevColEnd-currentColStart;i++){
+          let fillCol = currentColStart+i // 需要补充的列
+          if (json.find(item => item.col_end === fillCol && item.row_start === row-1) != null){
+            contentList.push(json.find(item => item.col_end === fillCol && item.row_start === row-1).words)
+          }
+        }
       }
+
+    }else{
+      contentList.push(currentCol.words)
     }
   }
-  let tableContent = {id:'',productName:''  ,unit:'',quantity:'',price:'',total:''}
   const keys = Object.keys(tableContent);
 
-  for (let i =0;i<contentList.length/6;i++){
-    for (let index=0;index<6;index++){
-      tableContent[keys[index]] = contentList[i*6+index]
+  for(let i =0;i<parseInt(contentList.length/col);i++){
+    for (let index=0;index<col;index++){
+      tableContent[keys[index]] = contentList[i*col+index]
+    }
+    if (tableContent.id != null && tableContent.id != ""){
+      tableList.value.push(Object.assign({}, tableContent))
+    }else{
+      continue
+    }
+  }
+}
+
+// 不需要处理合并单元格
+const notMergedTable = (tableContent,json,col) => {
+  const keys = Object.keys(tableContent);
+
+  for(let i =0;i<json[0].body.length/col;i++){
+    for (let index=0;index<col;index++){
+      tableContent[keys[index]] = json[0].body[i*col+index].words
     }
     tableList.value.push(Object.assign({}, tableContent))
   }
-  tableHeader.value = tableContent
-
 }
 
 // 比例列表
@@ -296,7 +298,7 @@ const addContract = () => {
         let contractEginnerList = []
         // 舍弃头和尾
         for (let i in tableList.value){
-          if (i==0 || i==tableList.value.length-1){
+          if (tableList.value[i].productName == "合计(元)" || tableList.value[i].productName == "项目名称"){
             continue;
           }else{
             contractEginnerList.push(tableList.value[i])
@@ -305,15 +307,15 @@ const addContract = () => {
         contractAdd.value.ifPurchase = "3"
         contractAdd.value.contractEginnerList = contractEginnerList
         contractAdd.value.ratioLists = ratioLists.value
-        contractAdd.value.signingDate = contractAdd.value.signingDate.replace(/\s/g,"")
         console.log(contractAdd.value)
+
         post('/activiti/start-instance', contractAdd.value).then(result => {
           tip.success(result.message);
           visible.value = false; // 关闭对话框
         });
       }
     });
-  } 
+  }
   active.value+=1
 
 }
@@ -327,6 +329,7 @@ const ratioChanged = () => {
     for (let index in ratioList.value){
       ratioList.value[index].newRatio = ratioList.value[index].ratio
       ratioList.value[index].needNum = ratioList.value[index].ratio * product.value.quantity
+      console.log(ratioList.value[index].ratio * product.value.quantity)
       ratioList.value[index].needNum = parseFloat(ratioList.value[index].needNum).toFixed(2).toString()
     }
   }
@@ -382,6 +385,7 @@ const changeQuantity = () => {
 }
 
 const changeRatio = (ratio) => {
+  console.log("改变")
   ratio.needNum = ratio.newRatio * product.value.quantity
   ratio.needNum = parseFloat(ratio.needNum).toFixed(2).toString()
 }
