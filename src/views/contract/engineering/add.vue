@@ -309,7 +309,6 @@ const addContract = () => {
         console.log(contractAdd.value)
         post('/activiti/start-instance', contractAdd.value).then(result => {
           tip.success(result.message);
-          visible.value = false; // 关闭对话框
         });
       }
     });
@@ -334,7 +333,8 @@ const ratioChanged = () => {
 
 const sureRatio = () => {
   ratioLists.value.push(ratioList.value)
-}
+  tip.success("添加成功！");
+} 
 
 const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
   if (tableCol.value>=8){

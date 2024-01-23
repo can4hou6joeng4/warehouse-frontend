@@ -180,6 +180,16 @@ const routes = [
                 meta: {nav: ['供应商管理', '供应商材料']}
             },
             {
+                path: '/contract/engineering/index',
+                name: 'provideList',
+                component: () => import('@/views/contract/engineering/index.vue'),
+            },
+            {
+                path: '/buslog/index',
+                name: 'buslogList',
+                component: () => import('@/views/buslog/index.vue'),
+            },
+            {
                 path: '/inspect/index',
                 name: 'inspectList',
                 component: () => import('@/views/inspect/index.vue'),
