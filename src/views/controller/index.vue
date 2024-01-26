@@ -70,7 +70,7 @@ const getMaterialList= () => {
   get("/material/material-list").then(result => {
     materialList.value = result.data;
     for(let i in materialList.value){
-      materialList.value[i].percentage = (materialList.value[i].materialNum/500) * 100
+      materialList.value[i].percentage = (materialList.value[i].materialNum/10000) * 100
       if (materialList.value[i].percentage>=50){
         materialList.value[i].status = "success"
       }else if(materialList.value[i].percentage>=20 && materialList.value[i].percentage<50){

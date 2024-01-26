@@ -2,15 +2,15 @@
   <!-- 添加合同对话框 -->
   <el-dialog v-model="visible" title="添加合同" width="800px" @close="close" destroy-on-close>
     <el-tabs v-model="activeName" class="demo-tabs">
-      <el-tab-pane label="销售合同" name="sale">
-        <contract-sale :customer="customerList" :products="productList" :if-purchase='"0"' @ok="close"></contract-sale>
-      </el-tab-pane>
+<!--      <el-tab-pane label="销售合同" name="sale">-->
+<!--        <contract-sale :customer="customerList" :products="productList" :if-purchase='"0"' @ok="close"></contract-sale>-->
+<!--      </el-tab-pane>-->
       <el-tab-pane label="采购合同" name="purchase">
         <contract-purchase :customer="customerList" :if-purchase='"2"' @ok="close"></contract-purchase>
       </el-tab-pane>
-      <el-tab-pane label="销售并采购" name="saleAndPurchase">
-        <contract-sale :customer="customerList" :products="productList" :if-purchase='"1"' @ok="close"></contract-sale>
-      </el-tab-pane>
+<!--      <el-tab-pane label="销售并采购" name="saleAndPurchase">-->
+<!--        <contract-sale :customer="customerList" :products="productList" :if-purchase='"1"' @ok="close"></contract-sale>-->
+<!--      </el-tab-pane>-->
       <el-tab-pane label="工程合同" name="engineering">
         <contract-engineering :customer="customerList" :if-purchase='"3"' @ok="close"></contract-engineering>
       </el-tab-pane>
@@ -27,7 +27,7 @@ import contractEngineering from './engineering/add.vue'
 
 const visible = ref(false); // 该页面的可见性
 
-const activeName = ref('sale')
+const activeName = ref('purchase')
 
 // 关闭
 const close = () => {

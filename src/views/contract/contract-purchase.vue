@@ -28,7 +28,7 @@
                 size="large"
             />
           </el-form-item>
-          <el-form-item label="合同照片：" prop="imgs">
+          <el-form-item label="合同附件：" prop="imgs">
             <el-upload
                 class="avatar-uploader"
                 :action="WAREHOUSE_CONTEXT_PATH + '/contract/img-upload'"

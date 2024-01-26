@@ -134,15 +134,17 @@ const handleAvatarChange = (uploadFile) => {
     // 将转化的url赋值给文件
     imageUrls.value.push(reader.result);
   };
-
-
+  
   if(uploadFile.response != null){
-    if (contractAdd.files == null || contractAdd.files == ""){
-      contractAdd.files += uploadFile.response.path
-    }else{
-      contractAdd.files += "," + uploadFile.response.path
-    }
+    contractAdd.value.files += uploadFile.response.data.fileName
+    // if (contractAdd.value.files == null || contractAdd.value.files == "" || contractAdd.value.files=="undefined"){
+    //   contractAdd.value.files += uploadFile.response.data.fileName
+    // }else{
+    //   contractAdd.value.files += "," + uploadFile.response.data.fileName
+    // }
   }
+  
+
 }
 
 // 上传之前做简单验证
@@ -306,6 +308,7 @@ const addContract = () => {
         contractAdd.value.contractEginnerList = contractEginnerList
         contractAdd.value.ratioLists = ratioLists.value
         contractAdd.value.signingDate = contractAdd.value.signingDate.replace(/\s/g,"")
+        contractAdd.value.files = contractAdd.value.files.replace("undefined", "")
         console.log(contractAdd.value)
         post('/activiti/start-instance', contractAdd.value).then(result => {
           tip.success(result.message);

@@ -96,7 +96,7 @@
       <el-table-column label="是否需要采购" width="120">
         <template #default="props">
         <span :class="{red:props.row.ifPurchase=='1'}">{{
-            props.row.ifPurchase == "1" ? "需要采购" : "无需采购"
+            props.row.ifPurchase == "2" ? "需要采购" : "无需采购"
           }}</span>
         </template>
       </el-table-column>
@@ -111,11 +111,11 @@
           <el-link type="primary" @click="openContractDetail(props.row)" style="margin-right: 8px">查看合同详情</el-link>
           <el-link type="primary" @click="downloadFiles(props.row)" style="margin-right: 8px">下载附件</el-link>
           <el-link type="primary" @click="agree(props.row)"
-                   v-if="props.row.contractState === '0' && props.row.contractId != ''"
+                   v-if="props.row.contractState === '0' && props.row.contractId != '' && role=='supper_manage'"
                    style="margin-right: 8px">通过
           </el-link>
           <el-link type="primary" @click="reject(props.row.contractId,props.row.ifPurchase)"
-                   v-if="props.row.contractState === '0' && props.row.contractId != ''  && showExamine==true"
+                   v-if="props.row.contractState === '0' && props.row.contractId != ''  && showExamine==true && role=='supper_manage'"
                    style="margin-right: 8px">退回
           </el-link>
           <el-link type="primary" v-if="props.row.contractState === '1'" @click.prevent="completeTask(props.row)"
@@ -190,6 +190,8 @@ const showExamine = ref(true)
 // 工程合同的显示状态
 const showEngineering = ref(false)
 
+const role = ref("")
+
 // 获取查询结果
 const getContractList = () => {
   // 这里的区分合同id存不存在是因为需要从任务界面跳转过来能够直接看到目前任务绑定的合同
@@ -202,6 +204,7 @@ const getContractList = () => {
   if(params.ifPurchase == "3" ){
     showEngineering.value = true
   }
+  role.value = localStorage.getItem("userRole")
 }
 const getAll = () =>{
   get("/contract/contract-list", params).then(result => {

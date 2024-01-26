@@ -26,9 +26,6 @@
       <el-form-item label="出库数量：" prop="outNum">
         <el-input v-model="outstoreUpdate.outNum" />
       </el-form-item>
-      <el-form-item label="销售单价：" prop="salePrice">
-        <el-input v-model="outstoreUpdate.salePrice" />
-      </el-form-item>
       <el-form-item label="车牌号：" prop="carNumber">
         <el-input v-model="outstoreUpdate.carNumber" />
       </el-form-item>
