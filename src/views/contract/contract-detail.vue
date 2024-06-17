@@ -21,16 +21,18 @@
             class="mx-1"
         >
           <div>原材料: {{ tag.materialName }}</div>
-          占比: {{ tag.ratio }}               
+          占比: {{ tag.ratio }}
         </el-tag>
       </el-form-item>
       <el-form-item label="原材料：">
         <el-select v-model="contractDetail.materialId" style="width: 120px;" clearable @change="handleSelectMaterial">
-          <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
+          <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId"
+                     :key="material.materialId"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="仓库数量：">
-        <el-input v-model="materialNum" autocomplete="off"/>
+      <el-form-item label="仓库数量："
+                    :style="{ color: materialNum < needNum ? 'red' : 'black', fontWeight: materialNum < needNum ? 'bold' : 'normal' }">
+        {{ materialNum }}
       </el-form-item>
       <el-form-item label="需要数量：">
         <el-input v-model="needNum" autocomplete="off"/>
@@ -60,11 +62,11 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import {ref, reactive} from 'vue'
 import {get, put, tip, WAREHOUSE_CONTEXT_PATH} from "@/common";
 
 // 该页面的可见性
-const visible = ref(false); 
+const visible = ref(false);
 // 合同详情
 const contractDetail = reactive({});
 
@@ -73,14 +75,14 @@ const contractDetail = reactive({});
 const imageUrl = ref('');
 
 // 表格列表
-const ratioDetails= ref({materialId:'',materialName:''});
+const ratioDetails = ref({materialId: '', materialName: ''});
 
 // 图片列表
 const imageList = ref([])
 
 // 该对话框打开并初始化
 const open = (contractRow) => {
-  for(let prop in contractRow){
+  for (let prop in contractRow) {
     contractDetail[prop] = contractRow[prop];
   }
   visible.value = true;
@@ -89,18 +91,18 @@ const open = (contractRow) => {
   get(`/product-material/ratio/${contractRow.productId}`).then(result => {
     ratioDetails.value = result.data;
   });
-  
+
   imageList.value = []
   let resultList = []
   resultList = contractDetail.files.split(",");
-  
-  resultList.forEach(function(item) {
+
+  resultList.forEach(function (item) {
     imageList.value.push(WAREHOUSE_CONTEXT_PATH + '/contract/inline-image/' + item)
-  });  
+  });
 };
 
 // 关闭
-const close = () =>{
+const close = () => {
   visible.value = false
   imageList.value = []
 }
@@ -114,14 +116,15 @@ const handleSelectMaterial = () => {
   materialNum.value = ratioDetails.value.find(item => item.materialId === contractDetail.materialId).materialNum
   needNum.value = ratioDetails.value.find(item => item.materialId === contractDetail.materialId).ratio * contractDetail.productNum
 }
-defineExpose({ open });
+defineExpose({open});
 </script>
 <style scoped>
-.avatar-uploader, .avatar-uploader .avatar{
+.avatar-uploader, .avatar-uploader .avatar {
   width: 100px;
   height: 100px;
   display: block;
 }
+
 .mx-1 {
   width: 88px;
   height: 45px;
@@ -130,12 +133,15 @@ defineExpose({ open });
   margin-top: 10px;
   margin-left: 10px;
 }
+
 .demo-image__error .image-slot {
   font-size: 30px;
 }
+
 .demo-image__error .image-slot .el-icon {
   font-size: 30px;
 }
+
 .demo-image__error .el-image {
   width: 100%;
   height: 200px;

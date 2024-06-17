@@ -2,32 +2,17 @@
 	<view class="page">
 		<!-- 个人信息部分 start -->
 		<view class="user-info">
-			<view class="border-outer">
-				<view class="border-inner">
-					<image src="../../static/head.png" mode="widthFix" class="photo"></image>
-				</view>
-			</view>
 			<view class="summary">
 				<view>
-					<text class="title">id</text>
-					<text class="value">{{userId}}</text>
-				</view>
-				<view>
 					<text class="title">用户名称</text>
-					<text class="value">{{userName}}</text>
-				</view>
-				<view>
-					<text class="title">状态</text>
-					<text class="value">在职</text>
+					<text class="value">{{realName}}</text>
 				</view>
 			</view>
 		</view>
 		<!-- 个人信息部分 end -->
 		
 		<!-- 用户信息栏目 start -->
-		<view class="list-title">用户信息栏目</view>
 		<uni-list>
-			<uni-list-item title="个人资料" link to=""></uni-list-item>
 			<uni-list-item title="我的考勤" link to="/pages/my_checkin/my_checkin"></uni-list-item>
 		</uni-list>
 		<!-- 用户信息栏目 end -->
@@ -47,7 +32,7 @@
 		data() {
 			return {
 				userId:"",
-				userName:"",
+				realName:"",
 				photo:""
 			}
 		},
@@ -58,7 +43,7 @@
 			that.ajax(that.url.searchUserSummary,"GET",null,function(resp){
 				let result =resp.data.data
 				that.userId=result.userId
-				that.userName=result.userName
+				that.realName=result.realName
 				utils.logging('用户的概要信息为：',result)
 			})
 		},

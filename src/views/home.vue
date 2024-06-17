@@ -88,7 +88,7 @@
           <span style="font-weight: bold;">&nbsp;仓库管理系统</span>
         </div>
         <div class="header_right">
-          <span>当前用户：{{`${currUser.userCode}【${currUser.userName}】`}}</span>
+          <span>当前用户：{{`${currUser.userCode}`}}</span>
           <a href="#" @click.prevent="logout">退出</a>
         </div>
       </el-header>

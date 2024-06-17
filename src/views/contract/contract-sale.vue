@@ -10,8 +10,10 @@
             <el-input v-model="contractAdd.workRegion" autocomplete="off"/>
           </el-form-item>
           <el-form-item label="合同客户：">
-            <el-select v-model="contractAdd.customerId" style="width: 80%;" clearable @change="handleSelectChangeCustomer">
-              <el-option v-for="customer of customerList" :label="customer.customerName" :value="customer.customerId" :key="customer.customerId"></el-option>
+            <el-select v-model="contractAdd.customerId" style="width: 80%;" clearable
+                       @change="handleSelectChangeCustomer">
+              <el-option v-for="customer of customerList" :label="customer.customerName" :value="customer.customerId"
+                         :key="customer.customerId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="其他客户：" v-if="showOtherCustomer">
@@ -36,7 +38,9 @@
                 :on-change="handleAvatarChange"
                 :before-upload="beforeAvatarUpload"
             >
-              <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+              <el-icon class="avatar-uploader-icon">
+                <Plus/>
+              </el-icon>
             </el-upload>
           </el-form-item>
         </el-col>
@@ -46,7 +50,8 @@
           </el-form-item>
           <el-form-item label="生产产品：">
             <el-select v-model="contractAdd.productId" style="width: 80%;" clearable @change="handleSelectChange">
-              <el-option v-for="product of productList" :label="product.productName" :value="product.productId" :key="product.productId"></el-option>
+              <el-option v-for="product of productList" :label="product.productName" :value="product.productId"
+                         :key="product.productId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="材料比例：" v-if="showRatio" style="width: 80%;">
@@ -61,13 +66,15 @@
           </el-form-item>
           <el-form-item label="原材料：" v-if="showRatio">
             <el-select v-model="contractAdd.materialId" style="width: 120px;" clearable @change="handleSelectMaterial">
-              <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId" :key="material.materialId"></el-option>
+              <el-option v-for="material of ratioDetails" :label="material.materialName" :value="material.materialId"
+                         :key="material.materialId"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="仓库数量：" v-if="showRatio">
-            <el-input v-model="materialNum" autocomplete="off" disabled/>
+          <el-form-item label="仓库数量："
+                        :style="{ color: materialNum < needNum ? 'red' : 'black', fontWeight: materialNum < needNum ? 'bold' : 'normal' }">
+            {{ materialNum }}
           </el-form-item>
-          <el-form-item label="需要数量：" v-if="showRatio" >
+          <el-form-item label="需要数量：" v-if="showRatio">
             <el-input v-model="needNum" autocomplete="off" disabled/>
           </el-form-item>
           <el-form-item>
@@ -83,13 +90,13 @@
 <script setup>
 import {ref, reactive} from 'vue'
 import {post, tip, WAREHOUSE_CONTEXT_PATH, get} from "@/common";
-import { Plus } from '@element-plus/icons-vue'
+import {Plus} from '@element-plus/icons-vue'
 import {List} from "echarts";
 
 // 接收父组件传递的 prop
 const props = defineProps({
   ifPurchase: String,
-  customer:List,
+  customer: List,
   products: List
 });
 
@@ -102,13 +109,13 @@ const contractAdd = reactive({
   contractDesc: '',
   contractState: '',
   workRegion: '',
-  customerId:'',
+  customerId: '',
   otherCustomer: '',
-  productId:'',
+  productId: '',
   materialId: '',
   productNum: '',
-  ifPurchase:'',
-  files:''
+  ifPurchase: '',
+  files: ''
 });
 
 const contractRadio = ref('1')
@@ -121,7 +128,7 @@ const close = () => {
   contractAdd.workRegion = '';
   contractAdd.productNum = '';
   contractAdd.customerId = '';
-  contractAdd.otherCustomer='';
+  contractAdd.otherCustomer = '';
   visible.value = false;
   showRatio.value = false;
   contractAdd.productId = "";
@@ -182,7 +189,7 @@ function formatDate(dateStr) {
 
 // 获得所有产品
 const productList = ref();
-const getProductList= () => {
+const getProductList = () => {
   productList.value = props.products
 }
 getProductList();
@@ -191,14 +198,14 @@ getProductList();
 const showOtherCustomer = ref(false)
 // 获得所有客户
 const customerList = ref();
-const getCustomerList= () => {
+const getCustomerList = () => {
   customerList.value = props.customer
 }
 getCustomerList();
 // 客户选择发生变化
 const handleSelectChangeCustomer = () => {
   showOtherCustomer.value = false
-  if(contractAdd.customerId==-1){
+  if (contractAdd.customerId == -1) {
     showOtherCustomer.value = true
   }
 }
@@ -217,10 +224,10 @@ const handleAvatarChange = (uploadFile) => {
     // 将转化的url赋值给文件
     imageUrls.value.push(reader.result);
   };
-  if(uploadFile.response != null){
-    if (contractAdd.files == null || contractAdd.files == ""){
+  if (uploadFile.response != null) {
+    if (contractAdd.files == null || contractAdd.files == "") {
       contractAdd.files += uploadFile.response.message
-    }else{
+    } else {
       contractAdd.files += "," + uploadFile.response.message
     }
   }
@@ -245,7 +252,7 @@ const beforeAvatarUpload = (rawFile) => {
 }
 
 // 配料比列表
-const ratioDetails= ref({materialId:'',materialName:''});
+const ratioDetails = ref({materialId: '', materialName: ''});
 
 // 材料比例可见性
 const showRatio = ref(false)
@@ -271,7 +278,7 @@ const handleSelectMaterial = () => {
 defineExpose({open});
 </script>
 <style scoped>
-.avatar-uploader, .avatar-uploader .avatar{
+.avatar-uploader, .avatar-uploader .avatar {
   width: 100px;
   height: 100px;
   display: block;
@@ -285,9 +292,11 @@ defineExpose({open});
   margin-top: 10px;
   margin-left: 10px;
 }
-.avatar{
+
+.avatar {
   float: left;
 }
+
 .avatar-uploader .el-upload {
   border: 1px dashed var(--el-border-color);
   border-radius: 6px;
@@ -300,6 +309,7 @@ defineExpose({open});
 .avatar-uploader .el-upload:hover {
   border-color: var(--el-color-primary);
 }
+
 .avatar-uploader-icon {
   font-size: 28px;
   color: #8c939d;

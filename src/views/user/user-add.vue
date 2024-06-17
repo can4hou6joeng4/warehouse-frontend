@@ -3,16 +3,19 @@
   <el-dialog v-model="visible" title="添加用户" width="25%" @close="close" destroy-on-close>
     <el-form ref="userAddForm" :model="userAdd" :rules="rules" label-position="top">
       <el-form-item label="用户名：" prop="userCode">
-        <el-input v-model="userAdd.userCode" autocomplete="off" />
+        <el-input v-model="userAdd.userCode" autocomplete="off"/>
       </el-form-item>
       <el-form-item label="昵称：" prop="userName">
-        <el-input v-model="userAdd.userName" autocomplete="off" />
+        <el-input v-model="userAdd.userName" autocomplete="off"/>
+      </el-form-item>
+      <el-form-item label="真实姓名：" prop="realName">
+        <el-input v-model="userAdd.realName" autocomplete="off"/>
       </el-form-item>
       <el-form-item label="密码：" prop="userPwd">
-        <el-input type="password" show-password v-model="userAdd.userPwd" autocomplete="off" />
+        <el-input type="password" show-password v-model="userAdd.userPwd" autocomplete="off"/>
       </el-form-item>
       <el-form-item label="确认密码：" prop="confirmPassword">
-        <el-input type="password" show-password v-model="userAdd.confirmPassword" autocomplete="off" />
+        <el-input type="password" show-password v-model="userAdd.confirmPassword" autocomplete="off"/>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -25,14 +28,15 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { post, tip } from "@/common";
+import {ref, reactive} from 'vue'
+import {post, tip} from "@/common";
 
 const visible = ref(false); // 该页面的可见性
 // 添加用户对象
 const userAdd = reactive({
   userCode: '',
   userName: '',
+  realName: '',
   userPwd: '',
   confirmPassword: ''
 });
@@ -41,6 +45,7 @@ const userAdd = reactive({
 const close = () => {
   userAdd.userCode = '';
   userAdd.userName = '';
+  userAdd.realName = '';
   userAdd.userPwd = '';
   userAdd.confirmPassword = '';
   visible.value = false;
@@ -48,15 +53,18 @@ const close = () => {
 
 const rules = reactive({
   userCode: [
-    { required: true, message: '请输入用户名', trigger: 'blur' }
+    {required: true, message: '请输入用户名', trigger: 'blur'}
+  ],
+  realName: [
+    {required: true, message: '请输入真实姓名', trigger: 'blur'}
   ],
   userPwd: [
-    { required: true, message: '请输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码为6-20位', trigger: 'blur' }
+    {required: true, message: '请输入密码', trigger: 'blur'},
+    {min: 6, max: 20, message: '密码为6-20位', trigger: 'blur'}
   ],
   confirmPassword: [
-    { required: true, message: '请再次输入密码', trigger: 'blur' },
-    { min: 6, max: 20, message: '密码为6-20位', trigger: 'blur' }
+    {required: true, message: '请再次输入密码', trigger: 'blur'},
+    {min: 6, max: 20, message: '密码为6-20位', trigger: 'blur'}
   ]
 })
 
@@ -70,12 +78,12 @@ const userAddForm = ref();
 const emit = defineEmits(["ok"]);
 // 添加用户提交
 const addUser = () => {
-  if(userAdd.userPwd!=userAdd.confirmPassword){
+  if (userAdd.userPwd != userAdd.confirmPassword) {
     tip.error("两次密码必须保持一致！");
     return;
   }
   userAddForm.value.validate(valid => {
-    if(valid){
+    if (valid) {
       post('/user/addUser', userAdd).then(result => {
         emit('ok');
         tip.success(result.message);
@@ -85,7 +93,7 @@ const addUser = () => {
   });
 }
 
-defineExpose({ open });
+defineExpose({open});
 </script>
 <style scoped>
 

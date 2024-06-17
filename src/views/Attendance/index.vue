@@ -37,8 +37,9 @@
   <el-table :data="attendanceList" ref="multipleTableRef" @selection-change="handleSelectionChange"
             style="width: 100%; margin-top: 10px;" table-layout="auto" size="large" border stripe>
     <el-table-column prop="userId" label="员工编号"/>
-    <el-table-column prop="userName" label="员工姓名"/>
+    <el-table-column prop="realName" label="员工姓名"/>
     <el-table-column prop="attendanceDays" label="考勤天数"/>
+
     <el-table-column label="操作" fixed="right" width="240">
       <template #default="props">
         <el-link type="primary" @click.prevent="openAttendanceDetail(props.row)" style="margin-right: 8px">详情
@@ -50,7 +51,7 @@
   <el-pagination
       background
       :total="params.totalNum"
-      :page-sizes="[5, 10, 15, 20, 25, 30]"
+      :page-sizes="[5, 10, 15]"
       v-model:page-size="params.pageSize"
       v-model:currentPage="params.pageNum"
       layout="total, sizes, prev, pager, next, jumper"
@@ -155,13 +156,13 @@ function formatDate(dateStr) {
 const changeSize = (size) => {
   params.pageSize = size;
   // 重新查询
-  getStorePageList();
+  getAttendanceList();
 }
 // 修改当前页码
 const changeCurrent = (num) => {
   params.pageNum = num;
   // 重新查询
-  getStorePageList();
+  getAttendanceList();
 }
 
 

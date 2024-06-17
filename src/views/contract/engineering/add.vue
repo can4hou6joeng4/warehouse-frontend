@@ -1,9 +1,9 @@
 <template>
   <div>
     <el-steps :active="active" finish-status="success" align-center>
-      <el-step title="第一步" description="上传合同附件" />
-      <el-step title="第二步" description="检查合同信息" />
-      <el-step title="第三步" description="选择材料比例" />
+      <el-step title="第一步" description="上传合同附件"/>
+      <el-step title="第二步" description="检查合同信息"/>
+      <el-step title="第三步" description="选择材料比例"/>
     </el-steps>
     <el-form ref="contractAddForm" :model="contractAdd" label-position="top" style="width: 100%;">
       <el-row>
@@ -18,7 +18,9 @@
       handleDocAvatarSuccess(response, file, fileList, 0)"
                 :before-upload="beforeAvatarUpload"
             >
-              <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+              <el-icon class="avatar-uploader-icon">
+                <Plus/>
+              </el-icon>
             </el-upload>
           </el-form-item>
         </el-col>
@@ -33,7 +35,9 @@
       handleAvatarSuccess(response, file, fileList, 0)"
                 :before-upload="beforeAvatarUpload"
             >
-              <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+              <el-icon class="avatar-uploader-icon">
+                <Plus/>
+              </el-icon>
             </el-upload>
           </el-form-item>
         </el-col>
@@ -41,7 +45,7 @@
           <el-form-item label="合同名称：" prop="contractName">
             <el-input v-model="contractAdd.contractName" autocomplete="off"/>
           </el-form-item>
-          <el-form-item label="工程名称："  prop="projectName">
+          <el-form-item label="工程名称：" prop="projectName">
             <el-input v-model="contractAdd.projectName" autocomplete="off"/>
           </el-form-item>
           <el-form-item label="工程地点：" prop="workRegion">
@@ -62,9 +66,10 @@
         </el-col>
         <el-col :span="24" v-show="active>=2">
           <el-form-item>
-            <el-table :data="tableList" style="width: 100%;" :show-header="false" highlight-current-row @current-change="handleCurrentChange" :span-method="objectSpanMethod" max-height="300">
+            <el-table :data="tableList" style="width: 100%;" :show-header="false" highlight-current-row
+                      @current-change="handleCurrentChange" :span-method="objectSpanMethod" max-height="300">
               <!-- 动态生成表格列 -->
-              <el-table-column v-for="(value, key) in tableHeader" :key="key" :prop="key" :label="value" />
+              <el-table-column v-for="(value, key) in tableHeader" :key="key" :prop="key" :label="value"/>
             </el-table>
           </el-form-item>
           <el-form-item label="生产数量：" prop="productNum">
@@ -77,11 +82,13 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item v-for="item in ratioList" style="width: 100%">
-            <span style="width: 100px;margin-left: 10px">原材料: {{item.materialName}}</span>
-            <span style="width: 120px">系统占比: {{item.ratio}}</span>
-            <el-input v-model="item.newRatio" autocomplete="off" placeholder="可输入自定义比例" style="width: 100px;float:right" v-if="showSureRatio" @change="changeRatio(item)"/>
-            <span style="width: 130px;margin-left: 10px">在库数量: {{item.materialNum}}</span>
-            <span style="width: 140px">合同所需数量: {{item.needNum}}</span>
+            <span style="width: 100px;margin-left: 10px">原材料: {{ item.materialName }}</span>
+            <span style="width: 120px">系统占比: {{ item.ratio }}</span>
+            <el-input v-model="item.newRatio" autocomplete="off" placeholder="可输入自定义比例"
+                      style="width: 100px;float:right" v-if="showSureRatio" @change="changeRatio(item)"/>
+            <span style="width: 130px; margin-left: 10px;"
+                  :style="{ color: item.materialNum < item.needNum ? 'red' : 'black', fontWeight: item.materialNum < item.needNum ? 'bold' : 'normal' }">在库数量: {{ item.materialNum }}</span>
+            <span style="width: 160px">合同所需数量: {{ item.needNum }}</span>
           </el-form-item>
           <el-form-item v-if="showSureRatio">
             <el-button type="primary" @click="sureRatio">确认输入比例</el-button>
@@ -101,10 +108,12 @@ import {onMounted, ref} from "vue";
 import {get, post, tip, WAREHOUSE_CONTEXT_PATH} from "@/common";
 import {Plus} from "@element-plus/icons-vue";
 
-const contractAdd = ref({contractName:"",projectName:""
-  ,workRegion:"",otherCustomer:""
-  ,company:"",signingAddress:"",signingDate:""
-  ,productNum:"",ifPurchase:"3"});
+const contractAdd = ref({
+  contractName: "", projectName: ""
+  , workRegion: "", otherCustomer: ""
+  , company: "", signingAddress: "", signingDate: ""
+  , productNum: "", ifPurchase: "3"
+});
 
 const submitContent = ref("下一步")
 
@@ -113,7 +122,7 @@ const tableList = ref([])
 const tableHeader = ref({})
 const tableCol = ref(0)
 
-const active = ref(0) 
+const active = ref(0)
 
 onMounted(hook => {
   // const test = "[{\"footer\":[{\"words\":\"2,结算工程数量以实际施工、双方实测数量为准；\",\"location\":[{\"x\":513,\"y\":3391},{\"x\":1978,\"y\":3405},{\"x\":1978,\"y\":3478},{\"x\":512,\"y\":3464}]},{\"words\":\"备注：1，上述单价为不含税；\",\"location\":[{\"x\":313,\"y\":3267},{\"x\":1159,\"y\":3274},{\"x\":1159,\"y\":3348},{\"x\":313,\"y\":3341}]}],\"header\":[{\"words\":\"施工所需人工、机械（含机械设备用油、机械工）以及其它必要的零星器\",\"location\":[{\"x\":327,\"y\":2080},{\"x\":2529,\"y\":2099},{\"x\":2528,\"y\":2172},{\"x\":326,\"y\":2153}]},{\"words\":\"要材料如沥青砼，乳化沥青油等材料由乙方提供，乙方所承包的单价包含\",\"location\":[{\"x\":329,\"y\":1960},{\"x\":2534,\"y\":1979},{\"x\":2533,\"y\":2052},{\"x\":329,\"y\":2032}]}],\"table_location\":[{\"x\":339,\"y\":2441},{\"x\":2500,\"y\":2441},{\"x\":2500,\"y\":3256},{\"x\":339,\"y\":3256}],\"body\":[{\"col_start\":0,\"row_start\":0,\"words\":\"序号\",\"col_end\":1,\"row_end\":1,\"cell_location\":[{\"x\":345,\"y\":2441},{\"x\":526,\"y\":2443},{\"x\":524,\"y\":2666},{\"x\":343,\"y\":2665}]},{\"col_start\":1,\"row_start\":0,\"words\":\"项目名称\",\"col_end\":2,\"row_end\":1,\"cell_location\":[{\"x\":526,\"y\":2443},{\"x\":1197,\"y\":2450},{\"x\":1195,\"y\":2673},{\"x\":524,\"y\":2666}]},{\"col_start\":2,\"row_start\":0,\"words\":\"规格\",\"col_end\":3,\"row_end\":1,\"cell_location\":[{\"x\":1197,\"y\":2450},{\"x\":1374,\"y\":2451},{\"x\":1372,\"y\":2675},{\"x\":1195,\"y\":2673}]},{\"col_start\":3,\"row_start\":0,\"words\":\"单位\",\"col_end\":4,\"row_end\":1,\"cell_location\":[{\"x\":1374,\"y\":2451},{\"x\":1574,\"y\":2454},{\"x\":1572,\"y\":2677},{\"x\":1372,\"y\":2675}]},{\"col_start\":4,\"row_start\":0,\"words\":\"综合单\\n价（元）\",\"col_end\":5,\"row_end\":1,\"cell_location\":[{\"x\":1574,\"y\":2454},{\"x\":1852,\"y\":2457},{\"x\":1850,\"y\":2679},{\"x\":1572,\"y\":2677}]},{\"col_start\":5,\"row_start\":0,\"words\":\"备注\",\"col_end\":6,\"row_end\":1,\"cell_location\":[{\"x\":1852,\"y\":2457},{\"x\":2500,\"y\":2463},{\"x\":2499,\"y\":2686},{\"x\":1850,\"y\":2679}]},{\"col_start\":0,\"row_start\":1,\"words\":\"1\",\"col_end\":1,\"row_end\":2,\"cell_location\":[{\"x\":343,\"y\":2665},{\"x\":524,\"y\":2666},{\"x\":522,\"y\":2861},{\"x\":342,\"y\":2860}]},{\"col_start\":1,\"row_start\":1,\"words\":\"厚4cm细粒式改性沥青\\nAC-13\",\"col_end\":2,\"row_end\":2,\"cell_location\":[{\"x\":524,\"y\":2666},{\"x\":1195,\"y\":2673},{\"x\":1193,\"y\":2868},{\"x\":522,\"y\":2861}]},{\"col_start\":2,\"row_start\":1,\"words\":\"\",\"col_end\":3,\"row_end\":2,\"cell_location\":[{\"x\":1195,\"y\":2673},{\"x\":1372,\"y\":2675},{\"x\":1371,\"y\":2869},{\"x\":1193,\"y\":2868}]},{\"col_start\":3,\"row_start\":1,\"words\":\"m2\",\"col_end\":4,\"row_end\":2,\"cell_location\":[{\"x\":1372,\"y\":2675},{\"x\":1572,\"y\":2677},{\"x\":1571,\"y\":2871},{\"x\":1371,\"y\":2869}]},{\"col_start\":4,\"row_start\":1,\"words\":\"55.00\",\"col_end\":5,\"row_end\":2,\"cell_location\":[{\"x\":1572,\"y\":2677},{\"x\":1850,\"y\":2679},{\"x\":1849,\"y\":2874},{\"x\":1571,\"y\":2871}]},{\"col_start\":5,\"row_start\":1,\"words\":\"采用SBS改性沥青，石料采\\n用反击破碎石（高标石）\",\"col_end\":6,\"row_end\":2,\"cell_location\":[{\"x\":1850,\"y\":2679},{\"x\":2499,\"y\":2686},{\"x\":2498,\"y\":2880},{\"x\":1849,\"y\":2874}]},{\"col_start\":0,\"row_start\":2,\"words\":\"2\",\"col_end\":1,\"row_end\":3,\"cell_location\":[{\"x\":342,\"y\":2860},{\"x\":522,\"y\":2861},{\"x\":521,\"y\":2986},{\"x\":341,\"y\":2984}]},{\"col_start\":1,\"row_start\":2,\"words\":\"沥青粘层油\",\"col_end\":2,\"row_end\":3,\"cell_location\":[{\"x\":522,\"y\":2861},{\"x\":1193,\"y\":2868},{\"x\":1192,\"y\":2992},{\"x\":521,\"y\":2986}]},{\"col_start\":2,\"row_start\":2,\"words\":\"\",\"col_end\":3,\"row_end\":3,\"cell_location\":[{\"x\":1193,\"y\":2868},{\"x\":1371,\"y\":2869},{\"x\":1369,\"y\":2994},{\"x\":1192,\"y\":2992}]},{\"col_start\":3,\"row_start\":2,\"words\":\"m2\",\"col_end\":4,\"row_end\":3,\"cell_location\":[{\"x\":1371,\"y\":2869},{\"x\":1571,\"y\":2871},{\"x\":1570,\"y\":2995},{\"x\":1369,\"y\":2994}]},{\"col_start\":4,\"row_start\":2,\"words\":\"2.50\",\"col_end\":5,\"row_end\":3,\"cell_location\":[{\"x\":1571,\"y\":2871},{\"x\":1849,\"y\":2874},{\"x\":1848,\"y\":2998},{\"x\":1570,\"y\":2995}]},{\"col_start\":5,\"row_start\":2,\"words\":\"采用PC-3沥青\",\"col_end\":6,\"row_end\":3,\"cell_location\":[{\"x\":1849,\"y\":2874},{\"x\":2498,\"y\":2880},{\"x\":2497,\"y\":3004},{\"x\":1848,\"y\":2998}]},{\"col_start\":0,\"row_start\":3,\"words\":\"3\",\"col_end\":1,\"row_end\":4,\"cell_location\":[{\"x\":341,\"y\":2984},{\"x\":521,\"y\":2986},{\"x\":520,\"y\":3111},{\"x\":340,\"y\":3110}]},{\"col_start\":1,\"row_start\":3,\"words\":\"旧路面铣刨\",\"col_end\":2,\"row_end\":4,\"cell_location\":[{\"x\":521,\"y\":2986},{\"x\":1192,\"y\":2992},{\"x\":1190,\"y\":3117},{\"x\":520,\"y\":3111}]},{\"col_start\":2,\"row_start\":3,\"words\":\"\",\"col_end\":3,\"row_end\":4,\"cell_location\":[{\"x\":1192,\"y\":2992},{\"x\":1369,\"y\":2994},{\"x\":1368,\"y\":3119},{\"x\":1190,\"y\":3117}]},{\"col_start\":3,\"row_start\":3,\"words\":\"m2\",\"col_end\":4,\"row_end\":4,\"cell_location\":[{\"x\":1369,\"y\":2994},{\"x\":1570,\"y\":2995},{\"x\":1569,\"y\":3121},{\"x\":1368,\"y\":3119}]},{\"col_start\":4,\"row_start\":3,\"words\":\"2.50\",\"col_end\":5,\"row_end\":4,\"cell_location\":[{\"x\":1570,\"y\":2995},{\"x\":1848,\"y\":2998},{\"x\":1847,\"y\":3124},{\"x\":1569,\"y\":3121}]},{\"col_start\":5,\"row_start\":3,\"words\":\"\",\"col_end\":6,\"row_end\":4,\"cell_location\":[{\"x\":1848,\"y\":2998},{\"x\":2497,\"y\":3004},{\"x\":2496,\"y\":3130},{\"x\":1847,\"y\":3124}]},{\"col_start\":0,\"row_start\":4,\"words\":\"\",\"col_end\":1,\"row_end\":5,\"cell_location\":[{\"x\":340,\"y\":3110},{\"x\":520,\"y\":3111},{\"x\":519,\"y\":3238},{\"x\":339,\"y\":3236}]},{\"col_start\":1,\"row_start\":4,\"words\":\"合计（元）\",\"col_end\":2,\"row_end\":5,\"cell_location\":[{\"x\":520,\"y\":3111},{\"x\":1190,\"y\":3117},{\"x\":1189,\"y\":3244},{\"x\":519,\"y\":3238}]},{\"col_start\":2,\"row_start\":4,\"words\":\"\",\"col_end\":3,\"row_end\":5,\"cell_location\":[{\"x\":1190,\"y\":3117},{\"x\":1368,\"y\":3119},{\"x\":1367,\"y\":3245},{\"x\":1189,\"y\":3244}]},{\"col_start\":3,\"row_start\":4,\"words\":\"m2\",\"col_end\":4,\"row_end\":5,\"cell_location\":[{\"x\":1368,\"y\":3119},{\"x\":1569,\"y\":3121},{\"x\":1568,\"y\":3247},{\"x\":1367,\"y\":3245}]},{\"col_start\":4,\"row_start\":4,\"words\":\"60.00\",\"col_end\":5,\"row_end\":5,\"cell_location\":[{\"x\":1569,\"y\":3121},{\"x\":1847,\"y\":3124},{\"x\":1846,\"y\":3250},{\"x\":1568,\"y\":3247}]},{\"col_start\":5,\"row_start\":4,\"words\":\"\",\"col_end\":6,\"row_end\":5,\"cell_location\":[{\"x\":1847,\"y\":3124},{\"x\":2496,\"y\":3130},{\"x\":2495,\"y\":3256},{\"x\":1846,\"y\":3250}]}]}]"
@@ -134,8 +143,8 @@ const handleAvatarChange = (uploadFile) => {
     // 将转化的url赋值给文件
     imageUrls.value.push(reader.result);
   };
-  
-  if(uploadFile.response != null){
+
+  if (uploadFile.response != null) {
     contractAdd.value.files += uploadFile.response.data.fileName
     // if (contractAdd.value.files == null || contractAdd.value.files == "" || contractAdd.value.files=="undefined"){
     //   contractAdd.value.files += uploadFile.response.data.fileName
@@ -143,7 +152,7 @@ const handleAvatarChange = (uploadFile) => {
     //   contractAdd.value.files += "," + uploadFile.response.data.fileName
     // }
   }
-  
+
 
 }
 
@@ -169,22 +178,22 @@ const beforeAvatarUpload = (rawFile) => {
 const handleAvatarSuccess = (res, file, fileList, index) => {
   content2List(res.data.textList)
   content2Table(res.data.tableList)
-  active.value +=1
+  active.value += 1
 }
 
 const handleDocAvatarSuccess = (res, file, fileList, index) => {
   content2DocList(res.data.textList)
   content2DocTable(res.data.tableList)
-  active.value +=1
+  active.value += 1
 }
 
-const content2DocTable = (contentList) =>{
-  let tableContent = {id:'',productName:''  ,unit:'',quantity:'',price:'',total:''}
+const content2DocTable = (contentList) => {
+  let tableContent = {id: '', productName: '', unit: '', quantity: '', price: '', total: ''}
   const keys = Object.keys(tableContent);
 
-  for (let i =0;i<contentList.length/6;i++){
-    for (let index=0;index<6;index++){
-      tableContent[keys[index]] = contentList[i*6+index]
+  for (let i = 0; i < contentList.length / 6; i++) {
+    for (let index = 0; index < 6; index++) {
+      tableContent[keys[index]] = contentList[i * 6 + index]
     }
     tableList.value.push(Object.assign({}, tableContent))
   }
@@ -194,15 +203,15 @@ const content2DocTable = (contentList) =>{
 const content2DocList = (content) => {
   let list = []
   let list2 = []
-  for (let i in content){
+  for (let i in content) {
     content[i] = content[i].replace(/\r/g, '')
-    content[i] = content[i].replace(/" "/g,"")
-    if (content[i] != ""){
+    content[i] = content[i].replace(/" "/g, "")
+    if (content[i] != "") {
       list.push(content[i])
     }
   }
   list2.push(list[0])
-  for (let i=0;i<list.length;i++){
+  for (let i = 0; i < list.length; i++) {
     let colonIndex = list[i].indexOf("：");
 
     if (colonIndex !== -1) { // 如果找到冒号
@@ -213,7 +222,7 @@ const content2DocList = (content) => {
   }
   let j = 0
 
-  for(let i in contractAdd.value){
+  for (let i in contractAdd.value) {
     contractAdd.value[i] = list2[j]
     j++;
   }
@@ -224,7 +233,7 @@ const content2List = (json) => {
   // let json = JSON.parse(textList)
   let content = [];
   content.push(json[0])
-  for (let i=0;i<json.length;i++){
+  for (let i = 0; i < json.length; i++) {
     let colonIndex = json[i].indexOf("：");
 
     if (colonIndex !== -1) { // 如果找到冒号
@@ -235,29 +244,29 @@ const content2List = (json) => {
   }
   let j = 0
 
-  for(let i in contractAdd.value){
+  for (let i in contractAdd.value) {
     contractAdd.value[i] = content[j]
     j++;
   }
 }
 
 // 接收的表格数据
-const content2Table = (text) =>{
+const content2Table = (text) => {
   let json = JSON.parse(text);
   let contentList = []
-  for (let i =0;i<json.length;i++){
-    for (let j=0;j<json[i].data.length;j++){
-      for (let z=0;z<json[i].data[j].length;z++){
+  for (let i = 0; i < json.length; i++) {
+    for (let j = 0; j < json[i].data.length; j++) {
+      for (let z = 0; z < json[i].data[j].length; z++) {
         contentList.push(json[i].data[j][z].text)
       }
     }
   }
-  let tableContent = {id:'',productName:''  ,unit:'',quantity:'',price:'',total:''}
+  let tableContent = {id: '', productName: '', unit: '', quantity: '', price: '', total: ''}
   const keys = Object.keys(tableContent);
 
-  for (let i =0;i<contentList.length/6;i++){
-    for (let index=0;index<6;index++){
-      tableContent[keys[index]] = contentList[i*6+index]
+  for (let i = 0; i < contentList.length / 6; i++) {
+    for (let index = 0; index < 6; index++) {
+      tableContent[keys[index]] = contentList[i * 6 + index]
     }
     tableList.value.push(Object.assign({}, tableContent))
   }
@@ -275,9 +284,9 @@ const handleCurrentChange = (val) => {
   let productName = val.productName.replace(/\n/g, '')
   product.value = val
 
-  get(`/product-material/ratio-name/${productName}`, ).then(result => {
+  get(`/product-material/ratio-name/${productName}`,).then(result => {
     ratioList.value = result.data
-    for (let index in ratioList.value){
+    for (let index in ratioList.value) {
       ratioList.value[index].newRatio = ratioList.value[index].ratio
       ratioList.value[index].needNum = ratioList.value[index].ratio * product.value.quantity
       ratioList.value[index].needNum = parseFloat(ratioList.value[index].needNum).toFixed(2).toString()
@@ -289,25 +298,25 @@ const contractAddForm = ref();
 
 // 添加合同
 const addContract = () => {
-  if(active.value == 1){
-    submitContent.value="确认"
+  if (active.value == 1) {
+    submitContent.value = "确认"
   }
-  if (active.value >= 2){
+  if (active.value >= 2) {
     contractAddForm.value.validate(valid => {
       if (valid) {
         let contractEginnerList = []
         // 舍弃头和尾
-        for (let i in tableList.value){
-          if (i==0 || i==tableList.value.length-1){
+        for (let i in tableList.value) {
+          if (i == 0 || i == tableList.value.length - 1) {
             continue;
-          }else{
+          } else {
             contractEginnerList.push(tableList.value[i])
           }
         }
         contractAdd.value.ifPurchase = "3"
         contractAdd.value.contractEginnerList = contractEginnerList
         contractAdd.value.ratioLists = ratioLists.value
-        contractAdd.value.signingDate = contractAdd.value.signingDate.replace(/\s/g,"")
+        contractAdd.value.signingDate = contractAdd.value.signingDate.replace(/\s/g, "")
         contractAdd.value.files = contractAdd.value.files.replace("undefined", "")
         console.log(contractAdd.value)
         post('/activiti/start-instance', contractAdd.value).then(result => {
@@ -315,8 +324,8 @@ const addContract = () => {
         });
       }
     });
-  } 
-  active.value+=1
+  }
+  active.value += 1
 
 }
 
@@ -325,8 +334,8 @@ const selectedRatio = ref('1')
 const showSureRatio = ref(false)
 const ratioChanged = () => {
   showSureRatio.value = !showSureRatio.value
-  if (showSureRatio.value==false){
-    for (let index in ratioList.value){
+  if (showSureRatio.value == false) {
+    for (let index in ratioList.value) {
       ratioList.value[index].newRatio = ratioList.value[index].ratio
       ratioList.value[index].needNum = ratioList.value[index].ratio * product.value.quantity
       ratioList.value[index].needNum = parseFloat(ratioList.value[index].needNum).toFixed(2).toString()
@@ -337,10 +346,10 @@ const ratioChanged = () => {
 const sureRatio = () => {
   ratioLists.value.push(ratioList.value)
   tip.success("添加成功！");
-} 
+}
 
-const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
-  if (tableCol.value>=8){
+const objectSpanMethod = function ({row, rowIndex, columnIndex}) {
+  if (tableCol.value >= 8) {
     if (columnIndex === 4 || columnIndex === 5 || columnIndex === 6) {
       // 当列索引为 1（supplyName 列）或 2（totalAmount 列）时
       if (
@@ -378,7 +387,7 @@ const objectSpanMethod = function ({ row, rowIndex, columnIndex }) {
 };
 
 const changeQuantity = () => {
-  for (let i in ratioList.value){
+  for (let i in ratioList.value) {
     ratioList.value[i].needNum = ratioList.value[i].ratio * product.value.quantity
     ratioList.value[i].needNum = parseFloat(ratioList.value[i].needNum).toFixed(2).toString()
   }

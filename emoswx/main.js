@@ -12,13 +12,13 @@ app.$mount()
 
 // 开发环境的全局路径
 // let baseUrl = "https://www.cpg2023.cn/warehouse" 
-let baseUrl = "http://localhost:9999/warehouse" 
-// let baseUrl = "https://youan.bobochang.work/warehouse"
+// let baseUrl = "http://localhost:9999/warehouse" 
+let baseUrl = "https://youan.bobochang.work/warehouse"
 let workflow="http://CentOS的IP:9090/emos-workflow"
 
 // 请求接口路径
 Vue.prototype.url = {
-	register: baseUrl + "/user/register", // 注册接口
+	getPhoneNumber: baseUrl + "/getPhoneNumber", // 获取手机号
 	login: baseUrl + "/wx-login",  // 登录接口
 	checkin: baseUrl + "/checkin/checkin", // 考勤签到
 	checkinNoFace: baseUrl + "/checkin/checkin-noface", // 不用人脸签到
@@ -41,7 +41,6 @@ Vue.prototype.ajax = function(url, method, data, fun) {
 		"data": data,
 		success: function(resp) {
 			if (resp.data.code == 502) {
-				console.log(123)
 				uni.navigateTo({
 					url:"/pages/login/login"
 				})
